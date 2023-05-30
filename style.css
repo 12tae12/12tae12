@@ -1,1 +1,10 @@
-* {background-color: rgba(136, 255, 0, 0.411);}
+* {background-color: rgba(46, 87, 0, 0.411);}
+@font-face {
+    font-family: ComicNeue;
+    src: url(ComicNeue-Italic.ttf);
+}
+  
+h2 {
+    font-family: myFirstFont;
+    color: white;
+}
