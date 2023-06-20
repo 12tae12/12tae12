@@ -1,7 +1,9 @@
 body {
 
     background-image: url('./stuff/download.jpeg');
-    
+    background-repeat: no repeat;
+    background-position: top right;
     }
     
     
+
