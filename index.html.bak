@@ -3,27 +3,19 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=windows-1252">
   </head>
-  <body><ltitle>12Tae12 | Official website!
-      <link href="./reset.css" type="text/css" rel="stylesheet">
-      <link href="./style.css" type="text/css" rel="stylesheet">
-      <script src="https://kit.fontawesome.com/40ab683997.js" crossorigin="anonymous"></script>
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-      <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@1,700&amp;display=swap"
-        rel="stylesheet">
-      <h1>Hello</h1>
-      <a>This is the first 12Tae12 stuff site!</a> <i class="fa-solid fa-house fa-bounce"></i>
-      <a>I hope this website will go to good use as I code it myself. Enjoy as I
-        add new things(and im hoping some more stuff.).</a>
-      <p>;D</p>
-      <ul>
-        Yay! I got regular text to work!#2
-      </ul>
-      <div class="html_button btn-left"> <a href="./stuff.html" class="btn customButton large">Stuff
-          Page</a> </div>
-      <div class="html_button btn-left"> <a href="./rag/home.html" class="btn customButton large"
-          target="_blank">R-A-G. Rocks and Gems</a>
-      </div>
-    </ltitle>
+  <body style="background-color: #006600;">12Tae12 | Official website!
+    <script src="https://kit.fontawesome.com/40ab683997.js" crossorigin="anonymous"></script>
+    <h1>Hello</h1>
+    <a>This is the first 12Tae12 stuff site!</a> <i class="fa-solid fa-house fa-bounce"></i>
+    <a>I hope this website will go to good use as I code it myself. Enjoy as I
+      add new things(and im hoping some more stuff.).</a>
+    <p>;D</p>
+    <ul>
+      Yay! I got regular text to work!#2
+    </ul>
+    <div class="html_button btn-left"> <a href="./stuff.html" class="btn customButton large">Stuff
+        Page</a> </div>
+    <a href="./rag/home.html" class="btn customButton large" target="_blank">R-A-G.
+      Rocks and Gems</a>
   </body>
 </html>
