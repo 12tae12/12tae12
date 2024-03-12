@@ -34,6 +34,8 @@
 	<script src="inputmanager.js" crossorigin="anonymous"></script>
 	<script src="jsonmanager.js" crossorigin="anonymous"></script>
 	<script src="Model3DManager.js" crossorigin="anonymous"></script>
+	<script src="ResourceLoader.js" crossorigin="anonymous"></script>
+	<script src="ResourceCache.js" crossorigin="anonymous"></script>
 	<script src="timemanager.js" crossorigin="anonymous"></script>
 	<script src="polygon.js" crossorigin="anonymous"></script>
 	<script src="runtimeobject.js" crossorigin="anonymous"></script>
@@ -56,6 +58,7 @@
 	<script src="affinetransformation.js" crossorigin="anonymous"></script>
 	<script src="CustomRuntimeObjectInstanceContainer.js" crossorigin="anonymous"></script>
 	<script src="CustomRuntimeObject.js" crossorigin="anonymous"></script>
+	<script src="CustomRuntimeObject2D.js" crossorigin="anonymous"></script>
 	<script src="events-tools/commontools.js" crossorigin="anonymous"></script>
 	<script src="events-tools/variabletools.js" crossorigin="anonymous"></script>
 	<script src="events-tools/runtimescenetools.js" crossorigin="anonymous"></script>
@@ -76,7 +79,7 @@
 	<script src="pixi-renderers/pixi-image-manager.js" crossorigin="anonymous"></script>
 	<script src="pixi-renderers/pixi-bitmapfont-manager.js" crossorigin="anonymous"></script>
 	<script src="pixi-renderers/spriteruntimeobject-pixi-renderer.js" crossorigin="anonymous"></script>
-	<script src="pixi-renderers/CustomObjectPixiRenderer.js" crossorigin="anonymous"></script>
+	<script src="pixi-renderers/CustomRuntimeObject2DPixiRenderer.js" crossorigin="anonymous"></script>
 	<script src="pixi-renderers/DebuggerPixiRenderer.js" crossorigin="anonymous"></script>
 	<script src="pixi-renderers/loadingscreen-pixi-renderer.js" crossorigin="anonymous"></script>
 	<script src="pixi-renderers/pixi-effects-manager.js" crossorigin="anonymous"></script>
@@ -84,9 +87,45 @@
 	<script src="howler-sound-manager/howler-sound-manager.js" crossorigin="anonymous"></script>
 	<script src="fontfaceobserver-font-manager/fontfaceobserver.js" crossorigin="anonymous"></script>
 	<script src="fontfaceobserver-font-manager/fontfaceobserver-font-manager.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__a_advanced_vibration_controller-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__a_change_vibration_magnitude-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__a_set_deadzone-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__a_vibrate_controller-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__axisvalue-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__c_any_button_pressed-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__c_any_button_released-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__c_axis_pushed-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__c_button_pressed-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__c_button_released-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__c_controller_type-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__c_controller_x_is_connected-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__connectedgamepadscount-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__deadzone-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__gamepadcount-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__gamepadtype-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__lastbuttonid-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__lastbuttonstring-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__onfirstsceneloaded-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__onscenepostevents-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__stickangle-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__stickforce-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__stickforcex-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__stickforcey-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__stickrotationvalue-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__strongvibrationmagnitude-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__triggerpressure-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__gamepads__weakvibrationmagnitude-func.js" crossorigin="anonymous"></script>
 	<script src="gdjs-evtsext__smoothcamera__smoothcamera.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__updatechecker__createglobalreference-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__updatechecker__currentgameid-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__updatechecker__currentgameversion-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__updatechecker__onfirstsceneloaded-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__updatechecker__recheckforupdates-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__updatechecker__updateavailable-func.js" crossorigin="anonymous"></script>
+	<script src="gdjs-evtsext__updatechecker__updatecheckfailed-func.js" crossorigin="anonymous"></script>
 	<script src="Extensions/DebuggerTools/debuggertools.js" crossorigin="anonymous"></script>
 	<script src="Extensions/DestroyOutsideBehavior/destroyoutsideruntimebehavior.js" crossorigin="anonymous"></script>
+	<script src="Extensions/DeviceVibration/devicevibrationtools.js" crossorigin="anonymous"></script>
 	<script src="Extensions/PanelSpriteObject/panelspriteruntimeobject-pixi-renderer.js" crossorigin="anonymous"></script>
 	<script src="Extensions/PanelSpriteObject/panelspriteruntimeobject.js" crossorigin="anonymous"></script>
 	<script src="Extensions/PlatformBehavior/platformerobjectruntimebehavior.js" crossorigin="anonymous"></script>
@@ -106,6 +145,7 @@
 	<script src="object-capabilities/OpacityBehavior.js" crossorigin="anonymous"></script>
 	<script src="object-capabilities/ResizableBehavior.js" crossorigin="anonymous"></script>
 	<script src="object-capabilities/ScalableBehavior.js" crossorigin="anonymous"></script>
+	<script src="object-capabilities/TextContainerBehavior.js" crossorigin="anonymous"></script>
 	<script src="Extensions/Effects/glow-pixi-filter.js" crossorigin="anonymous"></script>
 	<script src="Extensions/Effects/outline-pixi-filter.js" crossorigin="anonymous"></script>
 	<script src="Extensions/Effects/pixi-filters/filter-glow.js" crossorigin="anonymous"></script>
