@@ -1,30 +1,24 @@
 
-if (typeof gdjs.evtsExt__Gamepads__ConnectedGamepadsCount !== "undefined") {
-  gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.registeredGdjsCallbacks.forEach(callback =>
+if (typeof gdjs.evtsExt__Clipboard__ReadText !== "undefined") {
+  gdjs.evtsExt__Clipboard__ReadText.registeredGdjsCallbacks.forEach(callback =>
     gdjs._unregisterCallback(callback)
   );
 }
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount = {};
+gdjs.evtsExt__Clipboard__ReadText = {};
 
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.userFunc0xa9c440 = function GDJSInlineCode(runtimeScene, eventsFunctionContext) {
+gdjs.evtsExt__Clipboard__ReadText.userFunc0xc500b0 = function GDJSInlineCode(runtimeScene, eventsFunctionContext) {
 "use strict";
-/** @type {Gamepad[]} */
-const gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
-
-// Gamepads can be disconnected and become null, so we have to filter them.
-eventsFunctionContext.returnValue = Object.keys(gamepads).filter(key => !!gamepads[key]).length;
+const electron = runtimeScene.getGame().getRenderer().getElectron();
+if (electron && electron.clipboard) eventsFunctionContext.returnValue = electron.clipboard.readText();
 
 };
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.eventsList0 = function(runtimeScene, eventsFunctionContext) {
+gdjs.evtsExt__Clipboard__ReadText.eventsList0 = function(runtimeScene, eventsFunctionContext) {
 
 {
 
 
-let isConditionTrue_0 = false;
-{
-}
 
 }
 
@@ -32,14 +26,14 @@ let isConditionTrue_0 = false;
 {
 
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.userFunc0xa9c440(runtimeScene, typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : undefined);
+gdjs.evtsExt__Clipboard__ReadText.userFunc0xc500b0(runtimeScene, typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : undefined);
 
 }
 
 
 };
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.func = function(runtimeScene, parentEventsFunctionContext) {
+gdjs.evtsExt__Clipboard__ReadText.func = function(runtimeScene, parentEventsFunctionContext) {
 var eventsFunctionContext = {
   _objectsMap: {
 },
@@ -90,9 +84,9 @@ parentEventsFunctionContext.getInstancesCountOnScene(objectName) :
 };
 
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__Clipboard__ReadText.eventsList0(runtimeScene, eventsFunctionContext);
 
-return Number(eventsFunctionContext.returnValue) || 0;
+return "" + eventsFunctionContext.returnValue;
 }
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.registeredGdjsCallbacks = [];
+gdjs.evtsExt__Clipboard__ReadText.registeredGdjsCallbacks = [];

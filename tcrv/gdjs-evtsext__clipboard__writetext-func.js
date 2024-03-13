@@ -1,45 +1,48 @@
 
-if (typeof gdjs.evtsExt__Gamepads__ConnectedGamepadsCount !== "undefined") {
-  gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.registeredGdjsCallbacks.forEach(callback =>
+if (typeof gdjs.evtsExt__Clipboard__WriteText !== "undefined") {
+  gdjs.evtsExt__Clipboard__WriteText.registeredGdjsCallbacks.forEach(callback =>
     gdjs._unregisterCallback(callback)
   );
 }
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount = {};
+gdjs.evtsExt__Clipboard__WriteText = {};
 
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.userFunc0xa9c440 = function GDJSInlineCode(runtimeScene, eventsFunctionContext) {
+gdjs.evtsExt__Clipboard__WriteText.userFunc0xc4a758 = function GDJSInlineCode(runtimeScene, eventsFunctionContext) {
 "use strict";
-/** @type {Gamepad[]} */
-const gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+const electron = runtimeScene.getGame().getRenderer().getElectron();
+const text = eventsFunctionContext.getArgument("text");
 
-// Gamepads can be disconnected and become null, so we have to filter them.
-eventsFunctionContext.returnValue = Object.keys(gamepads).filter(key => !!gamepads[key]).length;
-
-};
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.eventsList0 = function(runtimeScene, eventsFunctionContext) {
-
-{
-
-
-let isConditionTrue_0 = false;
-{
-}
-
-}
-
-
-{
-
-
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.userFunc0xa9c440(runtimeScene, typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : undefined);
-
-}
-
+if (electron !== null && electron.clipboard)
+  electron.clipboard.writeText(text);
+else if (
+  typeof cordova !== "undefined" &&
+  cordova.plugins &&
+  cordova.plugins.clipboard
+) cordova.plugins.clipboard.copy(text);
+else if (
+  typeof navigator !== "undefined" &&
+  navigator.clipboard &&
+  navigator.clipboard.writeText
+) navigator.clipboard
+  .writeText(text)
+  .catch(e => console.error("Error while writing clipboard: ", e));
+else console.error("Unable to write to the clipboard: no method found for this platform."); 
 
 };
+gdjs.evtsExt__Clipboard__WriteText.eventsList0 = function(runtimeScene, eventsFunctionContext) {
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.func = function(runtimeScene, parentEventsFunctionContext) {
+{
+
+
+gdjs.evtsExt__Clipboard__WriteText.userFunc0xc4a758(runtimeScene, typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : undefined);
+
+}
+
+
+};
+
+gdjs.evtsExt__Clipboard__WriteText.func = function(runtimeScene, text, parentEventsFunctionContext) {
 var eventsFunctionContext = {
   _objectsMap: {
 },
@@ -84,15 +87,16 @@ parentEventsFunctionContext.getInstancesCountOnScene(objectName) :
     return runtimeScene.getLayer(layerName);
   },
   getArgument: function(argName) {
+if (argName === "text") return text;
     return "";
   },
   getOnceTriggers: function() { return runtimeScene.getOnceTriggers(); }
 };
 
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__Clipboard__WriteText.eventsList0(runtimeScene, eventsFunctionContext);
 
-return Number(eventsFunctionContext.returnValue) || 0;
+return;
 }
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.registeredGdjsCallbacks = [];
+gdjs.evtsExt__Clipboard__WriteText.registeredGdjsCallbacks = [];
