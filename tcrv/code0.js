@@ -55,7 +55,7 @@ gdjs.GameCode.GDWallObjects5= [];
 gdjs.GameCode.GDWallObjects6= [];
 
 
-gdjs.GameCode.eventsList0 = function(runtimeScene, asyncObjectsList) {
+gdjs.GameCode.eventsList0 = function(runtimeScene) {
 
 {
 
@@ -64,13 +64,13 @@ let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
 isConditionTrue_0 = gdjs.evtTools.systemInfo.isMobile();
 if (isConditionTrue_0) {
-gdjs.copyArray(gdjs.GameCode.GDTutorialTextObjects2, gdjs.GameCode.GDTutorialTextObjects3);
+gdjs.copyArray(gdjs.GameCode.GDTutorialTextObjects1, gdjs.GameCode.GDTutorialTextObjects2);
 
-{for(var i = 0, len = gdjs.GameCode.GDTutorialTextObjects3.length ;i < len;++i) {
-    gdjs.GameCode.GDTutorialTextObjects3[i].setString("Touch anywhere On screen to jump/start");
+{for(var i = 0, len = gdjs.GameCode.GDTutorialTextObjects2.length ;i < len;++i) {
+    gdjs.GameCode.GDTutorialTextObjects2[i].setTextAlignment("center");
 }
-}{for(var i = 0, len = gdjs.GameCode.GDTutorialTextObjects3.length ;i < len;++i) {
-    gdjs.GameCode.GDTutorialTextObjects3[i].setTextAlignment("center");
+}{for(var i = 0, len = gdjs.GameCode.GDTutorialTextObjects2.length ;i < len;++i) {
+    gdjs.GameCode.GDTutorialTextObjects2[i].setString("Touch anywhere On screen to jump/start");
 }
 }}
 
@@ -84,44 +84,24 @@ let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
 isConditionTrue_0 = gdjs.evtTools.storage.elementExistsInJSONFile("Highscore", "Highscore");
 if (isConditionTrue_0) {
-/* Reuse gdjs.GameCode.GDHighScoreObjects2 */
+/* Reuse gdjs.GameCode.GDHighScoreObjects1 */
 {gdjs.evtTools.storage.readNumberFromJSONFile("Highscore", "Highscore", runtimeScene, runtimeScene.getScene().getVariables().get("TempSaveValue"));
 }{runtimeScene.getGame().getVariables().getFromIndex(1).setNumber(gdjs.evtTools.variable.getVariableNumber(runtimeScene.getScene().getVariables().get("TempSaveValue")));
-}{for(var i = 0, len = gdjs.GameCode.GDHighScoreObjects2.length ;i < len;++i) {
-    gdjs.GameCode.GDHighScoreObjects2[i].setString("Highscore: " + gdjs.evtTools.variable.getVariableString(runtimeScene.getGame().getVariables().getFromIndex(1)));
-}
-}{for(var i = 0, len = gdjs.GameCode.GDHighScoreObjects2.length ;i < len;++i) {
-    gdjs.GameCode.GDHighScoreObjects2[i].setString("Highscore: " + gdjs.evtTools.variable.getVariableString(runtimeScene.getGame().getVariables().getFromIndex(1)));
+}{for(var i = 0, len = gdjs.GameCode.GDHighScoreObjects1.length ;i < len;++i) {
+    gdjs.GameCode.GDHighScoreObjects1[i].setString("Highscore: " + gdjs.evtTools.variable.getVariableString(runtimeScene.getGame().getVariables().getFromIndex(1)));
 }
 }}
 
 }
 
 
-};gdjs.GameCode.asyncCallback12232076 = function (runtimeScene, asyncObjectsList) {
-gdjs.copyArray(runtimeScene.getObjects("Chicken"), gdjs.GameCode.GDChickenObjects2);
+};gdjs.GameCode.asyncCallback12244956 = function (runtimeScene, asyncObjectsList) {
 gdjs.copyArray(asyncObjectsList.getObjects("HighScore"), gdjs.GameCode.GDHighScoreObjects2);
 
-gdjs.copyArray(asyncObjectsList.getObjects("TutorialText"), gdjs.GameCode.GDTutorialTextObjects2);
-
-gdjs.copyArray(runtimeScene.getObjects("Wall"), gdjs.GameCode.GDWallObjects2);
-{for(var i = 0, len = gdjs.GameCode.GDTutorialTextObjects2.length ;i < len;++i) {
-    gdjs.GameCode.GDTutorialTextObjects2[i].setString("Use mouse or WASD to start.");
-}
-}{for(var i = 0, len = gdjs.GameCode.GDHighScoreObjects2.length ;i < len;++i) {
+{for(var i = 0, len = gdjs.GameCode.GDHighScoreObjects2.length ;i < len;++i) {
     gdjs.GameCode.GDHighScoreObjects2[i].setString("Highscore: " + gdjs.evtTools.variable.getVariableString(runtimeScene.getGame().getVariables().getFromIndex(1)));
 }
-}{for(var i = 0, len = gdjs.GameCode.GDWallObjects2.length ;i < len;++i) {
-    gdjs.GameCode.GDWallObjects2[i].setXOffset(gdjs.evtTools.camera.getCameraX(runtimeScene, "", 0) / 4);
-}
-}{runtimeScene.getGame().getVariables().getFromIndex(0).setNumber(0);
-}{for(var i = 0, len = gdjs.GameCode.GDChickenObjects2.length ;i < len;++i) {
-    gdjs.GameCode.GDChickenObjects2[i].activateBehavior("PlatformerObject", false);
-}
-}
-{ //Subevents
-gdjs.GameCode.eventsList0(runtimeScene, asyncObjectsList);} //End of subevents
-}
+}}
 gdjs.GameCode.eventsList1 = function(runtimeScene) {
 
 {
@@ -131,8 +111,7 @@ gdjs.GameCode.eventsList1 = function(runtimeScene) {
 {
 const asyncObjectsList = new gdjs.LongLivedObjectsList();
 for (const obj of gdjs.GameCode.GDHighScoreObjects1) asyncObjectsList.addObject("HighScore", obj);
-for (const obj of gdjs.GameCode.GDTutorialTextObjects1) asyncObjectsList.addObject("TutorialText", obj);
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(2), (runtimeScene) => (gdjs.GameCode.asyncCallback12232076(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(2), (runtimeScene) => (gdjs.GameCode.asyncCallback12244956(runtimeScene, asyncObjectsList)));
 }
 }
 
@@ -220,7 +199,7 @@ for (var i = 0, k = 0, l = gdjs.GameCode.GDChickenObjects4.length;i<l;++i) {
 gdjs.GameCode.GDChickenObjects4.length = k;
 if (isConditionTrue_0) {
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12241812);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12255092);
 }
 }
 if (isConditionTrue_0) {
@@ -247,12 +226,6 @@ if(isConditionTrue_1) {
 }
 {
 isConditionTrue_1 = gdjs.evtTools.input.isKeyPressed(runtimeScene, "d");
-if(isConditionTrue_1) {
-    isConditionTrue_0 = true;
-}
-}
-{
-isConditionTrue_1 = gdjs.evtTools.input.isKeyPressed(runtimeScene, " ");
 if(isConditionTrue_1) {
     isConditionTrue_0 = true;
 }
@@ -288,11 +261,17 @@ if(isConditionTrue_1) {
 }
 }
 {
+isConditionTrue_1 = gdjs.evtTools.input.anyKeyPressed(runtimeScene);
+if(isConditionTrue_1) {
+    isConditionTrue_0 = true;
+}
+}
+{
 }
 }
 if (isConditionTrue_0) {
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12242716);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12256852);
 }
 }
 if (isConditionTrue_0) {
@@ -838,7 +817,7 @@ let isConditionTrue_0 = false;
 
 let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12262580);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12275868);
 }
 if (isConditionTrue_0) {
 gdjs.copyArray(runtimeScene.getObjects("TutorialText"), gdjs.GameCode.GDTutorialTextObjects2);
@@ -981,15 +960,45 @@ let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
 isConditionTrue_0 = gdjs.evtTools.runtimeScene.sceneJustBegins(runtimeScene);
 if (isConditionTrue_0) {
+gdjs.copyArray(runtimeScene.getObjects("Chicken"), gdjs.GameCode.GDChickenObjects1);
 gdjs.copyArray(runtimeScene.getObjects("HighScore"), gdjs.GameCode.GDHighScoreObjects1);
 gdjs.copyArray(runtimeScene.getObjects("TutorialText"), gdjs.GameCode.GDTutorialTextObjects1);
-{gdjs.evtTools.sound.playMusic(runtimeScene, "creepy-devil-dance-166763.mp3", true, 50, 1);
+gdjs.copyArray(runtimeScene.getObjects("Wall"), gdjs.GameCode.GDWallObjects1);
+{gdjs.evtTools.variable.setVariableBoolean(runtimeScene.getGame().getVariables().getFromIndex(3), false);
+}{gdjs.evtTools.sound.playMusic(runtimeScene, "creepy-devil-dance-166763.mp3", true, 50, 1);
 }{runtimeScene.getGame().getVariables().getFromIndex(2).setString("0.2");
-}{for(var i = 0, len = gdjs.GameCode.GDHighScoreObjects1.length ;i < len;++i) {
-    gdjs.GameCode.GDHighScoreObjects1[i].setString("Highscore: Andriod update link copied to clipbord.");
-}
+}{gdjs.evtTools.variable.setVariableBoolean(runtimeScene.getGame().getVariables().getFromIndex(3), true);
 }{for(var i = 0, len = gdjs.GameCode.GDTutorialTextObjects1.length ;i < len;++i) {
-    gdjs.GameCode.GDTutorialTextObjects1[i].setString("12Tae12Software. The Chicken run V0.2 Please wait... ");
+    gdjs.GameCode.GDTutorialTextObjects1[i].setString("Use mouse or WASD to start.");
+}
+}{for(var i = 0, len = gdjs.GameCode.GDHighScoreObjects1.length ;i < len;++i) {
+    gdjs.GameCode.GDHighScoreObjects1[i].setString("Highscore: " + gdjs.evtTools.variable.getVariableString(runtimeScene.getGame().getVariables().getFromIndex(1)));
+}
+}{for(var i = 0, len = gdjs.GameCode.GDWallObjects1.length ;i < len;++i) {
+    gdjs.GameCode.GDWallObjects1[i].setXOffset(gdjs.evtTools.camera.getCameraX(runtimeScene, "", 0) / 4);
+}
+}{runtimeScene.getGame().getVariables().getFromIndex(0).setNumber(0);
+}{for(var i = 0, len = gdjs.GameCode.GDChickenObjects1.length ;i < len;++i) {
+    gdjs.GameCode.GDChickenObjects1[i].activateBehavior("PlatformerObject", false);
+}
+}
+{ //Subevents
+gdjs.GameCode.eventsList0(runtimeScene);} //End of subevents
+}
+
+}
+
+
+{
+
+
+let isConditionTrue_0 = false;
+isConditionTrue_0 = false;
+isConditionTrue_0 = gdjs.evtTools.runtimeScene.sceneJustBegins(runtimeScene);
+if (isConditionTrue_0) {
+gdjs.copyArray(runtimeScene.getObjects("HighScore"), gdjs.GameCode.GDHighScoreObjects1);
+{for(var i = 0, len = gdjs.GameCode.GDHighScoreObjects1.length ;i < len;++i) {
+    gdjs.GameCode.GDHighScoreObjects1[i].setString("Highscore: Andriod update link copied to clipbord.");
 }
 }
 { //Subevents
@@ -1003,6 +1012,13 @@ gdjs.GameCode.eventsList1(runtimeScene);} //End of subevents
 
 
 gdjs.GameCode.eventsList19(runtimeScene);
+}
+
+
+{
+
+
+
 }
 
 
