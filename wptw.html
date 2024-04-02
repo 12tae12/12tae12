@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>WritePad: Text Wizard (WPTW)</title>
+<style>
+.container {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.toolbar {
+  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.toolbar button {
+  padding: 8px 16px;
+  font-size: 16px;
+}
+
+.editor {
+  border: 1px solid #ccc;
+  min-height: 200px;
+  padding: 10px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="toolbar">
+    <button onclick="bold()">Bold</button>
+    <button onclick="italic()">Italic</button>
+    <button onclick="underline()">Underline</button>
+    <select onchange="changeFont(this.value)">
+      <option value="Arial">Arial</option>
+      <option value="Times New Roman">Times New Roman</option>
+      <option value="Courier New">Courier New</option>
+    </select>
+    <select onchange="changeSize(this.value)">
+      <option value="12px">12</option>
+      <option value="14px">14</option>
+      <option value="16px">16</option>
+    </select>
+    <button onclick="align('left')">Left</button>
+    <button onclick="align('center')">Center</button>
+    <button onclick="align('right')">Right</button>
+    <button onclick="insertList('unordered')">Bullet List</button>
+    <button onclick="insertList('ordered')">Numbered List</button>
+    <button onclick="saveText()">Save (won't persist)</button> <!-- Updated save button -->
+    <select id="loadSelect">
+      <option value="">Load</option>
+    </select>
+  </div>
+  <div class="editor" contenteditable="true" id="editor"></div>
+</div>
+<script>
+// Functions for text formatting
+function bold() {
+  document.execCommand('bold', false, null);
+}
+
+function italic() {
+  document.execCommand('italic', false, null);
+}
+
+function underline() {
+  document.execCommand('underline', false, null);
+}
+
+// Functions for alignment
+function align(alignType) {
+  document.execCommand('justify' + alignType, false, null);
+}
+
+// Function to change font
+function changeFont(font) {
+  document.execCommand('fontName', false, font);
+}
+
+// Function to change font size
+function changeSize(size) {
+  document.execCommand('fontSize', false, size);
+}
+
+// Function to insert lists
+function insertList(listType) {
+  document.execCommand(listType == 'ordered' ? 'insertOrderedList' : 'insertUnorderedList', false, null);
+}
+
+// Function to save text
+function saveText() {
+  var content = document.getElementById('editor').innerHTML;
+  var documents = JSON.parse(localStorage.getItem('documents')) || [];
+  documents.push(content);
+  localStorage.setItem('documents', JSON.stringify(documents));
+  populateLoadSelect();
+  alert('Text saved successfully! (This won\'t persist between sessions)');
+}
+
+// Function to load text
+function loadText() {
+  var selectedIndex = document.getElementById('loadSelect').selectedIndex;
+  if (selectedIndex === 0) {
+    alert('Please select a document to load.');
+    return;
+  }
+  var documents = JSON.parse(localStorage.getItem('documents')) || [];
+  document.getElementById('editor').innerHTML = documents[selectedIndex - 1];
+  alert('Text loaded successfully!');
+}
+
+// Function to populate the load select dropdown
+function populateLoadSelect() {
+  var documents = JSON.parse(localStorage.getItem('documents')) || [];
+  var loadSelect = document.getElementById('loadSelect');
+  loadSelect.innerHTML = '<option value="">Load</option>';
+  for (var i = 0; i < documents.length; i++) {
+    var option = document.createElement('option');
+    option.text = 'Document ' + (i + 1);
+    loadSelect.add(option);
+  }
+}
+populateLoadSelect();
+</script>
+</body>
+</html>
