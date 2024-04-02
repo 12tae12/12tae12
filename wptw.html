@@ -21,7 +21,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  background-color: #f5f5f5;
+  background-color: #f0f8ea; /* Light green background */
   padding: 8px;
   border-radius: 4px;
 }
@@ -101,11 +101,11 @@ body {
     <input type="text" id="fileName" placeholder="example.wptw">
     <button onclick="exportText()">Export</button>
     <input type="file" id="fileInput" accept=".wptw" onchange="importText(event)">
-    <select id="loadSelect">
+    <select id="loadSelect" type="select-one">
       <option value="">Load</option>
     </select>
     <button class="print-button" onclick="printDocument()">Print</button> <!-- Added print button -->
-    <button onclick="clearData()">Clear Data</button> <!-- Added clear data button -->
+    <button type="button" onclick="clearData()" disabled>Clear Data</button> <!-- Added clear data button with type and disabled attributes -->
   </div>
   <div class="editor" contenteditable="true" id="editor"></div>
 </div>
@@ -168,7 +168,7 @@ function exportText() {
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
   a.href = url;
-  a.download = fileName;
+  a.setAttribute('download', fileName); // Added download attribute
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
