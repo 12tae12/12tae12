@@ -58,7 +58,7 @@ body {
 }
 
 .print-button {
-  background-color: #fff;
+  background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 4px;
@@ -68,11 +68,29 @@ body {
 }
 
 .print-button:hover {
-  background-color: #fff;
+  background-color: #45a049;
 }
 
 .print-button:active {
-  background-color: #fff;
+  background-color: #3c903d;
+}
+
+.clear-button {
+  background-color: #ff3333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.clear-button:hover {
+  background-color: #ff6666;
+}
+
+.clear-button:active {
+  background-color: #cc0000;
 }
 </style>
 </head>
@@ -105,7 +123,7 @@ body {
       <option value="">Load</option>
     </select>
     <button class="print-button" onclick="printDocument()">Print</button> <!-- Added print button -->
-    <button type="button" onclick="clearData()" disabled>Clear Data</button> <!-- Added clear data button with type and disabled attributes -->
+    <button class="clear-button" type="button" onclick="clearData()" disabled>Clear Data</button> <!-- Added clear data button with type and disabled attributes -->
   </div>
   <div class="editor" contenteditable="true" id="editor"></div>
 </div>
@@ -194,7 +212,7 @@ function printDocument() {
 // Function to clear saved data
 function clearData() {
   localStorage.removeItem('documents');
-  populateLoadSelect();
+  populateLoadSelect(); // Repopulate the load dropdown after clearing localStorage
   alert('All saved data has been cleared.');
 }
 
