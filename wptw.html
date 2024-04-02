@@ -105,6 +105,7 @@ body {
       <option value="">Load</option>
     </select>
     <button class="print-button" onclick="printDocument()">Print</button> <!-- Added print button -->
+    <button onclick="clearData()">Clear Data</button> <!-- Added clear data button -->
   </div>
   <div class="editor" contenteditable="true" id="editor"></div>
 </div>
@@ -188,6 +189,13 @@ function importText(event) {
 // Function to print document
 function printDocument() {
   window.print();
+}
+
+// Function to clear saved data
+function clearData() {
+  localStorage.removeItem('documents');
+  populateLoadSelect();
+  alert('All saved data has been cleared.');
 }
 
 // Function to populate the load select dropdown
