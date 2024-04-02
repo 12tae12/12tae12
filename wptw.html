@@ -51,7 +51,9 @@
     <button onclick="align('right')">Right</button>
     <button onclick="insertList('unordered')">Bullet List</button>
     <button onclick="insertList('ordered')">Numbered List</button>
-    <button onclick="saveText()">Save (won't persist)</button> <!-- Updated save button -->
+    <button onclick="saveText()">Save</button>
+    <button onclick="exportText()">Export</button> <!-- Added export button -->
+    <input type="file" id="fileInput" accept=".wptw" onchange="importText(event)">
     <select id="loadSelect">
       <option value="">Load</option>
     </select>
@@ -102,16 +104,29 @@ function saveText() {
   alert('Text saved successfully! (This won\'t persist between sessions)');
 }
 
-// Function to load text
-function loadText() {
-  var selectedIndex = document.getElementById('loadSelect').selectedIndex;
-  if (selectedIndex === 0) {
-    alert('Please select a document to load.');
-    return;
-  }
-  var documents = JSON.parse(localStorage.getItem('documents')) || [];
-  document.getElementById('editor').innerHTML = documents[selectedIndex - 1];
-  alert('Text loaded successfully!');
+// Function to export text
+function exportText() {
+  var content = document.getElementById('editor').innerHTML;
+  var blob = new Blob([content], { type: 'text/plain' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'document.wptw';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Function to import text
+function importText(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('editor').innerHTML = e.target.result;
+  };
+  reader.readAsText(file);
 }
 
 // Function to populate the load select dropdown
