@@ -45,6 +45,11 @@ body {
   background-color: #d9d9d9;
 }
 
+.toolbar button[disabled]:before {
+  content: "✔"; /* Unicode checkmark symbol */
+  margin-right: 5px;
+}
+
 .toolbar select {
   appearance: none;
   -webkit-appearance: none;
