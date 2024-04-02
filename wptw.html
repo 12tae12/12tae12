@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>WritePad: Text Wizard (WPTW)</title>
 <style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
 .container {
   width: 100%;
   padding: 10px;
@@ -16,17 +21,40 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  background-color: #f5f5f5;
+  padding: 8px;
+  border-radius: 4px;
 }
 
-.toolbar button {
-  padding: 8px 16px;
-  font-size: 16px;
+.toolbar button, .toolbar select {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.toolbar button:hover, .toolbar select:hover {
+  background-color: #e6e6e6;
+}
+
+.toolbar button:active, .toolbar select:active {
+  background-color: #d9d9d9;
+}
+
+.toolbar select {
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .editor {
   border: 1px solid #ccc;
   min-height: 200px;
   padding: 10px;
+  border-radius: 4px;
+  background-color: #fff;
 }
 </style>
 </head>
@@ -52,7 +80,8 @@
     <button onclick="insertList('unordered')">Bullet List</button>
     <button onclick="insertList('ordered')">Numbered List</button>
     <button onclick="saveText()">Save</button>
-    <button onclick="exportText()">Export</button> <!-- Added export button -->
+    <input type="text" id="fileName" placeholder="example.wptw">
+    <button onclick="exportText()">Export</button>
     <input type="file" id="fileInput" accept=".wptw" onchange="importText(event)">
     <select id="loadSelect">
       <option value="">Load</option>
@@ -101,17 +130,25 @@ function saveText() {
   documents.push(content);
   localStorage.setItem('documents', JSON.stringify(documents));
   populateLoadSelect();
-  alert('Text saved successfully! (This won\'t persist between sessions)');
+  alert('Text saved successfully! (This might not persist between sessions)');
 }
 
 // Function to export text
 function exportText() {
   var content = document.getElementById('editor').innerHTML;
+  var fileName = document.getElementById('fileName').value;
+  if (!fileName) {
+    alert('Please enter a filename.');
+    return;
+  }
+  if (!fileName.endsWith('.wptw')) {
+    fileName += '.wptw';
+  }
   var blob = new Blob([content], { type: 'text/plain' });
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
   a.href = url;
-  a.download = 'document.wptw';
+  a.download = fileName;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
