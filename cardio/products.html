@@ -31,10 +31,35 @@
                     <li><a href="https://12tae12all.webador.com/contact">Contact Us</a></li>
                 </ul>
             </nav>
-            <div class="search-bar">
-                <input type="text" placeholder="Search">
-                <button type="submit">Search</button>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <button onclick="search()">Search</button>
             </div>
+            <div id="searchResults"></div>
+        
+            <script>
+                function search() {
+                    var searchInput = document.getElementById("searchInput").value;
+                    var searchResultsDiv = document.getElementById("searchResults");
+        
+                    // Clear previous search results
+                    searchResultsDiv.innerHTML = "";
+        
+                    // Mock search results (replace with actual backend call)
+                    var searchResults = [
+                        { title: "Products", url: "https://1t2.pages.dev/cardio/products.html" },
+                        { title: "Cardio Casa", url: "https://1t2.pages.dev/cardio/index.html" },
+                        { title: "Cardio about", url: "https://1t2.pages.dev/cardio/about.html" }
+                    ];
+        
+                    // Display search results
+                    searchResults.forEach(function(result) {
+                        var resultElement = document.createElement("div");
+                        resultElement.innerHTML = "<a href='" + result.url + "'>" + result.title + "</a>";
+                        searchResultsDiv.appendChild(resultElement);
+                    });
+                }
+            </script>
         </div>
     </header>
 
