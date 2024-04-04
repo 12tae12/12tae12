@@ -174,3 +174,19 @@ footer {
 #searchResults {
     margin-top: 20px;
 }
+
+.comment-box form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .comment-box form button:hover {
+    background-color: #0062cc;
+  }
