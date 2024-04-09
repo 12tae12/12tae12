@@ -6,7 +6,7 @@
     <title>Dynamic PDF Viewer</title>
 </head>
 <body>
-    <h1>12Tae12 PDF Viewer</h1>
+    <h1>Dynamic PDF Viewer</h1>
     <p>Click on the links below to load different PDF files:</p>
     <ul>
         <li><a href="#example.pdf">Example PDF</a></li>
@@ -26,6 +26,9 @@
         iframe.src = pdfFilePath;
         iframe.width = '100%';
         iframe.height = '500px';
+
+        // Add the sandbox attribute to restrict features
+        iframe.sandbox = 'allow-same-origin allow-scripts';
 
         // Append the iframe to the container
         const pdfContainer = document.getElementById('pdf-container');
