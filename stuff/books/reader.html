@@ -3,77 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Reader</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <style>
-        body {
-            font-family: 'Georgia', serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
-        }
-        #book-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #333;
-        }
-        #pdf-viewer {
-            width: 100%;
-            height: 500px;
-            overflow: hidden;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.2s ease;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <title>Dynamic PDF Viewer</title>
 </head>
 <body>
-    <div id="book-container">
-        <h1>Read "My Favorite Book"</h1>
-        <div id="pdf-viewer"></div>
-        <button id="prev-page">Previous Page</button>
-        <button id="next-page">Next Page</button>
-    </div>
+    <h1>12Tae12 PDF Viewer</h1>
+    <p>Click on the links below to load different PDF files:</p>
+    <ul>
+        <li><a href="#example.pdf">Example PDF</a></li>
+        <!-- Add more links as needed -->
+    </ul>
+    <div id="pdf-container"></div>
 
-    <script src="pdf.js"></script>
     <script>
-        // Extract the file name from the URL hash (e.g., #book.pdf)
-        function getPdfFilenameFromHash() {
-            const hash = window.location.hash;
-            if (hash.startsWith("#")) {
-                return hash.slice(1); // Remove the leading #
-            }
-            return null;
-        }
+        // Get the PDF filename from the URL hash
+        const pdfFilename = window.location.hash.slice(1); // Remove the leading #
 
-        // Load the PDF file
-        const pdfFilename = getPdfFilenameFromHash();
-        if (pdfFilename) {
-            loadPdf(pdfFilename);
-        } else {
-            console.error("No PDF file specified in the URL hash.");
-        }
+        // Construct the PDF file path (adjust as needed)
+        const pdfFilePath = `/stuff/${pdfFilename}`;
+
+        // Create an iframe to display the PDF
+        const iframe = document.createElement('iframe');
+        iframe.src = pdfFilePath;
+        iframe.width = '100%';
+        iframe.height = '500px';
+
+        // Append the iframe to the container
+        const pdfContainer = document.getElementById('pdf-container');
+        pdfContainer.appendChild(iframe);
     </script>
 </body>
 </html>
-
