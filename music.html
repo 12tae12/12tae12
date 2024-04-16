@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>brows MP</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    #audio-player {
+        margin: 20px;
+    }
+</style>
+</head>
+<body>
+<h2>Select a music file:</h2>
+<input type="file" id="audio-file" accept="audio/*">
+<audio id="audio-player" controls>
+    Your browser does not support the audio element.
+</audio>
+
+<script>
+    const audioFileInput = document.getElementById('audio-file');
+    const audioPlayer = document.getElementById('audio-player');
+
+    audioFileInput.addEventListener('change', function(event) {
+        const file = this.files[0];
+        const fileURL = URL.createObjectURL(file);
+        audioPlayer.src = fileURL;
+    });
+</script>
+</body>
+</html>
+
