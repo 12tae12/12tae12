@@ -1,0 +1,6 @@
+App stacer 1.0
+Commands: sudo apt update, sudo apt install stacer
+App 2 1.2
+Commands: ./install_script.sh
+App hello 1.2
+Commands: ./install_script.sh
