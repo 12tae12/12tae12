@@ -3,4 +3,4 @@ Commands: rm main.py, wget https://1t2.pages.dev/pybuild/main.py
 App update_lists 1.0
 Commands: rm app.txt, wget https://1t2.pages.dev/pybuild/app.txt
 App libdvdcss 1.0
-Commands: sudo apt-get install unzip, wget https://1t2.pages.dev/pybuild/libdvdcss.zip, apt upgrade && cd libdvdcss, make, make install
+Commands: sudo apt-get install unzip, wget https://1t2.pages.dev/pybuild/libdvdcss.zip, echo y | apt upgrade && cd libdvdcss, make, make install
