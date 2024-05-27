@@ -89,7 +89,7 @@ class AppInstaller(QWidget):
         layout.addLayout(button_layout)
 
         self.setLayout(layout)
-        self.setWindowTitle("App Installer")
+        self.setWindowTitle("Chilly Package Manager")
         self.setMinimumWidth(400)
         self.setMaximumWidth(600)
         self.setStyleSheet(
@@ -135,4 +135,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     installer = AppInstaller()
     sys.exit(app.exec_())
+
 
