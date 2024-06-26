@@ -50,29 +50,44 @@
 
             // Load the PDF
             pdfjsLib.getDocument(url).promise.then(function(pdf) {
-                // Get the first page
-                pdf.getPage(1).then(function(page) {
-                    let scale = 1.5;
-                    let viewport = page.getViewport({ scale: scale });
+                // Initialize variables
+                let numPages = pdf.numPages;
+                let pdfViewer = document.getElementById('viewer');
 
-                    // Prepare canvas using PDF page dimensions
-                    let canvas = document.createElement('canvas');
-                    let context = canvas.getContext('2d');
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
+                // Render each page
+                function renderPage(pageNumber) {
+                    pdf.getPage(pageNumber).then(function(page) {
+                        let scale = 1.5;
+                        let viewport = page.getViewport({ scale: scale });
 
-                    // Render PDF page into canvas context
-                    let renderContext = {
-                        canvasContext: context,
-                        viewport: viewport
-                    };
-                    let renderTask = page.render(renderContext);
-                    renderTask.promise.then(function() {
-                        document.getElementById('viewer').appendChild(canvas);
-                        // Enable scrolling after rendering
-                        document.getElementById('viewerContainer').style.overflow = 'auto';
+                        // Prepare canvas using PDF page dimensions
+                        let canvas = document.createElement('canvas');
+                        let context = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        // Render PDF page into canvas context
+                        let renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+                        let renderTask = page.render(renderContext);
+                        renderTask.promise.then(function() {
+                            pdfViewer.appendChild(canvas);
+
+                            // Move to next page if available
+                            if (pageNumber < numPages) {
+                                renderPage(pageNumber + 1);
+                            } else {
+                                // Enable scrolling after rendering all pages
+                                document.getElementById('viewerContainer').style.overflow = 'auto';
+                            }
+                        });
                     });
-                });
+                }
+
+                // Start rendering from the first page
+                renderPage(1);
             }).catch(function(error) {
                 console.error('Error loading PDF:', error);
                 // Display error message
