@@ -4,22 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Book Reader</title>
-    <link rel="stylesheet" href="pdfjs/web/viewer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf_viewer.min.css">
     <style>
         /* Hide the download and print buttons */
         #download, #print {
             display: none;
+        }
+        /* Style to properly display the PDF */
+        #viewerContainer {
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            position: relative;
         }
     </style>
 </head>
 <body>
     <h1>Online Book Reader</h1>
     <div id="pdf-container">
-        <div id="viewer" class="pdfViewer"></div>
+        <div id="viewerContainer">
+            <div id="viewer" class="pdfViewer"></div>
+        </div>
     </div>
 
-    <script src="pdfjs/build/pdf.js"></script>
-    <script src="pdfjs/web/viewer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf_viewer.min.js"></script>
     <script>
         // Function to get URL parameters
         function getParameterByName(name) {
@@ -40,8 +49,8 @@
             let url = 'pdfs/' + pdfFile;
 
             // Load the PDF
-            let loadingTask = pdfjsLib.getDocument(url);
-            loadingTask.promise.then(function(pdf) {
+            pdfjsLib.getDocument(url).promise.then(function(pdf) {
+                // Get the first page
                 pdf.getPage(1).then(function(page) {
                     let scale = 1.5;
                     let viewport = page.getViewport({ scale: scale });
