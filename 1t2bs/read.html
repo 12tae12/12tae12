@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Book Reader</title>
+</head>
+<body>
+    <h1>Online Book Reader</h1>
+    <div id="pdf-container">
+        <iframe id="pdf-frame" width="100%" height="600px"></iframe>
+    </div>
+
+    <script>
+        // Function to get URL parameters
+        function getParameterByName(name) {
+            let url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        // Get the file parameter from the URL
+        let pdfFile = getParameterByName('file');
+
+        // Check if the file parameter is present
+        if (pdfFile) {
+            // Set the source of the iframe to the specified PDF file
+            document.getElementById('pdf-frame').src = 'pdfs/' + pdfFile;
+        } else {
+            // If no file parameter is present, display a message or default content
+            document.getElementById('pdf-container').innerHTML = '<p>No PDF file specified.</p>';
+        }
+    </script>
+</body>
+</html>
+
