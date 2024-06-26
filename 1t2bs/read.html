@@ -4,13 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Book Reader</title>
+    <link rel="stylesheet" href="pdfjs/web/viewer.css">
+    <style>
+        /* Hide the download and print buttons */
+        #download, #print {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Online Book Reader</h1>
     <div id="pdf-container">
-        <iframe id="pdf-frame" width="100%" height="600px"></iframe>
+        <div id="viewer" class="pdfViewer"></div>
     </div>
 
+    <script src="pdfjs/build/pdf.js"></script>
+    <script src="pdfjs/web/viewer.js"></script>
     <script>
         // Function to get URL parameters
         function getParameterByName(name) {
@@ -28,8 +37,34 @@
 
         // Check if the file parameter is present
         if (pdfFile) {
-            // Set the source of the iframe to the specified PDF file
-            document.getElementById('pdf-frame').src = 'pdfs/' + pdfFile;
+            let url = 'pdfs/' + pdfFile;
+
+            // Load the PDF
+            let loadingTask = pdfjsLib.getDocument(url);
+            loadingTask.promise.then(function(pdf) {
+                pdf.getPage(1).then(function(page) {
+                    let scale = 1.5;
+                    let viewport = page.getViewport({ scale: scale });
+
+                    // Prepare canvas using PDF page dimensions
+                    let canvas = document.createElement('canvas');
+                    let context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    // Render PDF page into canvas context
+                    let renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    let renderTask = page.render(renderContext);
+                    renderTask.promise.then(function() {
+                        document.getElementById('viewer').appendChild(canvas);
+                    });
+                });
+            }, function(reason) {
+                console.error(reason);
+            });
         } else {
             // If no file parameter is present, display a message or default content
             document.getElementById('pdf-container').innerHTML = '<p>No PDF file specified.</p>';
@@ -37,4 +72,3 @@
     </script>
 </body>
 </html>
-
