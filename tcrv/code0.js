@@ -96,7 +96,7 @@ if (isConditionTrue_0) {
 }
 
 
-};gdjs.GameCode.asyncCallback12364676 = function (runtimeScene, asyncObjectsList) {
+};gdjs.GameCode.asyncCallback12369516 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.GameCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("HighScore"), gdjs.GameCode.GDHighScoreObjects2);
 
@@ -114,7 +114,7 @@ gdjs.GameCode.eventsList1 = function(runtimeScene) {
 const asyncObjectsList = new gdjs.LongLivedObjectsList();
 asyncObjectsList.backupLocalVariablesContainers(gdjs.GameCode.localVariables);
 for (const obj of gdjs.GameCode.GDHighScoreObjects1) asyncObjectsList.addObject("HighScore", obj);
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(2), (runtimeScene) => (gdjs.GameCode.asyncCallback12364676(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(2), (runtimeScene) => (gdjs.GameCode.asyncCallback12369516(runtimeScene, asyncObjectsList)));
 }
 }
 
@@ -162,6 +162,9 @@ gdjs.copyArray(runtimeScene.getObjects("TutorialText"), gdjs.GameCode.GDTutorial
 }{for(var i = 0, len = gdjs.GameCode.GDChickenObjects2.length ;i < len;++i) {
     gdjs.GameCode.GDChickenObjects2[i].activateBehavior("PlatformerObject", true);
 }
+}{for(var i = 0, len = gdjs.GameCode.GDChickenObjects2.length ;i < len;++i) {
+    gdjs.GameCode.GDChickenObjects2[i].getBehavior("Animation").setAnimationName("Run");
+}
 }}
 
 }
@@ -202,7 +205,7 @@ for (var i = 0, k = 0, l = gdjs.GameCode.GDChickenObjects4.length;i<l;++i) {
 gdjs.GameCode.GDChickenObjects4.length = k;
 if (isConditionTrue_0) {
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12371348);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12376188);
 }
 }
 if (isConditionTrue_0) {
@@ -280,7 +283,7 @@ if(isConditionTrue_1) {
 }
 if (isConditionTrue_0) {
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12373172);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12378012);
 }
 }
 if (isConditionTrue_0) {
@@ -593,7 +596,7 @@ gdjs.copyArray(runtimeScene.getObjects("GrassandSand"), gdjs.GameCode.GDGrassand
 let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
 for (var i = 0, k = 0, l = gdjs.GameCode.GDGrassandSandObjects4.length;i<l;++i) {
-    if ( gdjs.GameCode.GDGrassandSandObjects4[i].getX() < (( gdjs.GameCode.GDChickenObjects4.length === 0 ) ? 0 :gdjs.GameCode.GDChickenObjects4[0].getPointX("")) - (gdjs.GameCode.GDGrassandSandObjects4[i].getWidth()) - 100 ) {
+    if ( gdjs.GameCode.GDGrassandSandObjects4[i].getX() < (( gdjs.GameCode.GDChickenObjects4.length === 0 ) ? 0 :gdjs.GameCode.GDChickenObjects4[0].getPointX("")) - (gdjs.GameCode.GDGrassandSandObjects4[i].getWidth()) - 17 ) {
         isConditionTrue_0 = true;
         gdjs.GameCode.GDGrassandSandObjects4[k] = gdjs.GameCode.GDGrassandSandObjects4[i];
         ++k;
@@ -616,7 +619,7 @@ gdjs.copyArray(runtimeScene.getObjects("GrassandSand"), gdjs.GameCode.GDGrassand
 
 let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
-isConditionTrue_0 = gdjs.evtTools.object.getSceneInstancesCount((typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : runtimeScene), gdjs.GameCode.mapOfEmptyGDGrassandSandObjects) < 2;
+isConditionTrue_0 = gdjs.evtTools.object.getSceneInstancesCount((typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : runtimeScene), gdjs.GameCode.mapOfEmptyGDGrassandSandObjects) < 16;
 if (isConditionTrue_0) {
 isConditionTrue_0 = false;
 isConditionTrue_0 = gdjs.evtTools.object.pickRandomObject((typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : runtimeScene), gdjs.GameCode.mapOfGDgdjs_9546GameCode_9546GDGrassandSandObjects4Objects);
@@ -625,7 +628,7 @@ if (isConditionTrue_0) {
 /* Reuse gdjs.GameCode.GDGrassandSandObjects4 */
 {gdjs.evtTools.object.createObjectOnScene((typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : runtimeScene), gdjs.GameCode.mapOfGDgdjs_9546GameCode_9546GDGrassandSandObjects4Objects, (( gdjs.GameCode.GDGrassandSandObjects4.length === 0 ) ? 0 :gdjs.GameCode.GDGrassandSandObjects4[0].getX()) + (( gdjs.GameCode.GDGrassandSandObjects4.length === 0 ) ? 0 :gdjs.GameCode.GDGrassandSandObjects4[0].getWidth()), (( gdjs.GameCode.GDGrassandSandObjects4.length === 0 ) ? 0 :gdjs.GameCode.GDGrassandSandObjects4[0].getY()), "");
 }{for(var i = 0, len = gdjs.GameCode.GDGrassandSandObjects4.length ;i < len;++i) {
-    gdjs.GameCode.GDGrassandSandObjects4[i].setWidth(2000);
+    gdjs.GameCode.GDGrassandSandObjects4[i].setWidth(3000);
 }
 }{for(var i = 0, len = gdjs.GameCode.GDGrassandSandObjects4.length ;i < len;++i) {
     gdjs.GameCode.GDGrassandSandObjects4[i].setHeight(224);
@@ -700,6 +703,9 @@ for(var i = 0, len = gdjs.GameCode.GDEggsObjects2.length ;i < len;++i) {
     gdjs.GameCode.GDEggsObjects2[i].clearForces();
 }
 }{gdjs.evtTools.sound.playSound(runtimeScene, "Death.mp3", false, 80, 1);
+}{for(var i = 0, len = gdjs.GameCode.GDChickenObjects2.length ;i < len;++i) {
+    gdjs.GameCode.GDChickenObjects2[i].getBehavior("Animation").setAnimationName("Hit");
+}
 }}
 
 }
@@ -826,7 +832,7 @@ let isConditionTrue_0 = false;
 
 let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12392788);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(12397812);
 }
 if (isConditionTrue_0) {
 gdjs.copyArray(runtimeScene.getObjects("TutorialText"), gdjs.GameCode.GDTutorialTextObjects2);
@@ -989,6 +995,9 @@ gdjs.copyArray(runtimeScene.getObjects("Wall"), gdjs.GameCode.GDWallObjects1);
 }{runtimeScene.getGame().getVariables().getFromIndex(0).setNumber(0);
 }{for(var i = 0, len = gdjs.GameCode.GDChickenObjects1.length ;i < len;++i) {
     gdjs.GameCode.GDChickenObjects1[i].activateBehavior("PlatformerObject", false);
+}
+}{for(var i = 0, len = gdjs.GameCode.GDChickenObjects1.length ;i < len;++i) {
+    gdjs.GameCode.GDChickenObjects1[i].getBehavior("Animation").setAnimationName("Idle");
 }
 }
 { //Subevents

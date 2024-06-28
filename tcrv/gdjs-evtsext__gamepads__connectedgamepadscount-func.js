@@ -8,7 +8,7 @@ if (typeof gdjs.evtsExt__Gamepads__ConnectedGamepadsCount !== "undefined") {
 gdjs.evtsExt__Gamepads__ConnectedGamepadsCount = {};
 
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.userFunc0xc8df70 = function GDJSInlineCode(runtimeScene, eventsFunctionContext) {
+gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.userFunc0xa33ce0 = function GDJSInlineCode(runtimeScene, eventsFunctionContext) {
 "use strict";
 /** @type {Gamepad[]} */
 const gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
@@ -32,7 +32,7 @@ let isConditionTrue_0 = false;
 {
 
 
-gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.userFunc0xc8df70(runtimeScene, typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : undefined);
+gdjs.evtsExt__Gamepads__ConnectedGamepadsCount.userFunc0xa33ce0(runtimeScene, typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : undefined);
 
 }
 
