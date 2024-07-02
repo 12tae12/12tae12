@@ -1,8 +1,8 @@
 {
   "name": "The chicken run",
   "short_name": "The chicken run",
-  "id": "com.example.game",
-  "description": "",
+  "id": "com.twelvetaetwelvesoft.tcrv",
+  "description": "Race with a chicken as you play a chrome dino recreation!",
   "orientation": "landscape",
   "start_url": "./index.html",
   "display": "standalone",
