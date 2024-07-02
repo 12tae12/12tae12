@@ -96,7 +96,7 @@ if (isConditionTrue_0) {
 }
 
 
-};gdjs.GameCode.asyncCallback11542868 = function (runtimeScene, asyncObjectsList) {
+};gdjs.GameCode.asyncCallback14266828 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.GameCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("HighScore"), gdjs.GameCode.GDHighScoreObjects3);
 
@@ -114,7 +114,7 @@ gdjs.GameCode.eventsList1 = function(runtimeScene) {
 const asyncObjectsList = new gdjs.LongLivedObjectsList();
 asyncObjectsList.backupLocalVariablesContainers(gdjs.GameCode.localVariables);
 for (const obj of gdjs.GameCode.GDHighScoreObjects2) asyncObjectsList.addObject("HighScore", obj);
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(2), (runtimeScene) => (gdjs.GameCode.asyncCallback11542868(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(2), (runtimeScene) => (gdjs.GameCode.asyncCallback14266828(runtimeScene, asyncObjectsList)));
 }
 }
 
@@ -211,7 +211,7 @@ for (var i = 0, k = 0, l = gdjs.GameCode.GDChickenObjects4.length;i<l;++i) {
 gdjs.GameCode.GDChickenObjects4.length = k;
 if (isConditionTrue_0) {
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(11759604);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(14274348);
 }
 }
 if (isConditionTrue_0) {
@@ -289,7 +289,7 @@ if(isConditionTrue_1) {
 }
 if (isConditionTrue_0) {
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(11541292);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(14276172);
 }
 }
 if (isConditionTrue_0) {
@@ -838,7 +838,7 @@ let isConditionTrue_0 = false;
 
 let isConditionTrue_0 = false;
 isConditionTrue_0 = false;
-{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(14851844);
+{isConditionTrue_0 = runtimeScene.getOnceTriggers().triggerOnce(14296204);
 }
 if (isConditionTrue_0) {
 gdjs.copyArray(runtimeScene.getObjects("TutorialText"), gdjs.GameCode.GDTutorialTextObjects2);

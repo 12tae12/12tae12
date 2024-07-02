@@ -298,7 +298,7 @@ gdjs.Start_32PageCode.GDGreenButtonObjects41= [];
 gdjs.Start_32PageCode.GDGreenButtonObjects42= [];
 
 
-gdjs.Start_32PageCode.asyncCallback15395732 = function (runtimeScene, asyncObjectsList) {
+gdjs.Start_32PageCode.asyncCallback14225348 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects42);
 
@@ -323,14 +323,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects41) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback15395732(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14225348(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback10703292 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14224988 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects41);
 
@@ -353,14 +353,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects40) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback10703292(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14224988(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback9259228 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14224628 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects40);
 
@@ -383,14 +383,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects39) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback9259228(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14224628(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback10735788 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14224268 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects39);
 
@@ -413,14 +413,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects38) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback10735788(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14224268(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback15261356 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14223908 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects38);
 
@@ -443,14 +443,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects37) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback15261356(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14223908(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback10673412 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14223548 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects37);
 
@@ -473,14 +473,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects36) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback10673412(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14223548(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback12193388 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14223188 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects36);
 
@@ -503,14 +503,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects35) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback12193388(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14223188(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback11521180 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14222828 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects35);
 
@@ -533,14 +533,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects34) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback11521180(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14222828(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback9738900 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14222468 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects34);
 
@@ -563,14 +563,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects33) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback9738900(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14222468(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback10933476 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14215972 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects33);
 
@@ -593,14 +593,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects32) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback10933476(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14215972(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback9739220 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14216276 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects32);
 
@@ -623,14 +623,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects31) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback9739220(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14216276(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback10638300 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14220684 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects31);
 
@@ -653,14 +653,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects30) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback10638300(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14220684(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback10053284 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14220588 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects30);
 
@@ -683,14 +683,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects29) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback10053284(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14220588(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback9233364 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14220052 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects29);
 
@@ -713,14 +713,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects28) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback9233364(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14220052(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback11888276 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14219956 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects28);
 
@@ -743,14 +743,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects27) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback11888276(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14219956(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback10697868 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14219420 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects27);
 
@@ -773,14 +773,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects26) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback10697868(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14219420(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback15256492 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14219324 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects26);
 
@@ -803,14 +803,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects25) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback15256492(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14219324(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback9516900 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14218788 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects25);
 
@@ -833,14 +833,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects24) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback9516900(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14218788(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback10726676 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14218692 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects24);
 
@@ -863,14 +863,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects23) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback10726676(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14218692(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback12437732 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14218156 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects23);
 
@@ -893,14 +893,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects22) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback12437732(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14218156(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback8825332 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14218060 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects22);
 
@@ -923,14 +923,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects21) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback8825332(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14218060(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback8206252 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14217524 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects21);
 
@@ -953,14 +953,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects20) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback8206252(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14217524(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback11994148 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14217428 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects20);
 
@@ -983,14 +983,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects19) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback11994148(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14217428(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback10738988 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14216892 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects19);
 
@@ -1013,14 +1013,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects18) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback10738988(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14216892(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback8922188 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14216796 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects18);
 
@@ -1043,14 +1043,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects17) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback8922188(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14216796(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback11941996 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14213332 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects17);
 
@@ -1073,14 +1073,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects16) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback11941996(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14213332(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback11380684 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14213260 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects16);
 
@@ -1103,14 +1103,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects15) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback11380684(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14213260(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback15224484 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14215556 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects15);
 
@@ -1133,14 +1133,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects14) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback15224484(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14215556(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback14842716 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14215020 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects14);
 
@@ -1163,14 +1163,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects13) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14842716(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14215020(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback10585164 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14214924 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects13);
 
@@ -1193,14 +1193,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects12) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback10585164(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14214924(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback11345068 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14214388 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects12);
 
@@ -1223,14 +1223,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects11) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback11345068(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14214388(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback9643452 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14214292 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects11);
 
@@ -1253,14 +1253,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects10) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback9643452(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14214292(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback12750716 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14213988 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects10);
 
@@ -1283,14 +1283,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects9) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback12750716(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14213988(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback11089092 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14211948 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects9);
 
@@ -1313,14 +1313,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects8) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback11089092(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14211948(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback11594700 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14213468 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects8);
 
@@ -1343,14 +1343,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects7) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback11594700(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14213468(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback7896772 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14212668 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects7);
 
@@ -1373,14 +1373,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects6) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback7896772(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14212668(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback11350460 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14212572 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects6);
 
@@ -1403,14 +1403,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects5) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback11350460(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14212572(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback15221476 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14211684 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects5);
 
@@ -1433,14 +1433,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects4) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback15221476(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14211684(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback8260100 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14211188 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects4);
 
@@ -1463,14 +1463,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects3) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback8260100(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14211188(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback13708476 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14211588 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects3);
 
@@ -1493,14 +1493,14 @@ const asyncObjectsList = gdjs.LongLivedObjectsList.from(parentAsyncObjectsList);
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects2) asyncObjectsList.addObject("Game_name0", obj);
 /* Don't save GreenButton as it will be provided by the parent asyncObjectsList. */
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback13708476(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(0.1), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14211588(runtimeScene, asyncObjectsList)));
 }
 }
 
 }
 
 
-};gdjs.Start_32PageCode.asyncCallback15242756 = function (runtimeScene, asyncObjectsList) {
+};gdjs.Start_32PageCode.asyncCallback14211092 = function (runtimeScene, asyncObjectsList) {
 asyncObjectsList.restoreLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 gdjs.copyArray(asyncObjectsList.getObjects("Game_name0"), gdjs.Start_32PageCode.GDGame_9595name0Objects2);
 
@@ -1528,7 +1528,7 @@ const asyncObjectsList = new gdjs.LongLivedObjectsList();
 asyncObjectsList.backupLocalVariablesContainers(gdjs.Start_32PageCode.localVariables);
 for (const obj of gdjs.Start_32PageCode.GDGame_9595name0Objects1) asyncObjectsList.addObject("Game_name0", obj);
 for (const obj of gdjs.Start_32PageCode.GDGreenButtonObjects1) asyncObjectsList.addObject("GreenButton", obj);
-runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(1.5), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback15242756(runtimeScene, asyncObjectsList)));
+runtimeScene.getAsyncTasksManager().addTask(gdjs.evtTools.runtimeScene.wait(1.5), (runtimeScene) => (gdjs.Start_32PageCode.asyncCallback14211092(runtimeScene, asyncObjectsList)));
 }
 }
 
