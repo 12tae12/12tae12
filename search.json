@@ -1,0 +1,17 @@
+[
+    {
+        "title": "Home",
+        "url": "/",
+        "content": "Welcome to our homepage. Here you can find the latest updates and services."
+    },
+    {
+        "title": "About Us",
+        "url": "/about",
+        "content": "Learn more about our mission, team, and goals."
+    },
+    {
+        "title": "Contact",
+        "url": "/contact",
+        "content": "Get in touch with us via our contact form."
+    }
+]
