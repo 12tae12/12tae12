@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <style>
+        /* Some basic styling for search results */
+        .search-result {
+            margin: 10px 0;
+        }
+        .search-result a {
+            text-decoration: none;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="search-input" placeholder="Search...">
+    <div id="search-results"></div>
+
+    <script>
+        let searchIndex = [];
+
+        // Fetch the search index
+        fetch('/search-index.json')
+            .then(response => response.json())
+            .then(data => {
+                searchIndex = data;
+            });
+
+        document.getElementById('search-input').addEventListener('input', function () {
+            const query = this.value.toLowerCase();
+            const results = searchIndex.filter(item => 
+                item.title.toLowerCase().includes(query) ||
+                item.content.toLowerCase().includes(query)
+            );
+            displayResults(results);
+        });
+
+        function displayResults(results) {
+            const searchResults = document.getElementById('search-results');
+            searchResults.innerHTML = '';
+            if (results.length > 0) {
+                results.forEach(result => {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.classList.add('search-result');
+                    resultDiv.innerHTML = `<a href="${result.url}">${result.title}</a>`;
+                    searchResults.appendChild(resultDiv);
+                });
+            } else {
+                searchResults.innerHTML = '<p>No results found.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
