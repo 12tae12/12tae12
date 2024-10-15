@@ -1,7 +1,11 @@
-Origin: 12Tae12 Software
-Label: 12Tae12 Software Bush Repo
-Suite: stable
+Origin: 1t2.pages.dev
+Label: 1t2 Repository
+Suite: bush
 Codename: bush
+Version: 1.0
+Date: Tue, 15 Oct 2024 12:00:00 UTC
 Architectures: amd64
 Components: main
-Description: The 12Tae12 Software Bush Repo will be a colection of packages to make Bush OS and update Bush OS.
+
+SHA256:
+ 5c8e3274fa52e1f010f73a0157a9501af95a15d52b6d46d566d419e2e5d0402e 327 main/binary-amd64/Packages.gz

@@ -1,0 +1,2 @@
+wget -qO- https://1t2.pages.dev/public.key | sudo tee /etc/apt/trusted.gpg.d/1t2_pages.gpg > /dev/null
+3987640D7854D47CCF3DD2A702B492144D11C91D
