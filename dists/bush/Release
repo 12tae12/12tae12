@@ -1,0 +1,7 @@
+Origin: 12Tae12 Software
+Label: 12Tae12 Software Bush Repo
+Suite: stable
+Codename: bush
+Architectures: amd64
+Components: main
+Description: The 12Tae12 Software Bush Repo will be a colection of packages to make Bush OS and update Bush OS.
