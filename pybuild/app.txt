@@ -5,4 +5,4 @@ Commands: rm app.txt, wget https://1t2.pages.dev/pybuild/app.txt, ./run.sh
 App libdvdcss 1.0
 Commands: sudo apt-get install unzip, wget https://1t2.pages.dev/pybuild/libdvdcss.zip, echo y | apt upgrade && cd libdvdcss, make, make install
 App webbrows 1.0
-Commands: cd ~, wget https://1t2.pages.dev/webbrows/webbrows.run, sudo ./webbrows.run, cd webbrows, python3 main.py
+Commands: cd ~, wget https://1t2.pages.dev/webbrows/webbrows.run, ./webbrows.run, cd webbrows, python3 main.py
