@@ -11,10 +11,18 @@ from PyQt5.QtCore import Qt
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-def run_commands(commands):
+def run_commands(commands, password=None):
     for command in commands:
         try:
-            subprocess.run(command, shell=True, check=True)
+            if command.startswith("sudo "):
+                # Use sudo for commands that require elevated privileges
+                full_command = f"echo {password} | sudo -S {command[5:]}"  # Remove 'sudo ' prefix for proper execution
+                logging.debug(f"Running with sudo: {full_command}")
+            else:
+                full_command = command
+                logging.debug(f"Running: {full_command}")
+
+            subprocess.run(full_command, shell=True, check=True)
         except subprocess.CalledProcessError as e:
             logging.error(f"Error executing command: {command}")
             logging.error(e)
@@ -63,9 +71,7 @@ def load_apps():
 class AppInstaller(QWidget):
     def __init__(self):
         super().__init__()
-
         self.apps = load_apps()
-
         self.init_ui()
 
     def init_ui(self):
@@ -99,8 +105,6 @@ class AppInstaller(QWidget):
             "QLineEdit { border: 1px solid #ccc; border-radius: 5px; padding: 5px; }"
         )
         self.show()
-
-        # Populate the list with loaded apps
         self.filter_apps()
 
     def filter_apps(self):
@@ -108,7 +112,7 @@ class AppInstaller(QWidget):
         self.app_list.clear()
         for app_name, _ in self.apps:
             if search_term.lower() in app_name.lower():
-                self.app_list.addItem(app_name)  # Add app name to the list widget
+                self.app_list.addItem(app_name)
 
     def on_install(self):
         selected_item = self.app_list.currentItem()
@@ -118,14 +122,23 @@ class AppInstaller(QWidget):
             for name, commands in self.apps:
                 if name == app_name:
                     found_app = True
-                    password, ok = QInputDialog.getText(self, "Sudo Password", "Enter your sudo password:", QLineEdit.Password)
-                    if ok:
-                        commands_with_sudo = [f"echo {password} | sudo -S {command}" for command in commands]
-                        if run_commands(commands_with_sudo):
-                            QMessageBox.information(self, "Installation", f"{app_name} installed successfully!")
-                        else:
-                            QMessageBox.critical(self, "Error", f"Failed to install {app_name}. Please check the logs for details.")
+                    # Check if any command requires sudo
+                    requires_sudo = any(cmd.startswith("sudo ") for cmd in commands)
+                    password = None
+
+                    if requires_sudo:
+                        password, ok = QInputDialog.getText(
+                            self, "Sudo Password", "Enter your sudo password:", QLineEdit.Password
+                        )
+                        if not ok:
+                            return  # User canceled password input
+
+                    if run_commands(commands, password):
+                        QMessageBox.information(self, "Installation", f"{app_name} installed successfully!")
+                    else:
+                        QMessageBox.critical(self, "Error", f"Failed to install {app_name}. Please check the logs for details.")
                     return  # Exit the loop after finding the correct app
+
             if not found_app:
                 QMessageBox.critical(self, "Error", f"Could not find {app_name} in the app list.")
         else:
@@ -135,5 +148,3 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     installer = AppInstaller()
     sys.exit(app.exec_())
-
-
