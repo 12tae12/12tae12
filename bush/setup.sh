@@ -29,6 +29,7 @@ curl -fsSL https://download.opensuse.org/repositories/home:stevenpusser:palemoon
 sudo apt update
 sudo apt install palemoon -y
 news="Installed palemoon package."
+sudo apt install firefox -y
 echo "$news"
 sleep 3
 sleep 3
