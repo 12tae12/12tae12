@@ -31,9 +31,6 @@ sudo apt install palemoon -y
 news="Installed palemoon package."
 echo "$news"
 sleep 3
-sudo apt upgrade
-news="Upgraded system."
-echo "$news"
 sleep 3
 # Define the file path
 file_path="~/Desktop/chilly_package_manager.desktop"
