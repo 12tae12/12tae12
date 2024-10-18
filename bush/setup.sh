@@ -51,3 +51,5 @@ chmod +x $file_path
 
 echo "Desktop entry created at $file_path"
 sudo apt autoremove
+cd /
+cd /usr/share/plymouth
