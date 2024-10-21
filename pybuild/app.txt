@@ -15,5 +15,5 @@ Commands: sudo apt update, sudo apt install synaptic
 Description: Install Synaptic package manager.
 
 App Update_all apt_pkgs
-Commands: sudo apt update, sudo apt upgrade
+Commands: sudo apt update, sudo apt upgrade -y
 Description: Update all installed packages.
