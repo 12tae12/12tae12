@@ -62,7 +62,6 @@ class CommandRunner(QThread):
                     full_command = command
                     logging.debug(f"Running: {full_command}")
 
-                # Execute the command and capture stderr for error messages
                 subprocess.run(full_command, shell=True, check=True, stderr=subprocess.PIPE)
 
             except subprocess.CalledProcessError as e:
@@ -70,7 +69,6 @@ class CommandRunner(QThread):
                 logging.error(error_message)
                 errors.append(error_message)
 
-            # Update progress (increment by 1 for each completed command)
             self.progress.emit(int((index + 1) / len(self.commands) * 100))
 
         if errors:
@@ -101,6 +99,7 @@ class AppInstaller(QWidget):
 
         self.progress_bar = QProgressBar()
         self.progress_bar.setValue(0)
+        self.progress_bar.hide()  # Initially hide the progress bar
         layout.addWidget(self.progress_bar)
 
         button_layout = QHBoxLayout()
@@ -147,10 +146,9 @@ class AppInstaller(QWidget):
                             QMessageBox.warning(self, "Cancelled", "Installation cancelled.")
                             return
 
-                    # Disable the install button while running
                     self.install_button.setEnabled(False)
+                    self.progress_bar.show()  # Show the progress bar during installation
 
-                    # Create and start the command runner thread
                     self.runner = CommandRunner(commands, password)
                     self.runner.progress.connect(self.progress_bar.setValue)
                     self.runner.error_signal.connect(self.on_errors)
@@ -162,6 +160,7 @@ class AppInstaller(QWidget):
 
     def on_errors(self, errors):
         self.install_button.setEnabled(True)
+        self.progress_bar.hide()  # Hide the progress bar on completion
         QMessageBox.warning(
             self, "Installation Completed with Errors",
             "Installation completed, but some commands failed:\n" + "\n".join(errors)
@@ -169,6 +168,7 @@ class AppInstaller(QWidget):
 
     def on_success(self):
         self.install_button.setEnabled(True)
+        self.progress_bar.hide()  # Hide the progress bar on success
         QMessageBox.information(self, "Installation", "Installation completed successfully!")
 
     def toggle_theme(self):
