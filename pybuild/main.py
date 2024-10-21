@@ -3,33 +3,14 @@ import os
 import logging
 import subprocess
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QLabel, QLineEdit, QListWidget,
-    QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QInputDialog, QCheckBox
+    QApplication, QWidget, QLabel, QLineEdit, QListWidget, 
+    QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QInputDialog, 
+    QCheckBox, QProgressBar
 )
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
-
-def run_commands(commands, password=None):
-    errors = []  # Collect all errors
-    for command in commands:
-        try:
-            if command.startswith("sudo "):
-                full_command = f"echo {password} | sudo -S {command[5:]}"
-                logging.debug(f"Running with sudo: {full_command}")
-            else:
-                full_command = command
-                logging.debug(f"Running: {full_command}")
-
-            # Execute the command and capture stderr for error messages
-            result = subprocess.run(full_command, shell=True, check=True, stderr=subprocess.PIPE)
-        except subprocess.CalledProcessError as e:
-            error_message = f"Command '{command}' failed: {e.stderr.decode().strip()}"
-            logging.error(error_message)
-            errors.append(error_message)  # Collect the error message
-
-    return errors  # Return all errors (if any)
 
 def load_apps():
     try:
@@ -60,6 +41,43 @@ def load_apps():
         QMessageBox.critical(None, "Error", "App list file not found!")
         return []
 
+class CommandRunner(QThread):
+    progress = pyqtSignal(int)
+    error_signal = pyqtSignal(list)
+    success_signal = pyqtSignal()
+
+    def __init__(self, commands, password=None):
+        super().__init__()
+        self.commands = commands
+        self.password = password
+
+    def run(self):
+        errors = []  # Collect all errors
+        for index, command in enumerate(self.commands):
+            try:
+                if command.startswith("sudo "):
+                    full_command = f"echo {self.password} | sudo -S {command[5:]}"
+                    logging.debug(f"Running with sudo: {full_command}")
+                else:
+                    full_command = command
+                    logging.debug(f"Running: {full_command}")
+
+                # Execute the command and capture stderr for error messages
+                subprocess.run(full_command, shell=True, check=True, stderr=subprocess.PIPE)
+
+            except subprocess.CalledProcessError as e:
+                error_message = f"Command '{command}' failed: {e.stderr.decode().strip()}"
+                logging.error(error_message)
+                errors.append(error_message)
+
+            # Update progress (increment by 1 for each completed command)
+            self.progress.emit(int((index + 1) / len(self.commands) * 100))
+
+        if errors:
+            self.error_signal.emit(errors)
+        else:
+            self.success_signal.emit()
+
 class AppInstaller(QWidget):
     def __init__(self):
         super().__init__()
@@ -80,6 +98,10 @@ class AppInstaller(QWidget):
 
         self.app_list = QListWidget()
         layout.addWidget(self.app_list)
+
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setValue(0)
+        layout.addWidget(self.progress_bar)
 
         button_layout = QHBoxLayout()
         self.install_button = QPushButton("Install")
@@ -116,7 +138,7 @@ class AppInstaller(QWidget):
                 if name == app_name:
                     requires_sudo = any(cmd.startswith("sudo ") for cmd in commands)
                     password = None
-    
+
                     if requires_sudo:
                         password, ok = QInputDialog.getText(
                             self, "Sudo Password", "Enter your sudo password:", QLineEdit.Password
@@ -125,21 +147,29 @@ class AppInstaller(QWidget):
                             QMessageBox.warning(self, "Cancelled", "Installation cancelled.")
                             return
 
-                # Run the commands and collect any errors
-                    errors = run_commands(commands, password)
-                
-                    if not errors:
-                        QMessageBox.information(self, "Installation", f"{app_name} installed successfully!")
-                    else:
-                        # Display a warning with the summary of errors but still report success
-                        QMessageBox.warning(
-                            self, 
-                            "Installation Completed with Errors", 
-                            f"{app_name} installed, but some commands failed:\n" + "\n".join(errors)
-                        )
+                    # Disable the install button while running
+                    self.install_button.setEnabled(False)
+
+                    # Create and start the command runner thread
+                    self.runner = CommandRunner(commands, password)
+                    self.runner.progress.connect(self.progress_bar.setValue)
+                    self.runner.error_signal.connect(self.on_errors)
+                    self.runner.success_signal.connect(self.on_success)
+                    self.runner.start()
                     return
         else:
             QMessageBox.critical(self, "Error", "Please select an app to install.")
+
+    def on_errors(self, errors):
+        self.install_button.setEnabled(True)
+        QMessageBox.warning(
+            self, "Installation Completed with Errors",
+            "Installation completed, but some commands failed:\n" + "\n".join(errors)
+        )
+
+    def on_success(self):
+        self.install_button.setEnabled(True)
+        QMessageBox.information(self, "Installation", "Installation completed successfully!")
 
     def toggle_theme(self):
         if self.theme_toggle.isChecked():
@@ -151,14 +181,14 @@ class AppInstaller(QWidget):
         self.setStyleSheet("""
             QWidget { background-color: #2e2e2e; color: white; }
             QPushButton { background-color: #1e1e1e; color: white; }
-            QLineEdit, QListWidget { background-color: #444; color: white; }
+            QLineEdit, QListWidget, QProgressBar { background-color: #444; color: white; }
         """)
 
     def set_light_theme(self):
         self.setStyleSheet("""
             QWidget { background-color: white; color: black; }
             QPushButton { background-color: #2ecc71; color: white; }
-            QLineEdit, QListWidget { background-color: #fff; color: black; }
+            QLineEdit, QListWidget, QProgressBar { background-color: #fff; color: black; }
         """)
 
 if __name__ == "__main__":
