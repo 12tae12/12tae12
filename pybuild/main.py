@@ -4,7 +4,7 @@ import logging
 import subprocess
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QLineEdit, QListWidget,
-    QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QInputDialog
+    QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QInputDialog, QCheckBox
 )
 from PyQt5.QtCore import Qt
 
@@ -12,57 +12,49 @@ from PyQt5.QtCore import Qt
 logging.basicConfig(level=logging.DEBUG)
 
 def run_commands(commands, password=None):
+    errors = []  # Collect all errors
     for command in commands:
         try:
             if command.startswith("sudo "):
-                # Use sudo for commands that require elevated privileges
-                full_command = f"echo {password} | sudo -S {command[5:]}"  # Remove 'sudo ' prefix for proper execution
+                full_command = f"echo {password} | sudo -S {command[5:]}"
                 logging.debug(f"Running with sudo: {full_command}")
             else:
                 full_command = command
                 logging.debug(f"Running: {full_command}")
 
-            subprocess.run(full_command, shell=True, check=True)
+            # Execute the command and capture stderr for error messages
+            result = subprocess.run(full_command, shell=True, check=True, stderr=subprocess.PIPE)
         except subprocess.CalledProcessError as e:
-            logging.error(f"Error executing command: {command}")
-            logging.error(e)
-            return False
-    return True
+            error_message = f"Command '{command}' failed: {e.stderr.decode().strip()}"
+            logging.error(error_message)
+            errors.append(error_message)  # Collect the error message
+
+    return errors  # Return all errors (if any)
 
 def load_apps():
     try:
-        # Get the absolute path to the app.txt file
         script_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(script_dir, "app.txt")
         logging.info(f"Loading app list from: {file_path}")
 
+        apps = []
         with open(file_path, "r") as file:
-            apps = []
-            app_name = None
-            version = None
-            commands = []
+            app_name, version, commands, description = None, None, [], ""
             for line in file:
                 line = line.strip()
                 if line.startswith("Commands:"):
-                    if not app_name or not version:
-                        logging.error(f"Invalid format in app.txt: Commands line encountered before App line")
-                        QMessageBox.critical(None, "Error", "Invalid format in app.txt: Commands line encountered before App line")
-                        return []
                     commands.extend(line.split(": ")[1].split(", "))
+                elif line.startswith("Description:"):
+                    description = line.split(": ", 1)[1]
                 elif line.startswith("App"):
-                    parts = line.split()
-                    if len(parts) < 3:
-                        logging.error(f"Invalid format in app.txt: App line does not contain name and version")
-                        QMessageBox.critical(None, "Error", "Invalid format in app.txt: App line does not contain name and version")
-                        return []
                     if app_name and version and commands:
-                        apps.append((f"{app_name} {version}", commands))
-                        commands = []
+                        apps.append((f"{app_name} {version}", commands, description))
+                    parts = line.split()
                     app_name, version = parts[1], parts[2]
-            if app_name and version and commands:  # Add an app only if all fields are present
-                apps.append((f"{app_name} {version}", commands))
-            logging.debug(f"Loaded apps: {apps}")
-            return apps
+                    commands, description = [], ""
+            if app_name and version and commands:
+                apps.append((f"{app_name} {version}", commands, description))
+        return apps
     except FileNotFoundError:
         logging.error("App list file not found!")
         QMessageBox.critical(None, "Error", "App list file not found!")
@@ -72,6 +64,7 @@ class AppInstaller(QWidget):
     def __init__(self):
         super().__init__()
         self.apps = load_apps()
+        self.dark_mode = False  # Track theme status
         self.init_ui()
 
     def init_ui(self):
@@ -92,57 +85,81 @@ class AppInstaller(QWidget):
         self.install_button = QPushButton("Install")
         self.install_button.clicked.connect(self.on_install)
         button_layout.addWidget(self.install_button)
-        layout.addLayout(button_layout)
 
+        self.theme_toggle = QCheckBox("Dark Mode")
+        self.theme_toggle.stateChanged.connect(self.toggle_theme)
+        button_layout.addWidget(self.theme_toggle)
+
+        layout.addLayout(button_layout)
         self.setLayout(layout)
+
         self.setWindowTitle("Chilly Package Manager")
         self.setMinimumWidth(400)
         self.setMaximumWidth(600)
-        self.setStyleSheet(
-            "QListWidget::item:selected { background-color: #3498db; color: white; }"
-            "QPushButton { background-color: #2ecc71; color: white; border: none; padding: 10px; border-radius: 5px; }"
-            "QPushButton:hover { background-color: #27ae60; }"
-            "QLineEdit { border: 1px solid #ccc; border-radius: 5px; padding: 5px; }"
-        )
+
+        self.set_light_theme()  # Default to light theme
         self.show()
         self.filter_apps()
 
     def filter_apps(self):
         search_term = self.search_entry.text().lower()
         self.app_list.clear()
-        for app_name, _ in self.apps:
-            if search_term.lower() in app_name.lower():
+        for app_name, _, description in self.apps:
+            if search_term in app_name.lower() or search_term in description.lower():
                 self.app_list.addItem(app_name)
 
     def on_install(self):
-        selected_item = self.app_list.currentItem()
-        if selected_item:
-            app_name = selected_item.text()
-            found_app = False  # Flag to indicate if the app is found
-            for name, commands in self.apps:
-                if name == app_name:
-                    found_app = True
-                    # Check if any command requires sudo
-                    requires_sudo = any(cmd.startswith("sudo ") for cmd in commands)
-                    password = None
+    selected_item = self.app_list.currentItem()
+    if selected_item:
+        app_name = selected_item.text()
+        for name, commands, description in self.apps:
+            if name == app_name:
+                requires_sudo = any(cmd.startswith("sudo ") for cmd in commands)
+                password = None
 
-                    if requires_sudo:
-                        password, ok = QInputDialog.getText(
-                            self, "Sudo Password", "Enter your sudo password:", QLineEdit.Password
-                        )
-                        if not ok:
-                            return  # User canceled password input
+                if requires_sudo:
+                    password, ok = QInputDialog.getText(
+                        self, "Sudo Password", "Enter your sudo password:", QLineEdit.Password
+                    )
+                    if not ok or not password:
+                        QMessageBox.warning(self, "Cancelled", "Installation cancelled.")
+                        return
 
-                    if run_commands(commands, password):
-                        QMessageBox.information(self, "Installation", f"{app_name} installed successfully!")
-                    else:
-                        QMessageBox.critical(self, "Error", f"Failed to install {app_name}. Please check the logs for details.")
-                    return  # Exit the loop after finding the correct app
+                # Run the commands and collect any errors
+                errors = run_commands(commands, password)
+                
+                if not errors:
+                    QMessageBox.information(self, "Installation", f"{app_name} installed successfully!")
+                else:
+                    # Display a warning with the summary of errors but still report success
+                    QMessageBox.warning(
+                        self, 
+                        "Installation Completed with Errors", 
+                        f"{app_name} installed, but some commands failed:\n" + "\n".join(errors)
+                    )
+                return
+    else:
+        QMessageBox.critical(self, "Error", "Please select an app to install.")
 
-            if not found_app:
-                QMessageBox.critical(self, "Error", f"Could not find {app_name} in the app list.")
+    def toggle_theme(self):
+        if self.theme_toggle.isChecked():
+            self.set_dark_theme()
         else:
-            QMessageBox.critical(self, "Error", "Please select an app to install.")
+            self.set_light_theme()
+
+    def set_dark_theme(self):
+        self.setStyleSheet("""
+            QWidget { background-color: #2e2e2e; color: white; }
+            QPushButton { background-color: #1e1e1e; color: white; }
+            QLineEdit, QListWidget { background-color: #444; color: white; }
+        """)
+
+    def set_light_theme(self):
+        self.setStyleSheet("""
+            QWidget { background-color: white; color: black; }
+            QPushButton { background-color: #2ecc71; color: white; }
+            QLineEdit, QListWidget { background-color: #fff; color: black; }
+        """)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
