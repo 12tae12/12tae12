@@ -109,37 +109,37 @@ class AppInstaller(QWidget):
                 self.app_list.addItem(app_name)
 
     def on_install(self):
-    selected_item = self.app_list.currentItem()
-    if selected_item:
-        app_name = selected_item.text()
-        for name, commands, description in self.apps:
-            if name == app_name:
-                requires_sudo = any(cmd.startswith("sudo ") for cmd in commands)
-                password = None
-
-                if requires_sudo:
-                    password, ok = QInputDialog.getText(
-                        self, "Sudo Password", "Enter your sudo password:", QLineEdit.Password
-                    )
-                    if not ok or not password:
-                        QMessageBox.warning(self, "Cancelled", "Installation cancelled.")
-                        return
+        selected_item = self.app_list.currentItem()
+        if selected_item:
+            app_name = selected_item.text()
+            for name, commands, description in self.apps:
+                if name == app_name:
+                    requires_sudo = any(cmd.startswith("sudo ") for cmd in commands)
+                    password = None
+    
+                    if requires_sudo:
+                        password, ok = QInputDialog.getText(
+                            self, "Sudo Password", "Enter your sudo password:", QLineEdit.Password
+                        )
+                        if not ok or not password:
+                            QMessageBox.warning(self, "Cancelled", "Installation cancelled.")
+                            return
 
                 # Run the commands and collect any errors
-                errors = run_commands(commands, password)
+                    errors = run_commands(commands, password)
                 
-                if not errors:
-                    QMessageBox.information(self, "Installation", f"{app_name} installed successfully!")
-                else:
-                    # Display a warning with the summary of errors but still report success
-                    QMessageBox.warning(
-                        self, 
-                        "Installation Completed with Errors", 
-                        f"{app_name} installed, but some commands failed:\n" + "\n".join(errors)
-                    )
-                return
-    else:
-        QMessageBox.critical(self, "Error", "Please select an app to install.")
+                    if not errors:
+                        QMessageBox.information(self, "Installation", f"{app_name} installed successfully!")
+                    else:
+                        # Display a warning with the summary of errors but still report success
+                        QMessageBox.warning(
+                            self, 
+                            "Installation Completed with Errors", 
+                            f"{app_name} installed, but some commands failed:\n" + "\n".join(errors)
+                        )
+                    return
+        else:
+            QMessageBox.critical(self, "Error", "Please select an app to install.")
 
     def toggle_theme(self):
         if self.theme_toggle.isChecked():
