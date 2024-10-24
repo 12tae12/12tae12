@@ -1,6 +1,7 @@
 import sys
 import os
 import logging
+from PyQt5.QtGui import QApplication
 import subprocess
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QLineEdit, QListWidget, 
