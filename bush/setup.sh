@@ -1,5 +1,6 @@
 #!/bin/bash
 cd ~
+sudo apt install curl
 sudo apt update
 sudo apt remove ubuntu-desktop -y
 news="Removed ubuntu-desktop package."
@@ -19,7 +20,7 @@ pip install pyqt5 --break-system-packages
 news="Installed Chilly Package Manager package."
 echo "$news"
 sleep 3
-sudo apt remove firefox
+sudo apt remove firefox -y
 cd ~
 news="Removed firefox package."
 echo "$news"
@@ -29,7 +30,7 @@ curl -fsSL https://download.opensuse.org/repositories/home:stevenpusser:palemoon
 sudo apt update
 sudo apt install palemoon -y
 news="Installed palemoon package."
-sudo apt install firefox -y
+
 echo "$news"
 sleep 3
 sleep 3
