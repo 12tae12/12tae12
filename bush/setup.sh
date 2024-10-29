@@ -1,6 +1,9 @@
 #!/bin/bash
 cd ~
-sudo apt install curl
+sudo apt update
+sudo apt install curl wget python3 python3-pip gpg -y
+pip install pyqt5 --break-system-packages
+
 sudo apt update
 
 mkdir cpm-1.4
