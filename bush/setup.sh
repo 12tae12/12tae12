@@ -2,14 +2,7 @@
 cd ~
 sudo apt install curl
 sudo apt update
-sudo apt remove ubuntu-desktop -y
-news="Removed ubuntu-desktop package."
-echo "$news"
-sleep 3
-sudo apt install task-lxqt-desktop -y
-news="Installed Lxqt-desktop package."
-echo "$news"
-sleep 3
+
 mkdir cpm-1.4
 cd cpm-1.4
 wget https://1t2.pages.dev/pybuild/.config
