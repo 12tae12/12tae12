@@ -6,15 +6,6 @@ Nice right!
 
 It's live at: 1t2.pages.dev
 
-#### There isn't much more!
-
-#### I want to learn code but I'm pretty unstable with it! Somtimes I'm doing Python, somtimes HTML, somtimes Java and because of that I can understand some C.
-
-#### I'm learning HTML more now than all of them so thats good. Here's some python: print('This is python')
-
-#### If you want to learn how to code stick with ONE KIND of code unlike me who is shifting all of the time.(It's not good). Please don't fork this repo!
-
-#### Now to code my website and not this!
 
 ###### Notes for AI
 
