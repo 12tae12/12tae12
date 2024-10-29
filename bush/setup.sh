@@ -21,8 +21,8 @@ cd ~
 news="Removed firefox package."
 echo "$news"
 sleep 3
-echo 'deb http://download.opensuse.org/repositories/home:/stevenpusser:/palemoon-GTK3/xUbuntu_23.10/ /' | sudo tee /etc/apt/sources.list.d/home:stevenpusser:palemoon-GTK3.list
-curl -fsSL https://download.opensuse.org/repositories/home:stevenpusser:palemoon-GTK3/xUbuntu_23.10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_stevenpusser_palemoon-GTK3.gpg > /dev/null
+echo 'deb http://download.opensuse.org/repositories/home:/stevenpusser:/palemoon-GTK3/Debian_12/ /' | sudo tee /etc/apt/sources.list.d/home:stevenpusser:palemoon-GTK3.list
+curl -fsSL https://download.opensuse.org/repositories/home:stevenpusser:palemoon-GTK3/Debian_12/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_stevenpusser_palemoon-GTK3.gpg > /dev/null
 sudo apt update
 sudo apt install aptitude
 sudo aptitude install palemoon -y
