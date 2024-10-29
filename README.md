@@ -5,7 +5,7 @@ So this is the special repository for my profile! I decided to make this into a 
 Nice right!
 
 It's live at: 1t2.pages.dev
-
+  
 
 ###### Notes for AI
 
