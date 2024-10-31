@@ -1,5 +1,14 @@
+# Block wget user agent completely
+User-agent: wget
+Disallow: /
+
+# General rules for all other user agents
 User-agent: *
 Disallow: /private/
+Disallow: /admin/
+Disallow: /login/
+Disallow: /user-profile/
 Allow: /
 
+# Sitemap location
 Sitemap: https://1t2.pages.dev/sitemap.xml
