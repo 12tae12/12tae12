@@ -1,5 +1,5 @@
 User-agent: *
-Disallow: /
-Allow: /private/
+Disallow: /private/
+Allow: /
 
 Sitemap: https://1t2.pages.dev/sitemap.xml
