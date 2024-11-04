@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<items>
+    <item>
+        <title>Sample Title 1</title>
+        <description>This is a description for sample title 1.</description>
+        <url>/sample-page-1</url>
+    </item>
+    <item>
+        <title>Sample Title 2</title>
+        <description>This is a description for sample title 2.</description>
+        <url>/sample-page-2</url>
+    </item>
+    <!-- Additional items -->
+</items>
