@@ -6,8 +6,7 @@ Disallow: /
 User-agent: *
 Disallow: /private/
 Disallow: /admin/
-Disallow: /login/
-Disallow: /user-profile/
+Disallow: /vca
 Allow: /
 
 # Sitemap location
