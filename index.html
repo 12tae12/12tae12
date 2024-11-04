@@ -6,7 +6,13 @@
     <title>12Tae12 | Official Website</title>
     <a title="GDPR-compliant Web Analytics" href="https://clicky.com/101447827"></a>
     <script async data-id="101447827" src="//static.getclicky.com/js"></script>
-
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "n1me0l5u6u");
+    </script>    
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -25,15 +31,37 @@
             color: #000000;
             text-decoration: underline;
         }
+        .dropdown-menu {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            width: 300px;
+        }
+        .search-input {
+            background-color: #222;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 5px;
+            width: 100%;
+        }
+        .result {
+            padding: 10px;
+            border-bottom: 1px solid #444;
+        }
+        .result-title a {
+            color: #4ecdc4;
+            text-decoration: none;
+        }
+        .result-title a:hover {
+            color: #72e1d1;
+            text-decoration: underline;
+        }
+        .result-description {
+            color: #aaa;
+            font-size: 14px;
+        }
     </style>
     <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "aa54ee8d701341a6a3bfb295f120680f"}'></script><!-- End Cloudflare Web Analytics -->
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "n1me0l5u6u");
-    </script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -47,26 +75,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="./stuff.html">Stuff Page</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://1t2.pages.dev/stuff/films/index.html">Films</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./wptw.html">WPTW</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./cardio/index.html">Cardio V1.0.1</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/tcrv">TCR</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://1t2.pages.dev/1t2bs">Books</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://1t2.pages.dev/downloads.html">Downloads</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://1t2.pages.dev/search.html">Search</a>
+                    <!-- Other links -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Search
+                        </a>
+                        <div class="dropdown-menu p-3" aria-labelledby="navbarDropdown">
+                            <input type="text" id="searchInput" class="search-input" placeholder="Type to search...">
+                            <div id="results"></div>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -81,36 +98,56 @@
     </div>
 
     <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <h5>About 1t2.pages.dev</h5>
-                    <p>1t2.pages.dev is a website that showcases various projects developed by 12Tae12Software.</p>
-                </div>
-                <div class="col-lg-6">
-                    <h5>Project List</h5>
-                    <ul>
-                        <li><strong>Cardio:</strong> A greeting card project currently being ported from "cardio.webador.com" to "1t2.pages.dev/cardio/index.html".</li>
-                        
-                        <li><strong>12Tae12 Productions:</strong> A page featuring short films aiming to entertain viewers, located at 1t2.pages.dev/stuff/films/index.html.</li>
-                        <li><strong>WritePad:</strong> Text Wizard (WPTW), a simple text editor for devices with limited installation capabilities, accessible at 1t2.pages.dev/wptw.</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="my-4">
-            <p class="text-center">Made by 12Tae12</p>
-            <p class="text-center">__________________________</p>
-            <p class="text-center">__________________________</p>
-            <p class="text-center">__________________________</p>
-            <p class="text-center">__________________________</p>
-            <p class="text-center">__________________________</p>
-            <p class="text-center">__________________________</p>
-
-        </div>
+        <!-- Footer content -->
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-I3Er5eQ1ISG3ftGrs4I7Gz7nT1ZZw5ccHtCk1hqpr/J1J/ZF3EqDOnydIO5vvVz6" crossorigin="anonymous"></script>
-    <script type="text/javascript" id="cookieinfo" src="//cookieinfoscript.com/js/cookieinfo.min.js"></script>
+
+    <script>
+        async function fetchXML() {
+            const response = await fetch('sef.xml');
+            const text = await response.text();
+            const parser = new DOMParser();
+            return parser.parseFromString(text, "application/xml");
+        }
+
+        function searchItems(query, xmlData) {
+            const items = xmlData.getElementsByTagName("item");
+            const results = [];
+            for (let item of items) {
+                const title = item.getElementsByTagName("title")[0].textContent.toLowerCase();
+                const description = item.getElementsByTagName("description")[0].textContent.toLowerCase();
+                if (title.includes(query) || description.includes(query)) {
+                    results.push({
+                        title: item.getElementsByTagName("title")[0].textContent,
+                        description: item.getElementsByTagName("description")[0].textContent,
+                        url: item.getElementsByTagName("url")[0].textContent,
+                    });
+                }
+            }
+            return results;
+        }
+
+        document.getElementById('searchInput').addEventListener('input', async function() {
+            const query = this.value.toLowerCase();
+            const xmlData = await fetchXML();
+            const results = searchItems(query, xmlData);
+            displayResults(results);
+        });
+
+        function displayResults(results) {
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = '';
+            results.forEach(result => {
+                const resultElement = document.createElement('div');
+                resultElement.className = 'result';
+                resultElement.innerHTML = `
+                    <div class="result-title"><a href="${result.url}">${result.title}</a></div>
+                    <div class="result-description">${result.description}</div>
+                `;
+                resultsContainer.appendChild(resultElement);
+            });
+        }
+    </script>
 </body>
 </html>
-
