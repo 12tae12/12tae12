@@ -1,14 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <items>
     <item>
-        <title>Sample Title 1</title>
-        <description>This is a description for sample title 1.</description>
-        <url>/sample-page-1</url>
+        <title>Films.</title>
+        <description>This has short films made my me and my brother.</description>
+        <url>https://1t2.pages.dev/stuff/films/index.html</url>
     </item>
     <item>
-        <title>Sample Title 2</title>
-        <description>This is a description for sample title 2.</description>
-        <url>/sample-page-2</url>
+        <title>WPTW.</title>
+        <description>This is a text editor and basic word processor that you can paste your documents into and it just works!</description>
+        <url>/wptw</url>
     </item>
-    <!-- Additional items -->
+    <item>
+        <title>Cardio Homepage.</title>
+        <description>This is a homepage for a greeting card selling webite.</description>
+        <url>https://1t2.pages.dev/cardio</url>
+    </item>
+    <item>
+        <title>TCR/The Chicken Run.</title>
+        <description>This is a fun but not easy chrome dino like game.</description>
+        <url>https://1t2.pages.dev/tcrv</url>
+    </item>
+    <item>
+        <title>Books/1t2bs.</title>
+        <description>Just some basic do_not_steal books that me and my brother made.</description>
+        <url>https://1t2.pages.dev/1t2bs</url>
+    </item>
+    <item>
+        <title>Downloads.</title>
+        <description>Download 12Tae12 made items! Such as WPTW.html, The Chicken Run for android, The Chilly Package Manager for Linux, and Webbrows for Linux.</description>
+        <url>https://1t2.pages.dev/downloads</url>
+    </item>
+    <item>
+        <title>Bush OS.</title>
+        <description>Bush OS beta page. Shhh.</description>
+        <url>https://1t2.pages.dev/bush</url>
+    </item>
 </items>
