@@ -51,7 +51,7 @@
     <!-- JavaScript for Search Functionality -->
     <script>
         async function fetchXML() {
-            const response = await fetch('items.xml');
+            const response = await fetch('sef.xml');
             const text = await response.text();
             const parser = new DOMParser();
             return parser.parseFromString(text, "application/xml");
