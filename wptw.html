@@ -2,234 +2,124 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>WritePad: Text Wizard (WPTW)</title>
-<a title="GDPR-compliant Web Analytics" href="https://clicky.com/101447827"><img alt="Clicky" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a>
-<script async data-id="101447827" src="//static.getclicky.com/js"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WritePad: Text Wizard (WPTW) Version 3</title>
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-
-.container {
-  width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-.toolbar {
-  margin-bottom: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  background-color: #f0f8ea; /* Light green background */
-  padding: 8px;
-  border-radius: 4px;
-}
-
-.toolbar button, .toolbar select {
-  padding: 8px 12px;
-  font-size: 14px;
-  border: none;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  color: black; /* Set button text color to black */
-}
-
-.toolbar button:hover, .toolbar select:hover {
-  background-color: #e6e6e6;
-}
-
-.toolbar button:active, .toolbar select:active {
-  background-color: #d9d9d9;
-}
-
-.toolbar button[disabled]:before {
-  content: "✔"; /* Unicode checkmark symbol */
-  margin-right: 5px;
-}
-
-.toolbar select {
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-.editor {
-  border: 1px solid #ccc;
-  min-height: 200px;
-  padding: 10px;
-  border-radius: 4px;
-  background-color: #fff;
-}
-
-.print-button, .clear-button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.print-button:hover, .clear-button:hover {
-  background-color: #45a049;
-}
-
-.print-button:active, .clear-button:active {
-  background-color: #3c903d;
-}
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  .container {
+    padding: 10px;
+  }
+  .toolbar, .editor {
+    margin: 10px 0;
+    padding: 8px;
+    border-radius: 4px;
+  }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background-color: #f0f8ea;
+  }
+  .wptw-button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .editor {
+    border: 1px solid #ccc;
+    min-height: 200px;
+    background-color: #fff;
+  }
 </style>
-<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "aa54ee8d701341a6a3bfb295f120680f"}'></script><!-- End Cloudflare Web Analytics -->
-<script type="text/javascript">
-  (function(c,l,a,r,i,t,y){
-      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-  })(window, document, "clarity", "script", "n1me0l5u6u");
-</script>
 </head>
 <body>
 <div class="container">
   <div class="toolbar">
-    <button onclick="bold()">Bold</button>
-    <button onclick="italic()">Italic</button>
-    <button onclick="underline()">Underline</button>
-    <select onchange="changeFont(this.value)">
+    <div class="wptw-button" onclick="wptwCommand('bold')">Bold</div>
+    <div class="wptw-button" onclick="wptwCommand('italic')">Italic</div>
+    <div class="wptw-button" onclick="wptwCommand('underline')">Underline</div>
+    <select id="fontSelect" class="wptw-button" onchange="changeFont(this.value)">
       <option value="Arial">Arial</option>
       <option value="Times New Roman">Times New Roman</option>
       <option value="Courier New">Courier New</option>
     </select>
-    <select onchange="changeSize(this.value)">
-      <option value="12px">12</option>
-      <option value="14px">14</option>
-      <option value="16px">16</option>
-    </select>
-    <button onclick="align('left')">Left</button>
-    <button onclick="align('center')">Center</button>
-    <button onclick="align('right')">Right</button>
-    <button onclick="insertList('unordered')">Bullet List</button>
-    <button onclick="insertList('ordered')">Numbered List</button>
-    <button onclick="saveText()">Save</button>
-    <input type="text" id="fileName" placeholder="example.wptw">
-    <button onclick="exportText()">Export</button>
-    <input type="file" id="fileInput" accept=".wptw" onchange="importText(event)">
-    <select id="loadSelect" type="select-one">
-      <option value="">Load</option>
-    </select>
-    <button class="print-button" onclick="printDocument()">Print</button> <!-- Added print button -->
-    <button class="clear-button" type="button" onclick="clearData()" disabled>Clear Data</button> <!-- Added clear data button with type and disabled attributes -->
+    <div class="wptw-button" onclick="exportText()">Export</div>
+    <input type="file" id="fileInput" accept=".wptw, .wwptw" onchange="loadFile(event)">
   </div>
-  <div class="editor" contenteditable="true" id="editor"></div>
+  <div contenteditable="true" class="editor" id="editor"></div>
 </div>
+
 <script>
-// Functions for text formatting
-function bold() {
-  document.execCommand('bold', false, null);
-}
+// Detect if a .wptw file is loaded and redirect if necessary
+function loadFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
 
-function italic() {
-  document.execCommand('italic', false, null);
-}
-
-function underline() {
-  document.execCommand('underline', false, null);
-}
-
-// Functions for alignment
-function align(alignType) {
-  document.execCommand('justify' + alignType, false, null);
-}
-
-// Function to change font
-function changeFont(font) {
-  document.execCommand('fontName', false, font);
-}
-
-// Function to change font size
-function changeSize(size) {
-  document.execCommand('fontSize', false, size);
-}
-
-// Function to insert lists
-function insertList(listType) {
-  document.execCommand(listType == 'ordered' ? 'insertOrderedList' : 'insertUnorderedList', false, null);
-}
-
-// Function to save text
-function saveText() {
-  var content = document.getElementById('editor').innerHTML;
-  var documents = JSON.parse(localStorage.getItem('documents')) || [];
-  documents.push(content);
-  localStorage.setItem('documents', JSON.stringify(documents));
-  populateLoadSelect();
-  alert('Text saved successfully! (This might not persist between sessions)');
-}
-
-// Function to export text
-function exportText() {
-  var content = document.getElementById('editor').innerHTML;
-  var fileName = document.getElementById('fileName').value;
-  if (!fileName) {
-    alert('Please enter a filename.');
+  const fileType = file.name.split('.').pop();
+  if (fileType === 'wptw') {
+    window.location.href = 'https://1t2.pages.dev/old/wptw.html';
     return;
+  } else if (fileType === 'wwptw') {
+    // Read and parse .wwptw files with custom WPTW syntax
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      parseWPTW(e.target.result);
+    };
+    reader.readAsText(file);
   }
-  if (!fileName.endsWith('.wptw')) {
-    fileName += '.wptw';
-  }
-  var blob = new Blob([content], { type: 'text/plain' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
+}
+
+// Parse and render custom WPTW syntax
+function parseWPTW(content) {
+  const editor = document.getElementById('editor');
+  editor.innerHTML = '';
+
+  const lines = content.split('\n');
+  lines.forEach(line => {
+    const div = document.createElement('div');
+    if (line.startsWith('# ')) {
+      div.innerHTML = `<h1>${line.slice(2)}</h1>`;
+    } else if (line.startsWith('## ')) {
+      div.innerHTML = `<h2>${line.slice(3)}</h2>`;
+    } else if (line.startsWith('**')) {
+      div.innerHTML = `<b>${line.slice(2, -2)}</b>`;
+    } else if (line.startsWith('*')) {
+      div.innerHTML = `<i>${line.slice(1, -1)}</i>`;
+    } else {
+      div.textContent = line;
+    }
+    editor.appendChild(div);
+  });
+}
+
+// Export current content to .wwptw
+function exportText() {
+  const content = document.getElementById('editor').innerText;
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
   a.href = url;
-  a.setAttribute('download', fileName); // Added download attribute
+  a.download = 'document.wwptw';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 }
 
-// Function to import text
-function importText(event) {
-  var file = event.target.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('editor').innerHTML = e.target.result;
-  };
-  reader.readAsText(file);
+// Basic text editing commands
+function wptwCommand(command) {
+  document.execCommand(command, false, null);
 }
 
-// Function to print document
-function printDocument() {
-  window.print();
+function changeFont(font) {
+  document.execCommand('fontName', false, font);
 }
-
-// Function to clear saved data
-function clearData() {
-  localStorage.removeItem('documents');
-  populateLoadSelect(); // Repopulate the load dropdown after clearing localStorage
-  alert('All saved data has been cleared.');
-}
-
-// Function to populate the load select dropdown
-function populateLoadSelect() {
-  var documents = JSON.parse(localStorage.getItem('documents')) || [];
-  var loadSelect = document.getElementById('loadSelect');
-  loadSelect.innerHTML = '<option value="">Load</option>';
-  for (var i = 0; i < documents.length; i++) {
-    var option = document.createElement('option');
-    option.text = 'Document ' + (i + 1);
-    loadSelect.add(option);
-  }
-}
-populateLoadSelect();
 </script>
-<script type="text/javascript" id="cookieinfo"
-    src="//cookieinfoscript.com/js/cookieinfo.min.js">
-  </script>
 </body>
 </html>
