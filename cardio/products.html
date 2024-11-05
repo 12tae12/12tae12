@@ -42,9 +42,70 @@
             </nav>
             
         
-            <script async src="https://cse.google.com/cse.js?cx=b01ed43d889e54b4d">
-            </script>
-            <div class="gcse-search"></div>
+            <!-- Search Engine Section -->
+    <section class="search-engine">
+        <div class="container">
+            <h2>Search Our Collection</h2>
+            <input type="text" id="searchInput" class="form-control mb-3" placeholder="Type to search...">
+            <div id="results" class="list-group"></div>
+        </div>
+    </section>
+
+    <!-- Banner Section -->
+    <section class="banner">
+        <div class="container">
+            <div class="carousel">
+                <!-- Carousel content -->
+            </div>
+            <a href="products.html" class="link">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- JavaScript for Search Functionality -->
+    <script>
+        async function fetchXML() {
+            const response = await fetch('sef.xml');
+            const text = await response.text();
+            const parser = new DOMParser();
+            return parser.parseFromString(text, "application/xml");
+        }
+
+        function searchItems(query, xmlData) {
+            const items = xmlData.getElementsByTagName("item");
+            const results = [];
+            for (let item of items) {
+                const title = item.getElementsByTagName("title")[0].textContent.toLowerCase();
+                const description = item.getElementsByTagName("description")[0].textContent.toLowerCase();
+                if (title.includes(query) || description.includes(query)) {
+                    results.push({
+                        title: item.getElementsByTagName("title")[0].textContent,
+                        description: item.getElementsByTagName("description")[0].textContent,
+                        url: item.getElementsByTagName("url")[0].textContent,
+                    });
+                }
+            }
+            return results;
+        }
+
+        document.getElementById('searchInput').addEventListener('input', async function() {
+            const query = this.value.toLowerCase();
+            const xmlData = await fetchXML();
+            const results = searchItems(query, xmlData);
+            displayResults(results);
+        });
+
+        function displayResults(results) {
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = '';
+            results.forEach(result => {
+                const resultElement = document.createElement('a');
+                resultElement.href = result.url;
+                resultElement.className = 'list-group-item list-group-item-action';
+                resultElement.innerHTML = `<strong>${result.title}</strong><br>${result.description}`;
+                resultsContainer.appendChild(resultElement);
+            });
+        }
+    </script>
         </div>
     </header>
 
