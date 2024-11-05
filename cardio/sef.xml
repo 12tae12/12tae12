@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <items>
     <item>
-        <title>Sample Title 1</title>
-        <description>This is a description for sample title 1.</description>
-        <url>/sample-page-1</url>
+        <title>Homepage Cardio.</title>
+        <description>The Cardio Homepage.</description>
+        <url>./index.html</url>
     </item>
     <item>
-        <title>Sample Title 2</title>
-        <description>This is a description for sample title 2.</description>
-        <url>/sample-page-2</url>
+        <title>Webbador Cardio Homepage.</title>
+        <description>This is the old cardio homepage based on Webbador. I am moving from this as soon as possible.</description>
+        <url>https://cardio.webbador.com</url>
     </item>
-    <!-- Additional items -->
+    <item>
+        <title>About Cardio.</title>
+        <description>About Cardio. Thats it.</description>
+        <url>./about.html</url>
+    </item>
+    <item>
+        <title>Products Cardio.</title>
+        <description>Buying greeting cards!.</description>
+        <url>./products.html</url>
+    </item>
+    <item>
+        <title>The Cardio game.</title>
+        <description>A scratch game running on turbowarp.</description>
+        <url>https://1t2.pages.dev/cardio/game.html</url>
+    </item>
 </items>
