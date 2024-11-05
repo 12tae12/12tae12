@@ -227,6 +227,15 @@ function populateLoadSelect() {
   }
 }
 populateLoadSelect();
+
+window.addEventListener('DOMContentLoaded', (event) => {
+  const content = localStorage.getItem('wptwFileContent');
+  if (content) {
+    document.getElementById('editor').innerHTML = content;
+    localStorage.removeItem('wptwFileContent'); // Clear the content after loading
+  }
+});
+
 </script>
 <script type="text/javascript" id="cookieinfo"
     src="//cookieinfoscript.com/js/cookieinfo.min.js">

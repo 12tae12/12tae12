@@ -39,6 +39,14 @@
     padding: 10px;
   }
 </style>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "aa54ee8d701341a6a3bfb295f120680f"}'></script><!-- End Cloudflare Web Analytics -->
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "n1me0l5u6u");
+  </script>
 </head>
 <body>
 <div class="container">
@@ -100,17 +108,19 @@ function loadFile(event) {
   if (!file) return;
 
   const fileType = file.name.split('.').pop();
-  if (fileType === 'wptw') {
-    window.location.href = 'https://1t2.pages.dev/old/wptw.html';
-    return;
-  } else if (fileType === 'wwptw') {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      parseWPTW(e.target.result);
-    };
-    reader.readAsText(file);
-  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const content = e.target.result;
+    if (fileType === 'wptw') {
+      localStorage.setItem('wptwFileContent', content); // Store content in localStorage
+      window.location.href = 'https://1t2.pages.dev/old/wptw.html';
+    } else if (fileType === 'wwptw') {
+      parseWPTW(content);
+    }
+  };
+  reader.readAsText(file);
 }
+
 
 // Parse custom WPTW syntax for .wwptw files
 function parseWPTW(content) {
