@@ -13,7 +13,7 @@
     <item>
         <title>Homepage Cardio.</title>
         <description>The Cardio Homepage.</description>
-        <url>./index.html</url>
+        <url>https://1t2.pages.dev/cardio/index.html</url>
     </item>
     <item>
         <title>Webbador Cardio Homepage.</title>
@@ -23,12 +23,12 @@
     <item>
         <title>About Cardio.</title>
         <description>About Cardio. Thats it.</description>
-        <url>./about.html</url>
+        <url>https://1t2.pages.dev/cardio/about.html</url>
     </item>
     <item>
         <title>Products Cardio.</title>
         <description>Buying greeting cards!.</description>
-        <url>./products.html</url>
+        <url>https://1t2.pages.dev/cardio/products.html</url>
     </item>
     <item>
         <title>The Cardio game.</title>
@@ -54,5 +54,10 @@
         <title>Bush OS.</title>
         <description>Bush OS beta page. Shhh.</description>
         <url>https://1t2.pages.dev/bush</url>
+    </item>
+    <item>
+        <title>Updates.</title>
+        <description>This page shows the updates to the website and the repo.</description>
+        <url>https://1t2.pages.dev/updates.html</url>
     </item>
 </items>
