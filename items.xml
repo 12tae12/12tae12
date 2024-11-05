@@ -6,9 +6,29 @@
         <url>/wptw</url>
     </item>
     <item>
-        <title>Cardio Homepage.</title>
-        <description>This is a homepage for a greeting card selling webite.</description>
-        <url>https://1t2.pages.dev/cardio</url>
+        <title>Homepage Cardio.</title>
+        <description>The Cardio Homepage.</description>
+        <url>./index.html</url>
+    </item>
+    <item>
+        <title>Webbador Cardio Homepage.</title>
+        <description>This is the old cardio homepage based on Webbador. I am moving from this as soon as possible.</description>
+        <url>https://cardio.webbador.com</url>
+    </item>
+    <item>
+        <title>About Cardio.</title>
+        <description>About Cardio. Thats it.</description>
+        <url>./about.html</url>
+    </item>
+    <item>
+        <title>Products Cardio.</title>
+        <description>Buying greeting cards!.</description>
+        <url>./products.html</url>
+    </item>
+    <item>
+        <title>The Cardio game.</title>
+        <description>A scratch game running on turbowarp.</description>
+        <url>https://1t2.pages.dev/cardio/game.html</url>
     </item>
     <item>
         <title>TCR/The Chicken Run.</title>
