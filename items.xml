@@ -6,6 +6,11 @@
         <url>/wptw</url>
     </item>
     <item>
+        <title>WPTW old version.</title>
+        <description>This is the old verion for legacy support of .wtpw files.</description>
+        <url>/old/wptw</url>
+    </item>
+    <item>
         <title>Homepage Cardio.</title>
         <description>The Cardio Homepage.</description>
         <url>./index.html</url>
