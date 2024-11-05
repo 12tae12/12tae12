@@ -125,11 +125,11 @@
             }
         }
 
-        function displayCommits(newCommits) {
+        function displayCommits(allCommits) {
             const commitList = document.getElementById('commitList');
             commitList.innerHTML = ''; // Clear previous results
 
-            newCommits.forEach(commit => {
+            allCommits.forEach(commit => {
                 const li = document.createElement('li');
                 li.className = 'list-group-item';
                 li.innerHTML = `
@@ -140,25 +140,19 @@
                 commitList.appendChild(li);
             });
 
-            // Update the last seen commit SHA in local storage
-            if (newCommits.length > 0) {
-                localStorage.setItem('lastSeenCommitSHA', newCommits[0].sha);
+            // Store the last seen commit SHA to prevent duplicates on future loads
+            if (allCommits.length > 0) {
+                localStorage.setItem('lastSeenCommitSHA', allCommits[0].sha);
             }
         }
 
-        async function checkForNewCommits() {
-            const lastSeenCommitSHA = localStorage.getItem('lastSeenCommitSHA');
+        async function checkForAllCommits() {
             const commits = await fetchCommits();
-
-            // Filter out the commits that have already been seen
-            const newCommits = lastSeenCommitSHA ? commits.filter(commit => commit.sha !== lastSeenCommitSHA) : commits;
-
-            // Display only the new commits
-            displayCommits(newCommits);
+            displayCommits(commits);
         }
 
-        // Check for new commits when the page loads
-        checkForNewCommits();
+        // Check for commits when the page loads
+        checkForAllCommits();
     </script>
 </body>
 </html>
