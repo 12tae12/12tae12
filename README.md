@@ -1,6 +1,6 @@
 #Hello
 ##This is 12Tae12
-This is th testing branch. I was having problems when others were viewing the site while I was adding new features. Now that is seperate until I have it all figured out! You can test the beta page here:
+This is the testing branch. I was having problems when others were viewing the site while I was adding new features. Now that is seperate until I have it all figured out! You can test the beta page here:
 
 
 <!-- # Hello -->
