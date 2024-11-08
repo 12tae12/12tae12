@@ -1,0 +1,31 @@
+name: Generate sitemap
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Generate sitemap
+      uses: cicirello/generate-sitemap@v1
+      with:
+        base-url-path: https://1t2.pages.dev
+
+    - name: Commit and push sitemap
+      run: |
+        if [[ `git status --porcelain sitemap.xml` ]]; then
+          git config --global user.name 'github-actions'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add sitemap.xml
+          git commit -m "Automated sitemap update"
+          git push
+        fi
