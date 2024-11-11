@@ -7,8 +7,8 @@ if test "n" = n; then
     umask 077
 fi
 
-CRCsum="2005954130"
-MD5="d0d490373f716b41e54602c5debff112"
+CRCsum="106293652"
+MD5="b08739d0ac799994559e077effbfe12f"
 SHA="0000000000000000000000000000000000000000000000000000000000000000"
 SIGNATURE=""
 TMPROOT=${TMPDIR:=/tmp}
@@ -18,7 +18,7 @@ ARCHIVE_DIR=`dirname "$0"`
 export ARCHIVE_DIR
 
 label="GLaDOS Chatbot Installer"
-script="./install.shh"
+script="./install.sh"
 scriptargs=""
 cleanup_script=""
 licensetxt=""
@@ -376,13 +376,13 @@ do
 	if test x"n" != x""; then
 	    echo Encryption: n
 	fi
-	echo Date of packaging: Mon Nov 11 16:36:39 EST 2024
+	echo Date of packaging: Mon Nov 11 16:39:15 EST 2024
 	echo Built with Makeself version 2.5.0
 	echo Build command was: "/usr/bin/makeself \\
     \"/home/tae/glados\" \\
-    \"/home/tae/cb1.run\" \\
+    \"/home/tae/cb2.run\" \\
     \"GLaDOS Chatbot Installer\" \\
-    \"./install.shh\""
+    \"./install.sh\""
 	if test x"$script" != x; then
 	    echo Script run after extraction:
 	    echo "    " $script $scriptargs
@@ -712,7 +712,7 @@ if test x"$keep" = xn; then
     rm -rf "$tmpdir"
 fi
 eval $finish; exit $res
-‹ çx2gì\{wÚH²ŸÑ§èKş@8XÖƒ‡a—İel³ccC27'›£4R4’F;dî|§ûî'»Uİ’Ø“L&ë™…äPWWWW×ã×İE”ƒ¹Gí ŞO’ø@™»	M’È¥	‹¿ûZ/^ívßµNK-¿‹WKûNk¶4£ÙT[Fë;UkğFÔï¾Á+(	e¥{¬ıúÚSÂ„8®—°¨ï91±]Çá–,š3şi?aïé»İëÏøR¶ıßûAôuMıQÿ7:[şo4öÎÿ¿‰ÿï˜f¸²¨µ`¦y°·'í)·ôF¢©í{;ùOòÿ³ÑÑp<~í1ñ]mµ¶ü_o¶vùÿ›¼ÎGSræZÌ™$á*rç‹„ÈVèª®“©»\®È>>•¤K-İ8vŸ¸1Y°ˆÍVdQ?avƒ8c$pˆµ €$	õW$dQ‚YB]ßõç„’€2Y ›8p’[1 ¶	ãÀr)ğ#v`¥Kæ"Åñ £°˜ÈÉ‚‘ê$ëQ­óAlF=Éõ	¶åMäÖMAšˆÅ h-äÑ ®oyØ@†¼Ùs—n6vç³%`šÆ0”³A– "|g|Za:óÜxÑ ¬gX¹Ab|ÈÕØÀy‰™çIÀÁ¹ù\×Òq=D…&™Šb|r»–›3qcÉI#†d¼€Êøˆ?1+Á'HîÜâÔ¬À·]œQÜ“¤)4ÑYpÃø\ÄâúA¢
+‹ ƒy2gì\{wÚH²ŸÑ§èKş@8XÖƒ‡a—İel³ccC27'›£4R4’F;dî|§ûî'»Uİ’Ø“L&ë™…äPWWWW×ã×İE”ƒ¹Gí ŞO’ø@™»	M’È¥	‹¿ûZ/^ívßµNK-¿‹WKûNk¶4£ÙT[Fë;UkğFÔï¾Á+(	e¥{¬ıúÚSÂ„8®—°¨ï91±]Çá–,š3şi?aïé»İëÏøR¶ıßûAôuMıQÿ7:[şo4öÎÿ¿‰ÿï˜f¸²¨µ`¦y°·'í)·ôF¢©í{;ùOòÿ³ÑÑp<~í1ñ]mµ¶ü_o¶vùÿ›¼ÎGSræZÌ™$á*rç‹„ÈVèª®“©»\®È>>•¤K-İ8vŸ¸1Y°ˆÍVdQ?avƒ8c$pˆµ €$	õW$dQ‚YB]ßõç„’€2Y ›8p’[1 ¶	ãÀr)ğ#v`¥Kæ"Åñ £°˜ÈÉ‚‘ê$ëQ­óAlF=Éõ	¶åMäÖMAšˆÅ h-äÑ ®oyØ@†¼Ùs—n6vç³%`šÆ0”³A– "|g|Za:óÜxÑ ¬gX¹Ab|ÈÕØÀy‰™çIÀÁ¹ù\×Òq=D…&™Šb|r»–›3qcÉI#†d¼€Êøˆ?1+Á'HîÜâÔ¬À·]œQÜ“¤)4ÑYpÃø\ÄâúA¢
 pÂõªfMñ‚z™±La0.¨—–¦áğà9~âR„AÄÇÛ¦ãŸÉäâdúãàjHFryuñjt<<&ÕÁ¾WäÇÑôôâå” ÅÕ`<}M.NÈ`üšü07Èğ¿/¯†“	¹¸’Fç—g£!<Î^Æ/È÷Ğo|<;¦Ó‚f¬FÃ	2;^Â×Á÷£³ÑôuC:MÇÈóäâŠÈåàj::zy6¸"—/¯./&CşØGã“+ex>O‘á+øB&§ƒ³3J¼é¯P>rtqùújôâtJN/Î‡ğğû!H6øşl(†‚IFçr<8¼ò^ÀåJB2!ùñtˆp¼ü=š.Æ8£‹ñô
 ¾6`–WÓ¢ë£É°AW£	*ääêâ¼!¡:¡ÇgıÆCÁUM6VHğûËÉ°`H‡ƒ3à5ÁÎ8ÅœXÙíşäùÿj88>*Kû›æÃhÛù¿cè»üÿ-^ÏÈ‹3z|1!SØäï'Á~2f-ˆ<NêäU€ÙàóYD“ ’Æ, Şû,¹¢k2£1¤ $CîúïGY)¹…Ì€™é'P/	=º"4
 RH8˜wy€^‘~U‰Ÿ`>±÷© §wïŞA"‹Iá
