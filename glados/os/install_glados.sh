@@ -1,3 +1,6 @@
+#!/bin/bash
+
+
 echo "Starting GLaDOS Chatbot Installation..."
 
 # Update the system and install essential dependencies
