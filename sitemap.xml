@@ -1,195 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://1t2.pages.dev/s.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/music.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/file.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/downloads.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/stuff.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/wptw.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/bootstrap.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/index.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/search.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/pythonr.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/webbrows/index.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/1t2bs/read.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/1t2bs/index.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/1t2bs/pdfjs/web/viewer.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/tcrv/index.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/tcrv/ud/download.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/cardio/products.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/cardio/file.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/cardio/index.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/cardio/about.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/cardio/game.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/bush/index.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/pybuild/index.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/tnb/index.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/stuff/OFL.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/stuff/index.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/stuff/raftwars2.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/stuff/books/index.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/stuff/books/reader.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/stuff/films/index.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/stuff/films/watch.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://1t2.pages.dev/stuff/films/other.html</loc>
-    <lastmod>2024-10-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
+<url>
+<loc>https://1t2.pages.dev/</loc>
+<lastmod>2024-11-05T10:23:48-05:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/bootstrap.html</loc>
+<lastmod>2024-03-04T11:30:34-05:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/downloads.html</loc>
+<lastmod>2024-11-05T10:34:18-05:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/file.html</loc>
+<lastmod>2024-07-03T10:36:12-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/music.html</loc>
+<lastmod>2024-04-16T15:22:08-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/pythonr.html</loc>
+<lastmod>2024-10-03T11:17:49-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/s.html</loc>
+<lastmod>2024-07-03T10:36:12-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/stuff.html</loc>
+<lastmod>2024-11-05T10:34:18-05:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/updates.html</loc>
+<lastmod>2024-11-08T10:53:43-05:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/wptw.html</loc>
+<lastmod>2024-11-05T10:18:22-05:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/1t2bs/</loc>
+<lastmod>2024-07-03T10:36:12-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/1t2bs/read.html</loc>
+<lastmod>2024-07-03T10:36:12-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/bush/</loc>
+<lastmod>2024-10-16T13:53:16-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/cardio/</loc>
+<lastmod>2024-11-04T15:19:48-05:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/cardio/about.html</loc>
+<lastmod>2024-07-03T10:36:12-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/cardio/file.html</loc>
+<lastmod>2024-07-03T10:36:12-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/cardio/game.html</loc>
+<lastmod>2024-07-03T10:36:12-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/cardio/products.html</loc>
+<lastmod>2024-11-05T12:19:45-05:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/old/wptw.html</loc>
+<lastmod>2024-11-05T10:18:22-05:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/pybuild/</loc>
+<lastmod>2024-10-03T15:17:09-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/stuff/</loc>
+<lastmod>2024-07-03T10:36:12-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/stuff/OFL.html</loc>
+<lastmod>2024-03-08T11:51:31-05:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/stuff/raftwars2.html</loc>
+<lastmod>2024-03-22T12:04:50-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/tcrv/</loc>
+<lastmod>2024-07-03T10:36:12-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/tnb/</loc>
+<lastmod>2024-04-06T11:05:42-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/webbrows/</loc>
+<lastmod>2024-10-04T18:54:50-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/1t2bs/pdfs/pre.pdf</loc>
+<lastmod>2024-10-04T18:54:50-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/1t2bs/pdfs/thecoldairballoon.pdf</loc>
+<lastmod>2024-06-26T10:47:58-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/1t2bs/pdfs/thewhenyougetsofatgenaralchow.pdf</loc>
+<lastmod>2024-06-26T10:47:58-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/stuff/books/</loc>
+<lastmod>2024-04-09T10:52:03-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/stuff/books/coldairballon1.pdf</loc>
+<lastmod>2024-04-09T10:45:28-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/stuff/books/reader.html</loc>
+<lastmod>2024-04-09T10:50:49-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/stuff/films/</loc>
+<lastmod>2024-07-03T11:10:33-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/stuff/films/other.html</loc>
+<lastmod>2024-07-03T11:10:33-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/stuff/films/watch.html</loc>
+<lastmod>2024-07-03T11:10:33-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/tcrv/ud/download.html</loc>
+<lastmod>2024-07-03T10:58:38-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/1t2bs/pdfjs/web/compressed.tracemonkey-pldi-09.pdf</loc>
+<lastmod>2024-06-26T10:47:58-04:00</lastmod>
+</url>
+<url>
+<loc>https://1t2.pages.dev/1t2bs/pdfjs/web/viewer.html</loc>
+<lastmod>2024-06-26T10:47:58-04:00</lastmod>
+</url>
 </urlset>
