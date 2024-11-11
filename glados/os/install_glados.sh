@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # GLaDOS Chatbot Installer Script
 # Automates the setup process for the GLaDOS chatbot on a clean Debian Netinst system
 
