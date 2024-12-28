@@ -3,12 +3,25 @@
 set -e  # Exit on any error
 
 # Variables
-DISK="/dev/sda"  # Target disk for installation, change as needed
+DISK="/dev/sda"  # Replace with the disk to be wiped, change if needed (e.g., /dev/sdb)
 HOSTNAME="steamos"
 USERNAME="steam"
 PASSWORD="password"  # Change to a secure password
 LOCALE="en_US.UTF-8"
 TIMEZONE="America/New_York"  # Change to your timezone
+
+# WARNING: This step will erase all data on the specified disk!
+echo "Warning: This will wipe all data on $DISK. Are you sure? (y/n)"
+read confirm
+if [[ $confirm != "y" ]]; then
+    echo "Aborting installation."
+    exit 1
+fi
+
+# Wipe all partitions on the disk (Be Careful!)
+echo "Wiping all partitions on $DISK..."
+sgdisk --zap-all $DISK
+partprobe $DISK
 
 # Partition and Format Disk
 echo "Partitioning and formatting disk..."
@@ -26,7 +39,7 @@ mount "${DISK}1" /mnt/boot
 
 # Base System Installation
 echo "Installing base system..."
-pacstrap /mnt base linux linux-firmware nano networkmanager
+pacstrap /mnt base linux linux-firmware nano networkmanager grub efibootmgr sudo git vim htop
 
 echo "Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -56,7 +69,7 @@ echo "$USERNAME:$PASSWORD" | chpasswd
 # Enable sudo
 echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel
 
-# Install bootloader
+# Install and Configure GRUB
 pacman -Sy --noconfirm grub efibootmgr
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
