@@ -65,10 +65,10 @@ grub-mkconfig -o /boot/grub/grub.cfg
 systemctl enable NetworkManager
 EOF
 
-# Install Desktop, Steam, and Additional Tools
+# Install Desktop, Steam, Network Tools, and Additional Features
 arch-chroot /mnt /bin/bash <<EOF
 # Install packages
-pacman -Sy --noconfirm xorg-server xorg-xinit openbox steam gdm plymouth gamemode xboxdrv vulkan-icd-loader mesa alsa-utils pavucontrol firefox
+pacman -Sy --noconfirm xorg-server xorg-xinit openbox steam gdm plymouth gamemode xboxdrv vulkan-icd-loader mesa alsa-utils pavucontrol firefox dialog nmtui
 
 # Enable GDM and Xbox Controller
 systemctl enable gdm
@@ -119,7 +119,7 @@ plymouth-set-default-theme spinner
 sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=".*"/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 
-# Create Openbox menu for launching Steam and Firefox
+# Create Openbox menu for launching tools
 mkdir -p /home/$USERNAME/.config/openbox
 cat <<EOL > /home/$USERNAME/.config/openbox/menu.xml
 <openbox_menu>
@@ -137,6 +137,11 @@ cat <<EOL > /home/$USERNAME/.config/openbox/menu.xml
     <item label="Terminal">
       <action name="Execute">
         <command>xterm</command>
+      </action>
+    </item>
+    <item label="Network Configuration">
+      <action name="Execute">
+        <command>nmtui</command>
       </action>
     </item>
     <separator />
