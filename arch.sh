@@ -3,96 +3,58 @@
 set -e  # Exit on any error
 
 # Variables
-DISK="/dev/sda"  # Replace with the disk to be wiped, change if needed (e.g., /dev/sdb)
-HOSTNAME="steamos"
 USERNAME="steam"
 PASSWORD="password"  # Change to a secure password
 LOCALE="en_US.UTF-8"
 TIMEZONE="America/New_York"  # Change to your timezone
 
-# WARNING: This step will erase all data on the specified disk!
-echo "Warning: This will wipe all data on $DISK. Are you sure? (y/n)"
-read confirm
-if [[ $confirm != "y" ]]; then
-    echo "Aborting installation."
-    exit 1
-fi
+# Update and install necessary packages
+echo "Updating system..."
+sudo zypper refresh
+sudo zypper update -y
 
-# Wipe all partitions on the disk (Be Careful!)
-echo "Wiping all partitions on $DISK..."
-sgdisk --zap-all $DISK
-partprobe $DISK
+echo "Installing required packages..."
+sudo zypper install -y \
+    steam \
+    xorg-x11-server \
+    xorg-x11-apps \
+    openbox \
+    gdm \
+    plymouth \
+    gamemode \
+    xboxdrv \
+    vulkan-icd-loader \
+    mesa \
+    alsa-utils \
+    pavucontrol \
+    firefox \
+    dialog \
+    nmtui \
+    sudo \
+    vim \
+    git \
+    htop
 
-# Partition and Format Disk
-echo "Partitioning and formatting disk..."
-parted -s $DISK mklabel gpt
-parted -s $DISK mkpart ESP fat32 1MiB 513MiB
-parted -s $DISK set 1 boot on
-parted -s $DISK mkpart primary ext4 513MiB 100%
-mkfs.fat -F32 "${DISK}1"
-mkfs.ext4 "${DISK}2"
+# Create Steam user
+sudo useradd -m -G wheel $USERNAME
+echo "$USERNAME:$PASSWORD" | sudo chpasswd
 
-echo "Mounting partitions..."
-mount "${DISK}2" /mnt
-mkdir /mnt/boot
-mount "${DISK}1" /mnt/boot
+# Configure sudoers for the steam user
+echo "%wheel ALL=(ALL) ALL" | sudo tee /etc/sudoers.d/wheel
 
-# Base System Installation
-echo "Installing base system..."
-pacstrap /mnt base linux linux-firmware nano networkmanager grub efibootmgr sudo git vim htop
+# Set up GDM (Gnome Display Manager) for autologin
+echo "Configuring GDM for autologin..."
+sudo mkdir -p /etc/gdm
+echo -e "[daemon]\nAutomaticLoginEnable=True\nAutomaticLogin=$USERNAME" | sudo tee /etc/gdm/custom.conf
 
-echo "Generating fstab..."
-genfstab -U /mnt >> /mnt/etc/fstab
+# Enable necessary services
+echo "Enabling services..."
+sudo systemctl enable gdm
+sudo systemctl enable xboxdrv
 
-# System Configuration in Chroot
-arch-chroot /mnt /bin/bash <<EOF
-# Set hostname
-echo "$HOSTNAME" > /etc/hostname
-echo "127.0.0.1 localhost" >> /etc/hosts
-echo "::1 localhost" >> /etc/hosts
-echo "127.0.1.1 $HOSTNAME.localdomain $HOSTNAME" >> /etc/hosts
-
-# Timezone and Locale
-ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
-hwclock --systohc
-echo "$LOCALE UTF-8" > /etc/locale.gen
-locale-gen
-echo "LANG=$LOCALE" > /etc/locale.conf
-
-# Root Password
-echo "root:$PASSWORD" | chpasswd
-
-# Create Steam User
-useradd -m -G wheel $USERNAME
-echo "$USERNAME:$PASSWORD" | chpasswd
-
-# Enable sudo
-echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel
-
-# Install and Configure GRUB
-pacman -Sy --noconfirm grub efibootmgr
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-grub-mkconfig -o /boot/grub/grub.cfg
-
-# Enable services
-systemctl enable NetworkManager
-EOF
-
-# Install Desktop, Steam, Network Tools, and Additional Features
-arch-chroot /mnt /bin/bash <<EOF
-# Install packages
-pacman -Sy --noconfirm xorg-server xorg-xinit openbox steam gdm plymouth gamemode xboxdrv vulkan-icd-loader mesa alsa-utils pavucontrol firefox dialog nmtui
-
-# Enable GDM and Xbox Controller
-systemctl enable gdm
-systemctl enable xboxdrv
-
-# Configure GDM for autologin
-mkdir -p /etc/gdm
-echo -e "[daemon]\nAutomaticLoginEnable=True\nAutomaticLogin=$USERNAME" > /etc/gdm/custom.conf
-
-# Configure Steam Big Picture Mode
-cat <<EOL > /etc/systemd/system/steam-bigpicture.service
+# Create Steam Big Picture systemd service to launch Steam in Big Picture mode
+echo "Creating Steam Big Picture service..."
+sudo tee /etc/systemd/system/steam-bigpicture.service > /dev/null <<EOL
 [Unit]
 Description=Steam Big Picture Mode
 After=graphical.target
@@ -108,10 +70,12 @@ Environment=DISPLAY=:0
 WantedBy=graphical.target
 EOL
 
-systemctl enable steam-bigpicture.service
+# Enable Steam Big Picture mode to start automatically on boot
+sudo systemctl enable steam-bigpicture.service
 
-# Configure Openbox as a lightweight desktop
-cat <<EOL > /etc/systemd/system/openbox.service
+# Set up Openbox as the default window manager
+echo "Setting up Openbox as the default window manager..."
+sudo tee /etc/systemd/system/openbox.service > /dev/null <<EOL
 [Unit]
 Description=Openbox Desktop
 After=graphical.target
@@ -127,14 +91,16 @@ Environment=DISPLAY=:0
 WantedBy=graphical.target
 EOL
 
-# Configure splash screen
-plymouth-set-default-theme spinner
-sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=".*"/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/' /etc/default/grub
-grub-mkconfig -o /boot/grub/grub.cfg
+# Set Plymouth theme (optional splash screen)
+echo "Setting Plymouth theme..."
+sudo plymouth-set-default-theme spinner
+sudo sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=".*"/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/' /etc/default/grub
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 
-# Create Openbox menu for launching tools
+# Create Openbox menu for launching Steam, Firefox, and terminal
+echo "Creating Openbox menu..."
 mkdir -p /home/$USERNAME/.config/openbox
-cat <<EOL > /home/$USERNAME/.config/openbox/menu.xml
+sudo tee /home/$USERNAME/.config/openbox/menu.xml > /dev/null <<EOL
 <openbox_menu>
   <menu id="root-menu" label="Openbox menu">
     <item label="Steam Big Picture">
@@ -165,10 +131,9 @@ cat <<EOL > /home/$USERNAME/.config/openbox/menu.xml
 </openbox_menu>
 EOL
 
-chown -R $USERNAME:$USERNAME /home/$USERNAME/.config
-EOF
+# Adjust ownership of the Openbox config directory
+sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/.config
 
-echo "Unmounting partitions..."
-umount -R /mnt
-
-echo "Installation complete. Reboot your system."
+# Final steps: Enable autologin and reboot
+echo "System setup complete. Rebooting the system..."
+sudo reboot
