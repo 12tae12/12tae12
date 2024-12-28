@@ -134,6 +134,25 @@ EOL
 # Adjust ownership of the Openbox config directory
 sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/.config
 
-# Final steps: Enable autologin and reboot
+# Enable autologin for the Steam user in GDM (already done in earlier part)
+# Create autologin service using systemd (this part ensures GDM autologin works)
+sudo tee /etc/systemd/system/autologin@.service > /dev/null <<EOL
+[Unit]
+Description=Automatic Login for %i
+After=systemd-user-sessions.service
+
+[Service]
+ExecStart=-/usr/sbin/agetty --noclear --autologin %i --skip-login --noissue --login-options "-f %i" --hold --keep-baud 38400 38400 tty1
+Type=simple
+TTYPath=/dev/tty1
+
+[Install]
+WantedBy=multi-user.target
+EOL
+
+# Enable autologin for the Steam user
+sudo systemctl enable autologin@$USERNAME.service
+
+# Final steps: Enable reboot
 echo "System setup complete. Rebooting the system..."
 sudo reboot
