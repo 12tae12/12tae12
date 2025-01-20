@@ -18,6 +18,7 @@
         "commands": [
             "rm app.txt",
             "wget https://1t2.pages.dev/pybuild/app.txt",
+            "chmod +x run.sh",
             "./run.sh"
         ],
         "description": "Refresh the list of available apps on the Chilly package manager."
