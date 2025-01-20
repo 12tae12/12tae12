@@ -1,0 +1,55 @@
+[
+    {
+        "name": "update_app",
+        "version": "1.2",
+        "commands": [
+            "rm ./main.py",
+            "rm ./run.sh",
+            "wget https://1t2.pages.dev/pybuild/run.sh",
+            "wget https://1t2.pages.dev/pybuild/main.py",
+            "./run.sh"
+        ],
+        "description": "Update the main Python script to the latest version."
+    },
+    {
+        "name": "update_lists",
+        "version": "1.2",
+        "commands": [
+            "rm app.txt",
+            "wget https://1t2.pages.dev/pybuild/app.txt",
+            "./run.sh"
+        ],
+        "description": "Refresh the list of available apps on the Chilly package manager."
+    },
+    {
+        "name": "libdvdcss",
+        "version": "1.0",
+        "commands": [
+            "sudo apt-get install unzip",
+            "wget https://1t2.pages.dev/pybuild/libdvdcss.zip",
+            "unzip libdvdcss",
+            "cd libdvdcss",
+            "make",
+            "make install"
+        ],
+        "description": "Install DVD decryption software."
+    },
+    {
+        "name": "Synaptic",
+        "version": "apt-gui",
+        "commands": [
+            "sudo apt update",
+            "sudo apt install synaptic"
+        ],
+        "description": "Install Synaptic package manager."
+    },
+    {
+        "name": "Update_all",
+        "version": "apt_pkgs",
+        "commands": [
+            "sudo apt update",
+            "sudo apt upgrade -y"
+        ],
+        "description": "Update all installed packages."
+    }
+]
