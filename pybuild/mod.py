@@ -1,10 +1,13 @@
 import sys
 import os
 import logging
+import json
+import tempfile
+import shutil
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QLabel, QLineEdit, QListWidget, 
-    QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, 
-    QTextEdit, QInputDialog, QCheckBox
+    QApplication, QWidget, QLabel, QLineEdit, QListWidget,
+    QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox,
+    QTextEdit, QCheckBox
 )
 from PyQt5.QtCore import Qt
 
@@ -14,7 +17,10 @@ logging.basicConfig(level=logging.DEBUG)
 class AppGenerator(QWidget):
     def __init__(self):
         super().__init__()
-        self.file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app.txt")
+        self.original_pkg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pkg.cpm")
+        self.temp_dir = tempfile.mkdtemp()
+        self.temp_app_path = os.path.join(self.temp_dir, "app.txt")
+
         self.apps = self.load_apps()
         self.init_ui()
 
@@ -67,7 +73,7 @@ class AppGenerator(QWidget):
         button_layout.addWidget(self.remove_button)
 
         self.save_button = QPushButton("Save Changes")
-        self.save_button.clicked.connect(self.save_to_file)
+        self.save_button.clicked.connect(self.save_to_pkg)
         button_layout.addWidget(self.save_button)
 
         layout.addLayout(button_layout)
@@ -85,29 +91,34 @@ class AppGenerator(QWidget):
         self.filter_apps()
 
     def load_apps(self):
-        """Load the apps from app.txt into a list."""
+        """Load the apps from pkg.cpm into a list."""
+        if not os.path.exists(self.original_pkg_path):
+            QMessageBox.critical(self, "Error", "pkg.cpm file not found!")
+            return []
+
+        # Convert pkg.cpm to app.txt in a temporary folder
         try:
+            with open(self.original_pkg_path, "r") as file:
+                data = json.load(file)
+
             apps = []
-            with open(self.file_path, "r") as file:
-                app_name, version, commands, description = None, None, [], ""
-                for line in file:
-                    line = line.strip()
-                    if line.startswith("Commands:"):
-                        commands = line.split(": ")[1].split(", ")
-                    elif line.startswith("Description:"):
-                        description = line.split(": ", 1)[1]
-                    elif line.startswith("App"):
-                        if app_name and version and commands:
-                            apps.append((app_name, version, commands, description))
-                        parts = line.split()
-                        app_name, version = parts[1], parts[2]
-                        commands, description = [], ""
-                if app_name and version and commands:
-                    apps.append((app_name, version, commands, description))
-            logging.debug(f"Loaded apps: {apps}")
+            with open(self.temp_app_path, "w") as temp_file:
+                for app in data.get("apps", []):
+                    name = app["name"]
+                    version = app["version"]
+                    commands = app["commands"]
+                    description = app.get("description", "")
+                    temp_file.write(f"App {name} {version}\n")
+                    temp_file.write(f"Commands: {', '.join(commands)}\n")
+                    if description:
+                        temp_file.write(f"Description: {description}\n")
+                    apps.append((name, version, commands, description))
+
+            logging.debug(f"Converted pkg.cpm to app.txt at {self.temp_app_path}")
             return apps
-        except FileNotFoundError:
-            logging.error("App list file not found!")
+        except Exception as e:
+            logging.error(f"Error processing pkg.cpm: {e}")
+            QMessageBox.critical(self, "Error", f"Failed to process pkg.cpm: {e}")
             return []
 
     def filter_apps(self):
@@ -178,22 +189,32 @@ class AppGenerator(QWidget):
         self.filter_apps()
         QMessageBox.information(self, "Success", f"App '{app_name}' removed.")
 
-    def save_to_file(self):
-        """Save the modified apps list back to app.txt."""
+    def save_to_pkg(self):
+        """Save the modified apps list back to pkg.cpm."""
         try:
-            with open(self.file_path, "w") as file:
-                for name, version, commands, description in self.apps:
-                    file.write(f"App {name} {version}\n")
-                    file.write(f"Commands: {', '.join(commands)}\n")
-                    if description:
-                        file.write(f"Description: {description}\n")
+            data = {
+                "apps": [
+                    {"name": name, "version": version, "commands": commands, "description": description}
+                    for name, version, commands, description in self.apps
+                ]
+            }
+            with open(self.original_pkg_path, "w") as file:
+                json.dump(data, file, indent=4)
             QMessageBox.information(self, "Success", "Changes saved successfully.")
         except Exception as e:
-            logging.error(f"Error saving to file: {e}")
+            logging.error(f"Error saving to pkg.cpm: {e}")
             QMessageBox.critical(self, "Error", "Failed to save changes.")
+
+    def closeEvent(self, event):
+        """Cleanup the temporary folder."""
+        shutil.rmtree(self.temp_dir)
+        logging.debug(f"Temporary directory {self.temp_dir} removed.")
+        event.accept()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     generator = AppGenerator()
     generator.show()
     sys.exit(app.exec_())
+

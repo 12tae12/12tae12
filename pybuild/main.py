@@ -1,8 +1,8 @@
 import sys
 import os
 import logging
-from PyQt5.QtGui import QApplication
 import subprocess
+import json
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QLineEdit, QListWidget, 
     QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QInputDialog, 
@@ -13,33 +13,68 @@ from PyQt5.QtCore import Qt, QThread, pyqtSignal
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
+PKG_FILE = "pkg.cpm"
+APP_FILE = "app.txt"
+
+# Utility to convert app.txt to pkg.cpm
+def convert_app_txt_to_pkg_cpm():
+    try:
+        if os.path.exists(APP_FILE):
+            logging.info(f"Converting {APP_FILE} to {PKG_FILE}.")
+            apps = []
+            with open(APP_FILE, "r") as file:
+                app_name, version, commands, description = None, None, [], ""
+                for line in file:
+                    line = line.strip()
+                    if line.startswith("Commands:"):
+                        commands.extend(line.split(": ")[1].split(", "))
+                    elif line.startswith("Description:"):
+                        description = line.split(": ", 1)[1]
+                    elif line.startswith("App"):
+                        if app_name and version and commands:
+                            apps.append({
+                                "name": app_name,
+                                "version": version,
+                                "commands": commands,
+                                "description": description
+                            })
+                        parts = line.split()
+                        app_name, version = parts[1], parts[2]
+                        commands, description = [], ""
+                if app_name and version and commands:
+                    apps.append({
+                        "name": app_name,
+                        "version": version,
+                        "commands": commands,
+                        "description": description
+                    })
+            with open(PKG_FILE, "w") as pkg_file:
+                json.dump(apps, pkg_file, indent=4)
+            os.remove(APP_FILE)
+            logging.info(f"Converted {APP_FILE} to {PKG_FILE} successfully.")
+    except Exception as e:
+        logging.error(f"Error converting {APP_FILE} to {PKG_FILE}: {e}")
+
+# Load apps from pkg.cpm
 def load_apps():
     try:
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(script_dir, "app.txt")
-        logging.info(f"Loading app list from: {file_path}")
+        convert_app_txt_to_pkg_cpm()
 
-        apps = []
-        with open(file_path, "r") as file:
-            app_name, version, commands, description = None, None, [], ""
-            for line in file:
-                line = line.strip()
-                if line.startswith("Commands:"):
-                    commands.extend(line.split(": ")[1].split(", "))
-                elif line.startswith("Description:"):
-                    description = line.split(": ", 1)[1]
-                elif line.startswith("App"):
-                    if app_name and version and commands:
-                        apps.append((f"{app_name} {version}", commands, description))
-                    parts = line.split()
-                    app_name, version = parts[1], parts[2]
-                    commands, description = [], ""
-            if app_name and version and commands:
-                apps.append((f"{app_name} {version}", commands, description))
-        return apps
+        if not os.path.exists(PKG_FILE):
+            logging.error("No package file found!")
+            QMessageBox.critical(None, "Error", "No package file found!")
+            return []
+
+        logging.info(f"Loading app list from: {PKG_FILE}")
+        with open(PKG_FILE, "r") as file:
+            return json.load(file)
     except FileNotFoundError:
-        logging.error("App list file not found!")
-        QMessageBox.critical(None, "Error", "App list file not found!")
+        logging.error("Package file not found!")
+        QMessageBox.critical(None, "Error", "Package file not found!")
+        return []
+    except json.JSONDecodeError as e:
+        logging.error(f"Error parsing {PKG_FILE}: {e}")
+        QMessageBox.critical(None, "Error", f"Error parsing {PKG_FILE}: {e}")
         return []
 
 class CommandRunner(QThread):
@@ -126,17 +161,18 @@ class AppInstaller(QWidget):
     def filter_apps(self):
         search_term = self.search_entry.text().lower()
         self.app_list.clear()
-        for app_name, _, description in self.apps:
-            if search_term in app_name.lower() or search_term in description.lower():
-                self.app_list.addItem(app_name)
+        for app in self.apps:
+            if search_term in app["name"].lower() or search_term in app["description"].lower():
+                self.app_list.addItem(f"{app['name']} {app['version']}")
 
     def on_install(self):
         selected_item = self.app_list.currentItem()
         if selected_item:
             app_name = selected_item.text()
-            for name, commands, description in self.apps:
-                if name == app_name:
-                    requires_sudo = any(cmd.startswith("sudo ") for cmd in commands)
+            for app in self.apps:
+                full_name = f"{app['name']} {app['version']}"
+                if full_name == app_name:
+                    requires_sudo = any(cmd.startswith("sudo ") for cmd in app['commands'])
                     password = None
 
                     if requires_sudo:
@@ -150,7 +186,7 @@ class AppInstaller(QWidget):
                     self.install_button.setEnabled(False)
                     self.progress_bar.show()  # Show the progress bar during installation
 
-                    self.runner = CommandRunner(commands, password)
+                    self.runner = CommandRunner(app['commands'], password)
                     self.runner.progress.connect(self.progress_bar.setValue)
                     self.runner.error_signal.connect(self.on_errors)
                     self.runner.success_signal.connect(self.on_success)
@@ -196,3 +232,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     installer = AppInstaller()
     sys.exit(app.exec_())
+
