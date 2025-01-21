@@ -6,7 +6,7 @@ import json
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel, QLineEdit, QListWidget, 
     QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QInputDialog, 
-    QCheckBox, QProgressBar
+    QCheckBox, QProgressBar, QTextEdit
 )
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 
@@ -15,6 +15,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 PKG_FILE = "pkg.cpm"
 APP_FILE = "app.txt"
+THEME_FILE = "theme.cfg"
 
 # Utility to convert app.txt to pkg.cpm
 def convert_app_txt_to_pkg_cpm():
@@ -116,7 +117,7 @@ class AppInstaller(QWidget):
     def __init__(self):
         super().__init__()
         self.apps = load_apps()
-        self.dark_mode = False  # Track theme status
+        self.dark_mode = self.load_theme_setting()
         self.init_ui()
 
     def init_ui(self):
@@ -131,7 +132,12 @@ class AppInstaller(QWidget):
         layout.addLayout(search_layout)
 
         self.app_list = QListWidget()
+        self.app_list.itemClicked.connect(self.show_details)
         layout.addWidget(self.app_list)
+
+        self.details_box = QTextEdit()
+        self.details_box.setReadOnly(True)
+        layout.addWidget(self.details_box)
 
         self.progress_bar = QProgressBar()
         self.progress_bar.setValue(0)
@@ -144,6 +150,7 @@ class AppInstaller(QWidget):
         button_layout.addWidget(self.install_button)
 
         self.theme_toggle = QCheckBox("Dark Mode")
+        self.theme_toggle.setChecked(self.dark_mode)
         self.theme_toggle.stateChanged.connect(self.toggle_theme)
         button_layout.addWidget(self.theme_toggle)
 
@@ -154,7 +161,7 @@ class AppInstaller(QWidget):
         self.setMinimumWidth(400)
         self.setMaximumWidth(600)
 
-        self.set_light_theme()  # Default to light theme
+        self.apply_theme()  # Apply the theme based on the saved setting
         self.show()
         self.filter_apps()
 
@@ -164,6 +171,13 @@ class AppInstaller(QWidget):
         for app in self.apps:
             if search_term in app["name"].lower() or search_term in app["description"].lower():
                 self.app_list.addItem(f"{app['name']} {app['version']}")
+
+    def show_details(self, item):
+        app_name = item.text()
+        for app in self.apps:
+            full_name = f"{app['name']} {app['version']}"
+            if full_name == app_name:
+                self.details_box.setText(f"Name: {app['name']}\nVersion: {app['version']}\n\nDescription:\n{app['description']}")
 
     def on_install(self):
         selected_item = self.app_list.currentItem()
@@ -209,7 +223,12 @@ class AppInstaller(QWidget):
         QMessageBox.information(self, "Installation", "Installation completed successfully!")
 
     def toggle_theme(self):
-        if self.theme_toggle.isChecked():
+        self.dark_mode = self.theme_toggle.isChecked()
+        self.save_theme_setting()
+        self.apply_theme()
+
+    def apply_theme(self):
+        if self.dark_mode:
             self.set_dark_theme()
         else:
             self.set_light_theme()
@@ -218,18 +237,27 @@ class AppInstaller(QWidget):
         self.setStyleSheet("""
             QWidget { background-color: #2e2e2e; color: white; }
             QPushButton { background-color: #1e1e1e; color: white; }
-            QLineEdit, QListWidget, QProgressBar { background-color: #444; color: white; }
+            QLineEdit, QListWidget, QProgressBar, QTextEdit { background-color: #444; color: white; }
         """)
 
     def set_light_theme(self):
         self.setStyleSheet("""
             QWidget { background-color: white; color: black; }
             QPushButton { background-color: #2ecc71; color: white; }
-            QLineEdit, QListWidget, QProgressBar { background-color: #fff; color: black; }
+            QLineEdit, QListWidget, QProgressBar, QTextEdit { background-color: #fff; color: black; }
         """)
+
+    def save_theme_setting(self):
+        with open(THEME_FILE, "w") as file:
+            file.write("dark" if self.dark_mode else "light")
+
+    def load_theme_setting(self):
+        if os.path.exists(THEME_FILE):
+            with open(THEME_FILE, "r") as file:
+                return file.read().strip() == "dark"
+        return False
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     installer = AppInstaller()
     sys.exit(app.exec_())
-
