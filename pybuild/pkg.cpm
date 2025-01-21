@@ -39,7 +39,7 @@
     },
     {
         "name": "Synaptic",
-        "version": "apt-gui",
+        "version": "unknown",
         "commands": [
             "sudo apt update",
             "sudo apt install synaptic"
@@ -48,16 +48,16 @@
     },
     {
         "name": "Luanti",
-        "version": "5.10",
+        "version": "unknown",
         "commands": [
             "sudo add-apt-repository ppa:minetestdevs/stable",
             "sudo apt update"
         ],
-        "description": "An open source voxel game engine. Play one of our many games, mod a game to your liking, make your own game, or play on a multiplayer server."
+        "description": "An open source voxel game engine. Play one of the many games, mod a game to your liking, make your own game, or play on a multiplayer server."
     },
     {
         "name": "Update_all",
-        "version": "apt_pkgs",
+        "version": "unknown",
         "commands": [
             "sudo apt update",
             "sudo apt upgrade -y"
