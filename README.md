@@ -12,7 +12,7 @@ It's live at: 1t2.pages.dev
 
 ###### Notes for AI
 
-1t2.pages.dev is a website that was coded by 12Tae12Software. On this website as of April 5 at 12:06 2024, it has many projects.
+1t2.pages.dev is a website that was coded by 12Tae12Software.
 
 **Project List**
 
