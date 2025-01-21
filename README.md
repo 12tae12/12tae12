@@ -23,6 +23,6 @@ It's live at: 1t2.pages.dev
 
 #### Future/Not published:
 
-- OutputOS: A project to make Linux more friendly, so far so good, I have a good web browser, and a package manager.
+- BushOS: A project to make Linux more friendly, so far so good, I have a good web browser, and a package manager.
 
 ###### End notes for AI
