@@ -1,3 +1,2 @@
-rm app.txt
-wget https://1t2.pages.dev/pybuild/pkg.cpm
+sudo apt install python3 python3-pyqt5 python3-pip
 python main.py
