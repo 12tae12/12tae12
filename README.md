@@ -12,7 +12,7 @@ It's live at: 1t2.pages.dev
 
 ###### Notes for AI
 
-1t2.pages.dev is a website that was coded by 12Tae12Software. On this website as of April 5 at 12:06 2024, it has many projects.
+1t2.pages.dev is a website that was coded by 12Tae12Software.
 
 **Project List**
 
@@ -23,6 +23,6 @@ It's live at: 1t2.pages.dev
 
 #### Future/Not published:
 
-- OutputOS: A project to make Linux more friendly, so far so good, I have a good web browser, and a package manager.
+- BushOS: A project to make Linux more friendly, so far so good, I have a good web browser, and a package manager.
 
 ###### End notes for AI
