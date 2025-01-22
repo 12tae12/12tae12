@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirect System</title>
+    <style>
+        body {
+            background-color: #006900;
+            color: #ffffff;
+            font-family: 'Comic Neue', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            color: #00aced;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        const redirects = {
+            1: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            2: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            3: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            4: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            5: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        };
+
+        function handleRedirect() {
+            const hash = window.location.hash.substring(1); // Get the number after #
+            const targetURL = redirects[hash];
+
+            if (targetURL) {
+                setTimeout(() => {
+                    window.location.href = targetURL;
+                }, 3000); // Redirect after 3 seconds
+            } else {
+                document.getElementById('redirectList').innerHTML = Object.entries(redirects)
+                    .map(([key, url]) => `<li>${key} = <a href="#${key}">${url}</a></li>`)
+                    .join('');
+            }
+        }
+
+        window.onload = handleRedirect;
+    </script>
+</head>
+<body>
+    <h1>Redirect System</h1>
+    <p>If no redirect number is provided, here are the available options:</p>
+    <ul id="redirectList">
+        <!-- The list will be populated dynamically -->
+    </ul>
+</body>
+</html>
