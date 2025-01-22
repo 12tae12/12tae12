@@ -84,6 +84,7 @@ parentEventsFunctionContext.getInstancesCountOnScene(objectName) :
 
 gdjs.evtsExt__UpdateChecker__UpdateAvailable.eventsList0(runtimeScene, eventsFunctionContext);
 
+
 return !!eventsFunctionContext.returnValue;
 }
 

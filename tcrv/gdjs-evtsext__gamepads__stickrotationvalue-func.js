@@ -80,6 +80,7 @@ if (argName === "stick") return stick;
 
 gdjs.evtsExt__Gamepads__StickRotationValue.eventsList0(runtimeScene, eventsFunctionContext);
 
+
 return Number(eventsFunctionContext.returnValue) || 0;
 }
 

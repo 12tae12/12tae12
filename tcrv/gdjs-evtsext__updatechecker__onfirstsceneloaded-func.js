@@ -79,6 +79,7 @@ parentEventsFunctionContext.getInstancesCountOnScene(objectName) :
 
 gdjs.evtsExt__UpdateChecker__onFirstSceneLoaded.eventsList0(runtimeScene, eventsFunctionContext);
 
+
 return;
 }
 

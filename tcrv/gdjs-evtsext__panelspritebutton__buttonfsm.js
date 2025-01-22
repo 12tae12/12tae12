@@ -59,6 +59,7 @@ gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM = class ButtonFSM extends g
     };
   }
   updateFromNetworkSyncData(networkSyncData) {
+    super.updateFromNetworkSyncData(networkSyncData);
     
     if (networkSyncData.props.ShouldCheckHovering !== undefined)
       this._behaviorData.ShouldCheckHovering = networkSyncData.props.ShouldCheckHovering;
@@ -791,6 +792,12 @@ gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.doStepPostEventsC
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.doStepPostEventsContext.GDObjectObjects5.length = 0;
 
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.doStepPostEventsContext.eventsList9(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.doStepPostEventsContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.doStepPostEventsContext.GDObjectObjects2.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.doStepPostEventsContext.GDObjectObjects3.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.doStepPostEventsContext.GDObjectObjects4.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.doStepPostEventsContext.GDObjectObjects5.length = 0;
+
 
 return;
 }
@@ -883,6 +890,9 @@ gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.onDeActivateConte
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.onDeActivateContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.onDeActivateContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.onDeActivateContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.onDeActivateContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -978,6 +988,9 @@ gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.ResetStateContext
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.ResetStateContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.ResetStateContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.ResetStateContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.ResetStateContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -1076,6 +1089,9 @@ gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsIdleContext.GDO
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsIdleContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsIdleContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsIdleContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsIdleContext.GDObjectObjects2.length = 0;
+
 
 return !!eventsFunctionContext.returnValue;
 }
@@ -1174,6 +1190,9 @@ gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsClickedContext.
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsClickedContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsClickedContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsClickedContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsClickedContext.GDObjectObjects2.length = 0;
+
 
 return !!eventsFunctionContext.returnValue;
 }
@@ -1272,6 +1291,9 @@ gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsHoveredContext.
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsHoveredContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsHoveredContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsHoveredContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsHoveredContext.GDObjectObjects2.length = 0;
+
 
 return !!eventsFunctionContext.returnValue;
 }
@@ -1390,6 +1412,9 @@ gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsFocusedContext.
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsFocusedContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsFocusedContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsFocusedContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsFocusedContext.GDObjectObjects2.length = 0;
+
 
 return !!eventsFunctionContext.returnValue;
 }
@@ -1488,6 +1513,9 @@ gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsPressedContext.
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsPressedContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsPressedContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsPressedContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsPressedContext.GDObjectObjects2.length = 0;
+
 
 return !!eventsFunctionContext.returnValue;
 }
@@ -1586,6 +1614,9 @@ gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsPressedOutsideC
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsPressedOutsideContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsPressedOutsideContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsPressedOutsideContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.IsPressedOutsideContext.GDObjectObjects2.length = 0;
+
 
 return !!eventsFunctionContext.returnValue;
 }
@@ -1675,6 +1706,9 @@ gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.TouchIdContext.GD
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.TouchIdContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.TouchIdContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.TouchIdContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__PanelSpriteButton__ButtonFSM.ButtonFSM.prototype.TouchIdContext.GDObjectObjects2.length = 0;
+
 
 return Number(eventsFunctionContext.returnValue) || 0;
 }

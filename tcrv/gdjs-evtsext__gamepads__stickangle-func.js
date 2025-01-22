@@ -8,7 +8,7 @@ if (typeof gdjs.evtsExt__Gamepads__StickAngle !== "undefined") {
 gdjs.evtsExt__Gamepads__StickAngle = {};
 
 
-gdjs.evtsExt__Gamepads__StickAngle.userFunc0x7da140 = function GDJSInlineCode(runtimeScene, eventsFunctionContext) {
+gdjs.evtsExt__Gamepads__StickAngle.userFunc0xbc5698 = function GDJSInlineCode(runtimeScene, eventsFunctionContext) {
 "use strict";
 /** @type {Gamepad[]} */
 const gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
@@ -50,7 +50,7 @@ gdjs.evtsExt__Gamepads__StickAngle.eventsList0 = function(runtimeScene, eventsFu
 {
 
 
-gdjs.evtsExt__Gamepads__StickAngle.userFunc0x7da140(runtimeScene, typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : undefined);
+gdjs.evtsExt__Gamepads__StickAngle.userFunc0xbc5698(runtimeScene, typeof eventsFunctionContext !== 'undefined' ? eventsFunctionContext : undefined);
 
 }
 
@@ -114,6 +114,7 @@ if (argName === "stick") return stick;
 
 
 gdjs.evtsExt__Gamepads__StickAngle.eventsList0(runtimeScene, eventsFunctionContext);
+
 
 return Number(eventsFunctionContext.returnValue) || 0;
 }

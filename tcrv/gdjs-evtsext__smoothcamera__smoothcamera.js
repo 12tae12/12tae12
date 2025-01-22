@@ -227,6 +227,7 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera = class SmoothCamera exten
     };
   }
   updateFromNetworkSyncData(networkSyncData) {
+    super.updateFromNetworkSyncData(networkSyncData);
     
     if (networkSyncData.props.LeftwardSpeed !== undefined)
       this._behaviorData.LeftwardSpeed = networkSyncData.props.LeftwardSpeed;
@@ -784,6 +785,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.onCreatedContext
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.onCreatedContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.onCreatedContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.onCreatedContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.onCreatedContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -886,6 +890,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.doStepPreEventsC
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.doStepPreEventsContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.doStepPreEventsContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.doStepPreEventsContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.doStepPreEventsContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -988,6 +995,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.MoveCameraCloser
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.MoveCameraCloserContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.MoveCameraCloserContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.MoveCameraCloserContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.MoveCameraCloserContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -1299,6 +1309,10 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DoMoveCameraClos
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DoMoveCameraCloserContext.GDObjectObjects3.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DoMoveCameraCloserContext.eventsList6(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DoMoveCameraCloserContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DoMoveCameraCloserContext.GDObjectObjects2.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DoMoveCameraCloserContext.GDObjectObjects3.length = 0;
+
 
 return;
 }
@@ -1418,6 +1432,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.WaitAndCatchUpCo
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.WaitAndCatchUpContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.WaitAndCatchUpContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.WaitAndCatchUpContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.WaitAndCatchUpContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -1770,6 +1787,13 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DrawDebugContext
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DrawDebugContext.GDShapePainterObjects3.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DrawDebugContext.eventsList6(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DrawDebugContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DrawDebugContext.GDObjectObjects2.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DrawDebugContext.GDObjectObjects3.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DrawDebugContext.GDShapePainterObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DrawDebugContext.GDShapePainterObjects2.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.DrawDebugContext.GDShapePainterObjects3.length = 0;
+
 
 return;
 }
@@ -1880,6 +1904,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowOnXCont
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowOnXContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowOnXContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowOnXContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowOnXContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -1990,6 +2017,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowOnYCont
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowOnYContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowOnYContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowOnYContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowOnYContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -2083,6 +2113,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAre
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaRightContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaRightContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaRightContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaRightContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -2176,6 +2209,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAre
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaLeftContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaLeftContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaLeftContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaLeftContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -2269,6 +2305,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAre
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaTopContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaTopContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaTopContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaTopContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -2362,6 +2401,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAre
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaBottomContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaBottomContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaBottomContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetFollowFreeAreaBottomContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -2455,6 +2497,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetLeftwardSpeed
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetLeftwardSpeedMaxContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetLeftwardSpeedMaxContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetLeftwardSpeedMaxContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetLeftwardSpeedMaxContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -2548,6 +2593,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetRightwardSpee
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetRightwardSpeedMaxContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetRightwardSpeedMaxContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetRightwardSpeedMaxContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetRightwardSpeedMaxContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -2641,6 +2689,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetUpwardSpeedMa
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetUpwardSpeedMaxContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetUpwardSpeedMaxContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetUpwardSpeedMaxContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetUpwardSpeedMaxContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -2734,6 +2785,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetDownwardSpeed
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetDownwardSpeedMaxContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetDownwardSpeedMaxContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetDownwardSpeedMaxContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetDownwardSpeedMaxContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -2830,6 +2884,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetLeftwardSpeed
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetLeftwardSpeedContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetLeftwardSpeedContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetLeftwardSpeedContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetLeftwardSpeedContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -2926,6 +2983,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetRightwardSpee
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetRightwardSpeedContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetRightwardSpeedContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetRightwardSpeedContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetRightwardSpeedContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -3022,6 +3082,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetDownwardSpeed
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetDownwardSpeedContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetDownwardSpeedContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetDownwardSpeedContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetDownwardSpeedContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -3118,6 +3181,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetUpwardSpeedCo
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetUpwardSpeedContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetUpwardSpeedContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetUpwardSpeedContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetUpwardSpeedContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -3207,6 +3273,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.OffsetXContext.G
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.OffsetXContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.OffsetXContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.OffsetXContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.OffsetXContext.GDObjectObjects2.length = 0;
+
 
 return Number(eventsFunctionContext.returnValue) || 0;
 }
@@ -3300,6 +3369,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetXOpCont
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetXOpContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetXOpContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetXOpContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetXOpContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -3400,6 +3472,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetXContex
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetXContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetXContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetXContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetXContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -3489,6 +3564,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.OffsetYContext.G
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.OffsetYContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.OffsetYContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.OffsetYContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.OffsetYContext.GDObjectObjects2.length = 0;
+
 
 return Number(eventsFunctionContext.returnValue) || 0;
 }
@@ -3589,6 +3667,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetYOpCont
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetYOpContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetYOpContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetYOpContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetYOpContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -3682,6 +3763,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetYContex
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetYContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetYContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetYContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetOffsetYContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -3775,6 +3859,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetForecastTimeC
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetForecastTimeContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetForecastTimeContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetForecastTimeContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetForecastTimeContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -3868,6 +3955,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetCameraDelayCo
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetCameraDelayContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetCameraDelayContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetCameraDelayContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.SetCameraDelayContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -3957,6 +4047,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaLeftCont
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaLeftContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaLeftContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaLeftContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaLeftContext.GDObjectObjects2.length = 0;
+
 
 return Number(eventsFunctionContext.returnValue) || 0;
 }
@@ -4046,6 +4139,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaRightCon
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaRightContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaRightContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaRightContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaRightContext.GDObjectObjects2.length = 0;
+
 
 return Number(eventsFunctionContext.returnValue) || 0;
 }
@@ -4135,6 +4231,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaBottomCo
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaBottomContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaBottomContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaBottomContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaBottomContext.GDObjectObjects2.length = 0;
+
 
 return Number(eventsFunctionContext.returnValue) || 0;
 }
@@ -4224,6 +4323,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaTopConte
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaTopContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaTopContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaTopContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.FreeAreaTopContext.GDObjectObjects2.length = 0;
+
 
 return Number(eventsFunctionContext.returnValue) || 0;
 }
@@ -4652,7 +4754,7 @@ for (var i = 0, k = 0, l = gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateDelayedPositionContext.GDObjectObjects1.length = k;
 if (isConditionTrue_0) {
 isConditionTrue_0 = false;
-{isConditionTrue_0 = eventsFunctionContext.getOnceTriggers().triggerOnce(14074628);
+{isConditionTrue_0 = eventsFunctionContext.getOnceTriggers().triggerOnce(14857964);
 }
 }
 if (isConditionTrue_0) {
@@ -4775,6 +4877,10 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateDelayedPos
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateDelayedPositionContext.GDObjectObjects3.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateDelayedPositionContext.eventsList6(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateDelayedPositionContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateDelayedPositionContext.GDObjectObjects2.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateDelayedPositionContext.GDObjectObjects3.length = 0;
+
 
 return;
 }
@@ -4867,6 +4973,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.IsDelayedContext
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.IsDelayedContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.IsDelayedContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.IsDelayedContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.IsDelayedContext.GDObjectObjects2.length = 0;
+
 
 return !!eventsFunctionContext.returnValue;
 }
@@ -4956,6 +5065,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.CurrentDelayCont
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.CurrentDelayContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.CurrentDelayContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.CurrentDelayContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.CurrentDelayContext.GDObjectObjects2.length = 0;
+
 
 return Number(eventsFunctionContext.returnValue) || 0;
 }
@@ -5054,6 +5166,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.IsWaitingContext
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.IsWaitingContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.IsWaitingContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.IsWaitingContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.IsWaitingContext.GDObjectObjects2.length = 0;
+
 
 return !!eventsFunctionContext.returnValue;
 }
@@ -5261,6 +5376,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.AddForecastHisto
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.AddForecastHistoryPositionContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.AddForecastHistoryPositionContext.eventsList2(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.AddForecastHistoryPositionContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.AddForecastHistoryPositionContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -5975,6 +6093,12 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateForecasted
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateForecastedPositionContext.GDObjectObjects5.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateForecastedPositionContext.eventsList14(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateForecastedPositionContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateForecastedPositionContext.GDObjectObjects2.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateForecastedPositionContext.GDObjectObjects3.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateForecastedPositionContext.GDObjectObjects4.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.UpdateForecastedPositionContext.GDObjectObjects5.length = 0;
+
 
 return;
 }
@@ -6098,6 +6222,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.ProjectHistoryEn
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.ProjectHistoryEndsContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.ProjectHistoryEndsContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.ProjectHistoryEndsContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.ProjectHistoryEndsContext.GDObjectObjects2.length = 0;
+
 
 return;
 }
@@ -6187,6 +6314,9 @@ gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.ForecastTimeRati
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.ForecastTimeRatioContext.GDObjectObjects2.length = 0;
 
 gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.ForecastTimeRatioContext.eventsList0(runtimeScene, eventsFunctionContext);
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.ForecastTimeRatioContext.GDObjectObjects1.length = 0;
+gdjs.evtsExt__SmoothCamera__SmoothCamera.SmoothCamera.prototype.ForecastTimeRatioContext.GDObjectObjects2.length = 0;
+
 
 return Number(eventsFunctionContext.returnValue) || 0;
 }
