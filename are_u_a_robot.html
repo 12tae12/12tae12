@@ -39,6 +39,9 @@
 <div id="message"></div>
 
 <script>
+    let currentCaptcha = generateCaptcha();
+    let incorrectAttempts = 0;
+
     function generateCaptcha() {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let captcha = '';
@@ -49,23 +52,26 @@
         return captcha;
     }
 
-    let currentCaptcha = generateCaptcha();
-
     function validateCaptcha() {
         const userInput = document.getElementById('captchaInput').value;
         const messageDiv = document.getElementById('message');
         if (userInput === currentCaptcha) {
             messageDiv.innerText = 'CAPTCHA is correct!';
             messageDiv.style.color = 'green';
+            incorrectAttempts = 0; // Reset attempts on success
         } else {
+            incorrectAttempts++;
             messageDiv.innerText = 'CAPTCHA is incorrect. Please try again.';
             messageDiv.style.color = 'red';
             currentCaptcha = generateCaptcha(); // Regenerate CAPTCHA
             document.getElementById('captchaInput').value = ''; // Clear input
+
+            if (incorrectAttempts >= 2) {
+                window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'; // Redirect after 2 incorrect attempts
+            }
         }
     }
 </script>
 
 </body>
 </html>
-
