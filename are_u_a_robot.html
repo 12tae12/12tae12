@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple CAPTCHA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        #captcha {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>CAPTCHA Example</h1>
+<div id="captcha"></div>
+<input type="text" id="captchaInput" placeholder="Enter CAPTCHA" />
+<button onclick="validateCaptcha()">Submit</button>
+<div id="message"></div>
+
+<script>
+    function generateCaptcha() {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let captcha = '';
+        for (let i = 0; i < 6; i++) {
+            captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        document.getElementById('captcha').innerText = captcha;
+        return captcha;
+    }
+
+    let currentCaptcha = generateCaptcha();
+
+    function validateCaptcha() {
+        const userInput = document.getElementById('captchaInput').value;
+        const messageDiv = document.getElementById('message');
+        if (userInput === currentCaptcha) {
+            messageDiv.innerText = 'CAPTCHA is correct!';
+            messageDiv.style.color = 'green';
+        } else {
+            messageDiv.innerText = 'CAPTCHA is incorrect. Please try again.';
+            messageDiv.style.color = 'red';
+            currentCaptcha = generateCaptcha(); // Regenerate CAPTCHA
+            document.getElementById('captchaInput').value = ''; // Clear input
+        }
+    }
+</script>
+
+</body>
+</html>
+
