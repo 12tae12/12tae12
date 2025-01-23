@@ -55,9 +55,15 @@
     function validateCaptcha() {
         const userInput = document.getElementById('captchaInput').value;
         const messageDiv = document.getElementById('message');
+        const redirectUrl = decodeURIComponent(window.location.hash.substring(1)); // Get the URL from the hash
+
         if (userInput === currentCaptcha) {
-            messageDiv.innerText = 'CAPTCHA is correct!';
-            messageDiv.style.color = 'green';
+            if (redirectUrl) {
+                window.location.href = redirectUrl; // Redirect to the URL specified in the hash
+            } else {
+                messageDiv.innerText = 'CAPTCHA is correct, but no redirect URL found!';
+                messageDiv.style.color = 'green';
+            }
             incorrectAttempts = 0; // Reset attempts on success
         } else {
             incorrectAttempts++;
