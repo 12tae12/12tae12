@@ -1,0 +1,3 @@
+[submodule "interactivestudio"]
+	path = interactivestudio
+	url = https://github.com/12tae12/InteractiveStudio.git
