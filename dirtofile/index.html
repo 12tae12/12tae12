@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Folder Binary Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        progress {
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Folder Binary Converter</h1>
+        
+        <!-- Folder to Binary Section -->
+        <div class="section">
+            <h2>Folder to Binary</h2>
+            <input type="file" id="folderInput" webkitdirectory directory multiple hidden />
+            <button id="browseFolderBtn">Browse Folder</button>
+            <button id="convertFolderBtn">Convert to Binary</button>
+        </div>
+
+        <!-- Binary to Folder Section -->
+        <div class="section">
+            <h2>Binary to Folder</h2>
+            <input type="file" id="binaryInput" accept=".fbin" hidden />
+            <button id="browseBinaryBtn">Browse Binary File</button>
+            <button id="convertBinaryBtn">Convert to Folder</button>
+        </div>
+
+        <!-- Loading Modal -->
+        <div id="loadingModal" class="modal">
+            <div class="modal-content">
+                <p id="loadingMessage">Processing...</p>
+                <progress id="loadingProgress" value="0" max="100"></progress>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/streamsaver@2.0.6/StreamSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        function showLoading(message) {
+            const modal = document.getElementById('loadingModal');
+            document.getElementById('loadingMessage').textContent = message;
+            modal.style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingModal').style.display = 'none';
+        }
+
+        function arraysEqual(a, b) {
+            if (a.length !== b.length) return false;
+            for (let i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) return false;
+            }
+            return true;
+        }
+
+        // Folder to Binary Conversion
+        document.getElementById('browseFolderBtn').addEventListener('click', () => {
+            document.getElementById('folderInput').click();
+        });
+
+        document.getElementById('convertFolderBtn').addEventListener('click', async () => {
+            const files = document.getElementById('folderInput').files;
+            if (files.length === 0) {
+                alert('Please select a folder first');
+                return;
+            }
+
+            try {
+                showLoading('Converting folder to binary...');
+                const fileEntries = Array.from(files).map(file => ({
+                    path: file.webkitRelativePath,
+                    file: file
+                }));
+
+                const writableStream = streamSaver.createWriteStream('converted.fbin');
+                const writer = writableStream.getWriter();
+
+                // Write header
+                const headerBuffer = new ArrayBuffer(8);
+                const headerView = new DataView(headerBuffer);
+                headerView.setUint32(0, 0x4642494E); // 'FBIN'
+                headerView.setUint32(4, 1, false); // Version 1 (big-endian)
+                await writer.write(new Uint8Array(headerBuffer));
+
+                for (const entry of fileEntries) {
+                    const path = entry.path;
+                    const file = entry.file;
+
+                    // Write path metadata
+                    const pathEncoder = new TextEncoder();
+                    const pathBytes = pathEncoder.encode(path);
+                    const pathLengthBuffer = new ArrayBuffer(8);
+                    new DataView(pathLengthBuffer).setBigUint64(0, BigInt(pathBytes.length), false);
+                    await writer.write(new Uint8Array(pathLengthBuffer));
+                    await writer.write(pathBytes);
+
+                    // Write file size
+                    const fileSizeBuffer = new ArrayBuffer(8);
+                    new DataView(fileSizeBuffer).setBigUint64(0, BigInt(file.size), false);
+                    await writer.write(new Uint8Array(fileSizeBuffer));
+
+                    // Stream file content and compute hash
+                    const reader = file.stream().getReader();
+                    const hasher = await crypto.subtle.createHash('SHA-256');
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+                        hasher.update(value);
+                        await writer.write(value);
+                    }
+
+                    // Write hash
+                    const hash = await hasher.digest();
+                    await writer.write(new Uint8Array(hash));
+                }
+
+                // Write end marker
+                const endMarker = new TextEncoder().encode('FBIN_END');
+                await writer.write(endMarker);
+                await writer.close();
+            } catch (error) {
+                alert('Error converting folder to binary: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // Binary to Folder Conversion
+        document.getElementById('browseBinaryBtn').addEventListener('click', () => {
+            document.getElementById('binaryInput').click();
+        });
+
+        document.getElementById('convertBinaryBtn').addEventListener('click', async () => {
+            const file = document.getElementById('binaryInput').files[0];
+            if (!file) {
+                alert('Please select a binary file first');
+                return;
+            }
+
+            try {
+                showLoading('Extracting binary to folder...');
+                const arrayBuffer = await file.arrayBuffer();
+                const view = new DataView(arrayBuffer);
+                let offset = 0;
+                const zip = new JSZip();
+
+                // Verify header
+                const header = String.fromCharCode(...new Uint8Array(arrayBuffer, 0, 4));
+                offset += 4;
+                const version = view.getUint32(offset, false);
+                offset += 4;
+
+                if (header !== 'FBIN' || version !== 1) {
+                    throw new Error('Invalid binary file format');
+                }
+
+                while (offset < arrayBuffer.byteLength) {
+                    // Check for end marker
+                    const potentialEnd = new Uint8Array(arrayBuffer, offset, 8);
+                    if (String.fromCharCode(...potentialEnd) === 'FBIN_END') {
+                        offset += 8;
+                        break;
+                    }
+
+                    // Read path metadata
+                    const pathLength = Number(view.getBigUint64(offset, false));
+                    offset += 8;
+                    const pathBytes = new Uint8Array(arrayBuffer, offset, pathLength);
+                    const path = new TextDecoder().decode(pathBytes);
+                    offset += pathLength;
+
+                    // Read file size
+                    const fileSize = Number(view.getBigUint64(offset, false));
+                    offset += 8;
+
+                    // Read file content
+                    const fileContent = new Uint8Array(arrayBuffer, offset, fileSize);
+                    offset += fileSize;
+
+                    // Verify hash
+                    const storedHash = new Uint8Array(arrayBuffer, offset, 32);
+                    offset += 32;
+                    const computedHash = await crypto.subtle.digest('SHA-256', fileContent);
+                    if (!arraysEqual(new Uint8Array(computedHash), storedHash)) {
+                        throw new Error(`File corrupted: ${path}`);
+                    }
+
+                    // Add to zip
+                    zip.file(path, fileContent);
+                }
+
+                // Generate and download zip
+                const content = await zip.generateAsync({ type: 'blob' });
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'extracted_folder.zip';
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                alert('Error converting binary to folder: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        });
+    </script>
+</body>
+</html>
