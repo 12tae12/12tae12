@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy U+200B</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+        }
+        #copyButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        #copyButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="copyButton">Copy U+200B</button>
+        <p>Click the button to copy the Zero Width Space character (U+200B) to your clipboard.</p>
+    </div>
+
+    <script>
+        document.getElementById('copyButton').addEventListener('click', function() {
+            const zeroWidthSpace = '\u200B';
+            navigator.clipboard.writeText(zeroWidthSpace).then(function() {
+                alert('U+200B copied to clipboard!');
+            }).catch(function(error) {
+                alert('Failed to copy: ' + error);
+            });
+        });
+    </script>
+</body>
+</html>
