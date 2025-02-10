@@ -2,3 +2,6 @@
 	path = interactivestudio
 	url = https://github.com/12tae12/InteractiveStudio.git
 
+[submodule "pybuild"]
+	path = pybuild
+	url = https://github.com/12tae12/pybuild.git
