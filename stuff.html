@@ -54,7 +54,7 @@
             if (targetURL) {
                 setTimeout(() => {
                     window.location.href = "https://1t2.pages.dev/stuff/index.html";
-                }, 0); // Redirect after 3 seconds
+                }, 100); // Redirect after 3 seconds
             } else {
                 document.getElementById('redirectList').innerHTML = Object.entries(redirects)
                     .map(([key, url]) => `<li>${key} = <a href="#${key}">${url}</a></li>`)
