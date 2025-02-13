@@ -131,16 +131,20 @@
         function displayResults(results) {
             const resultsContainer = document.getElementById("results");
             resultsContainer.innerHTML = '';
-            results.forEach(result => {
-                const resultElement = document.createElement('div');
-                resultElement.className = 'result';
-                resultElement.innerHTML = `
-                    <div class="result-title"><a href="${result.url}" target="_blank">${result.title}</a></div>
-                    <div class="result-url">${result.url}</div>
-                    <div class="result-description">${result.description}</div>
-                `;
-                resultsContainer.appendChild(resultElement);
-            });
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<p>No result found</p>';
+            } else {
+                results.forEach(result => {
+                    const resultElement = document.createElement('div');
+                    resultElement.className = 'result';
+                    resultElement.innerHTML = `
+                        <div class="result-title"><a href="${result.url}" target="_blank">${result.title}</a></div>
+                        <div class="result-url">${result.url}</div>
+                        <div class="result-description">${result.description}</div>
+                    `;
+                    resultsContainer.appendChild(resultElement);
+                });
+            }
         }
     </script>
 </body>
