@@ -4,3 +4,6 @@
 [submodule "pybuild"]
 	path = pybuild
 	url = https://github.com/12tae12/pybuild.git
+[submodule "nbmeta"]
+	path = nbmeta
+	url = https://github.com/12tae12/nbmeta.git
