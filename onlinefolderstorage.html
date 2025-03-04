@@ -134,6 +134,11 @@
                     const pre = document.createElement('pre');
                     pre.textContent = text;
                     preview.appendChild(pre);
+                } else if (file.type.startsWith('audio/')) {
+                    const audio = document.createElement('audio');
+                    audio.controls = true;
+                    audio.src = URL.createObjectURL(new Blob([file.data], { type: file.type }));
+                    preview.appendChild(audio);
                 } else {
                     preview.innerHTML = 'Preview not available for this file type';
                 }
