@@ -2,29 +2,32 @@
 <html>
 <head>
     <title>Reliable File Storage</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .file-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
         .preview { max-width: 300px; max-height: 300px; margin: 10px 0; }
         .progress { width: 200px; height: 20px; border: 1px solid #ccc; }
-        #fileList { margin: 20px 0; }
-        button { margin: 5px; padding: 5px 10px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>File Storage & Viewer</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4">File Storage & Viewer</h1>
         
-        <input type="file" id="fileInput">
-        <button onclick="exportAll()">Export All</button>
-        <button onclick="clearStorage()">Clear Storage</button>
+        <div class="mb-3">
+            <input type="file" id="fileInput" class="form-control-file">
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary" onclick="exportAll()">Export All</button>
+            <button class="btn btn-danger" onclick="clearStorage()">Clear Storage</button>
+        </div>
         
-        <div id="fileList"></div>
-        <div id="previewContainer"></div>
-        <div id="status"></div>
+        <div id="fileList" class="mb-4"></div>
+        <div id="previewContainer" class="mb-4"></div>
+        <div id="status" class="alert" role="alert" style="display: none;"></div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         const DB_NAME = 'FileDB';
         const DB_VERSION = 2;
@@ -107,11 +110,11 @@
             
             files.forEach(file => {
                 const item = document.createElement('div');
-                item.className = 'file-item';
+                item.className = 'file-item border p-3 mb-2';
                 item.innerHTML = `
                     <strong>${file.name}</strong> (${formatSize(file.size)})
-                    <button onclick="viewFile('${file.id}')">View</button>
-                    <button onclick="downloadFile('${file.id}')">Download</button>
+                    <button class="btn btn-info btn-sm ml-2" onclick="viewFile('${file.id}')">View</button>
+                    <button class="btn btn-success btn-sm ml-2" onclick="downloadFile('${file.id}')">Download</button>
                 `;
                 list.appendChild(item);
             });
@@ -126,7 +129,7 @@
                 
                 if (file.type.startsWith('image/')) {
                     const img = document.createElement('img');
-                    img.className = 'preview';
+                    img.className = 'preview img-fluid';
                     img.src = URL.createObjectURL(new Blob([file.data], { type: file.type }));
                     preview.appendChild(img);
                 } else if (file.type.startsWith('text/')) {
@@ -215,8 +218,8 @@
 <html>
 <head>
     <title>Exported Files</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
         .file-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
     </style>
     <script>
@@ -279,10 +282,10 @@
             
             files.forEach(file => {
                 const div = document.createElement('div');
-                div.className = 'file-item';
+                div.className = 'file-item border p-3 mb-2';
                 div.innerHTML = \`
                     <strong>\${file.name}</strong> (\${formatSize(file.size)})
-                    <button onclick="download('\${file.id}')">Download</button>
+                    <button class="btn btn-success btn-sm ml-2" onclick="download('\${file.id}')">Download</button>
                 \`;
                 container.appendChild(div);
             });
@@ -342,8 +345,9 @@
         function showStatus(message, type) {
             const status = document.getElementById('status');
             status.textContent = message;
-            status.className = type;
-            setTimeout(() => status.className = '', 3000);
+            status.className = `alert alert-${type}`;
+            status.style.display = 'block';
+            setTimeout(() => status.style.display = 'none', 3000);
         }
 
         // Initial setup
