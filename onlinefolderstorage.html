@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reliable File Storage</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .preview { max-width: 300px; max-height: 300px; margin: 10px 0; }
+        .progress { width: 200px; height: 20px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">File Storage & Viewer</h1>
+        
+        <div class="mb-3">
+            <input type="file" id="fileInput" class="form-control-file">
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary" onclick="exportAll()">Export All</button>
+            <button class="btn btn-danger" onclick="clearStorage()">Clear Storage</button>
+        </div>
+        
+        <div id="fileList" class="mb-4"></div>
+        <div id="previewContainer" class="mb-4"></div>
+        <div id="status" class="alert" role="alert" style="display: none;"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        const DB_NAME = 'FileDB';
+        const DB_VERSION = 2;
+        const STORE_NAME = 'files';
+        let db;
+
+        // Initialize database
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    }
+                };
+
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    resolve();
+                };
+
+                request.onerror = (event) => {
+                    reject(`Database error: ${event.target.error}`);
+                };
+            });
+        }
+
+        // File input handler
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                await initDB();
+                await storeFile(file);
+                showStatus(`Stored: ${file.name}`, 'success');
+                updateFileList();
+            } catch (error) {
+                showStatus(error, 'error');
+            }
+        });
+
+        // Store file in IndexedDB
+        async function storeFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async () => {
+                    const transaction = db.transaction([STORE_NAME], 'readwrite');
+                    const store = transaction.objectStore(STORE_NAME);
+                    
+                    const fileData = {
+                        id: Date.now() + '-' + file.name,
+                        name: file.name,
+                        type: file.type,
+                        size: file.size,
+                        data: reader.result,
+                        lastModified: file.lastModified
+                    };
+
+                    try {
+                        await store.add(fileData);
+                        resolve();
+                    } catch (error) {
+                        reject(`Storage error: ${error}`);
+                    }
+                };
+                
+                reader.onerror = () => reject('File read failed');
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        // Update file list with view buttons
+        async function updateFileList() {
+            const files = await getAllFiles();
+            const list = document.getElementById('fileList');
+            list.innerHTML = '<h3>Stored Files:</h3>';
+            
+            files.forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'file-item border p-3 mb-2';
+                item.innerHTML = `
+                    <strong>${file.name}</strong> (${formatSize(file.size)})
+                    <button class="btn btn-info btn-sm ml-2" onclick="viewFile('${file.id}')">View</button>
+                    <button class="btn btn-success btn-sm ml-2" onclick="downloadFile('${file.id}')">Download</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // View file contents
+        async function viewFile(id) {
+            try {
+                const file = await getFile(id);
+                const preview = document.getElementById('previewContainer');
+                preview.innerHTML = '';
+                
+                if (file.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.className = 'preview img-fluid';
+                    img.src = URL.createObjectURL(new Blob([file.data], { type: file.type }));
+                    preview.appendChild(img);
+                } else if (file.type.startsWith('text/')) {
+                    const text = await new Response(new Blob([file.data])).text();
+                    const pre = document.createElement('pre');
+                    pre.textContent = text;
+                    preview.appendChild(pre);
+                } else if (file.type.startsWith('audio/')) {
+                    const audio = document.createElement('audio');
+                    audio.controls = true;
+                    audio.src = URL.createObjectURL(new Blob([file.data], { type: file.type }));
+                    preview.appendChild(audio);
+                } else {
+                    preview.innerHTML = 'Preview not available for this file type';
+                }
+            } catch (error) {
+                showStatus(`Preview error: ${error}`, 'error');
+            }
+        }
+
+        // Download individual file
+        async function downloadFile(id) {
+            try {
+                const file = await getFile(id);
+                const blob = new Blob([file.data], { type: file.type });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = file.name;
+                link.click();
+            } catch (error) {
+                showStatus(`Download error: ${error}`, 'error');
+            }
+        }
+
+        // Export all files to HTML
+        async function exportAll() {
+            try {
+                const files = await getAllFiles();
+                const exportData = await Promise.all(files.map(async file => ({
+                    ...file,
+                    data: await arrayBufferToBase64(file.data)
+                })));
+
+                const exportHTML = createExportHTML(exportData);
+                downloadAsFile(exportHTML, 'file-export.html');
+                showStatus('Export created successfully', 'success');
+            } catch (error) {
+                showStatus(`Export failed: ${error}`, 'error');
+            }
+        }
+
+        // Helper functions
+        function getFile(id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.get(id);
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject('File not found');
+            });
+        }
+
+        function getAllFiles() {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.getAll();
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject('Error loading files');
+            });
+        }
+
+        function arrayBufferToBase64(buffer) {
+            return new Promise((resolve) => {
+                const blob = new Blob([buffer]);
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result.split(',')[1]);
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        function createExportHTML(data) {
+            return `<!DOCTYPE html>
+<html>
+<head>
+    <title>Exported Files</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .file-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
+    </style>
+    <script>
+        const DB_NAME = 'FileDB';
+        const DB_VERSION = 2;
+        const STORE_NAME = 'files';
+        let db;
+
+        async function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    }
+                };
+
+                request.onsuccess = async () => {
+                    db = event.target.result;
+                    await restoreFiles();
+                    displayFiles();
+                    resolve();
+                };
+
+                request.onerror = () => reject('Database initialization failed');
+            });
+        }
+
+        async function restoreFiles() {
+            const transaction = db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            
+            ${data.map(file => `
+                await store.put({
+                    id: '${file.id}',
+                    name: '${file.name}',
+                    type: '${file.type}',
+                    size: ${file.size},
+                    data: base64ToArrayBuffer('${file.data}'),
+                    lastModified: ${file.lastModified}
+                });
+            `).join('')}
+        }
+
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        async function displayFiles() {
+            const files = await getAllFiles();
+            const container = document.createElement('div');
+            container.innerHTML = '<h1>Exported Files</h1>';
+            
+            files.forEach(file => {
+                const div = document.createElement('div');
+                div.className = 'file-item border p-3 mb-2';
+                div.innerHTML = \`
+                    <strong>\${file.name}</strong> (\${formatSize(file.size)})
+                    <button class="btn btn-success btn-sm ml-2" onclick="download('\${file.id}')">Download</button>
+                \`;
+                container.appendChild(div);
+            });
+            
+            document.body.innerHTML = '';
+            document.body.appendChild(container);
+        }
+
+        function formatSize(bytes) {
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            if (bytes === 0) return '0 Byte';
+            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+            return \`\${(bytes / Math.pow(1024, i)).toFixed(2)} \${sizes[i]}\`;
+        }
+
+        async function download(id) {
+            const file = await getFile(id);
+            const blob = new Blob([file.data], { type: file.type });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = file.name;
+            link.click();
+        }
+
+        window.addEventListener('load', () => {
+            initDB().catch(error => alert(error));
+        });
+    <\/script>
+</head>
+<body>
+    <p>Loading exported files...</p>
+</body>
+</html>`;
+        }
+
+        function downloadAsFile(content, filename) {
+            const blob = new Blob([content], { type: 'text/html' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+
+        function clearStorage() {
+            indexedDB.deleteDatabase(DB_NAME);
+            showStatus('Storage cleared - reloading...', 'success');
+            setTimeout(() => location.reload(), 1000);
+        }
+
+        function formatSize(bytes) {
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            if (bytes === 0) return '0 Byte';
+            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+            return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `alert alert-${type}`;
+            status.style.display = 'block';
+            setTimeout(() => status.style.display = 'none', 3000);
+        }
+
+        // Initial setup
+        initDB().then(updateFileList);
+    </script>
+</body>
+</html>
