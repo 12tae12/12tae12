@@ -2,11 +2,6 @@ const CACHE_NAME = 'wptw-v3.2-subdir';
 const ASSETS = [
   '/wptw/',
   '/wptw/index.html',
-  '/wptw/favicon.ico',
-  '/wptw/styles.css',
-  '/wptw/default.wptw',
-  '/wptw/icons/icon-192x192.png',
-  '/wptw/icons/icon-512x512.png'
 ];
 
 self.addEventListener('install', (event) => {
