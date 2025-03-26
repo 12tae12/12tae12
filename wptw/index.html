@@ -1,234 +1,492 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="WritePad: Text Wizard - Offline-capable rich text editor">
-<meta name="theme-color" content="#4CAF50">
-<title>WritePad: Text Wizard (WPTW) Version 3.2</title>
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="favicon.ico">
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-  }
-  .container {
-    padding: 10px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .toolbar, .editor {
-    margin: 10px 0;
-    padding: 8px;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  .toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    background-color: #f0f8ea;
-  }
-  .wptw-button, .wptw-select {
-    padding: 8px 12px;
-    font-size: 14px;
-    border: none;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  .wptw-button:hover {
-    background-color: #45a049;
-  }
-  .wptw-select {
-    height: 36px;
-  }
-  .editor {
-    border: 1px solid #ccc;
-    min-height: 300px;
-    background-color: #fff;
-    padding: 15px;
-    outline: none;
-  }
-  .status {
-    padding: 5px;
-    font-size: 12px;
-    color: #666;
-    text-align: right;
-  }
-  @media (max-width: 600px) {
-    .toolbar {
-      gap: 4px;
-    }
-    .wptw-button, .wptw-select {
-      padding: 6px 8px;
-      font-size: 12px;
-    }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="WritePad: Text Wizard - Advanced offline text editor with file management">
+    <meta name="theme-color" content="#4CAF50">
+    <title>WritePad: Text Wizard (WPTW) Version 3.3</title>
+    <link rel="manifest" href="/wptw/manifest.webmanifest">
+    <link rel="icon" href="/wptw/favicon.ico">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            padding: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .file-manager {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .file-selector {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: white;
+            font-size: 14px;
+        }
+        .toolbar, .editor {
+            margin: 10px 0;
+            padding: 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background-color: #f0f8ea;
+        }
+        .wptw-button, .wptw-select {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .wptw-button:hover {
+            background-color: #45a049;
+        }
+        .wptw-select {
+            height: 36px;
+        }
+        .editor {
+            border: 1px solid #ccc;
+            min-height: 300px;
+            background-color: #fff;
+            padding: 15px;
+            outline: none;
+        }
+        .status {
+            padding: 5px;
+            font-size: 12px;
+            color: #666;
+            text-align: right;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .file-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 10px 0;
+            border: 1px solid #eee;
+            padding: 5px;
+        }
+        .file-item {
+            display: flex;
+            gap: 5px;
+            margin: 5px 0;
+            align-items: center;
+        }
+        .file-name {
+            flex-grow: 1;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .file-date {
+            font-size: 0.8em;
+            color: #666;
+            margin-left: 5px;
+        }
+        @media (max-width: 600px) {
+            .toolbar, .file-manager {
+                gap: 4px;
+            }
+            .wptw-button, .wptw-select, .file-selector {
+                padding: 6px 8px;
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-  <div class="toolbar">
-    <button class="wptw-button" onclick="execCommand('bold')" title="Bold">B</button>
-    <button class="wptw-button" onclick="execCommand('italic')" title="Italic">I</button>
-    <button class="wptw-button" onclick="execCommand('underline')" title="Underline">U</button>
-    <select class="wptw-select" onchange="changeFont(this.value)" title="Font Family">
-      <option value="Arial">Arial</option>
-      <option value="Times New Roman">Times New Roman</option>
-      <option value="Courier New">Courier New</option>
-      <option value="Verdana">Verdana</option>
-      <option value="Georgia">Georgia</option>
-    </select>
-    <select class="wptw-select" onchange="changeFontSize(this.value)" title="Font Size">
-      <option value="1">10px</option>
-      <option value="2">12px</option>
-      <option value="3">14px</option>
-      <option value="4">16px</option>
-      <option value="5">18px</option>
-      <option value="6">20px</option>
-      <option value="7">24px</option>
-    </select>
-    <input type="color" class="wptw-select" onchange="execCommand('foreColor', this.value)" title="Text Color">
-    <button class="wptw-button" onclick="execCommand('justifyLeft')" title="Align Left">≡</button>
-    <button class="wptw-button" onclick="execCommand('justifyCenter')" title="Align Center">≡</button>
-    <button class="wptw-button" onclick="execCommand('justifyRight')" title="Align Right">≡</button>
-    <button class="wptw-button" onclick="execCommand('insertUnorderedList')" title="Bullet List">•</button>
-    <button class="wptw-button" onclick="execCommand('insertOrderedList')" title="Numbered List">1.</button>
-    <button class="wptw-button" onclick="newDocument()" title="New Document">New</button>
-    <button class="wptw-button" onclick="saveDocument()" title="Save">Save</button>
-    <button class="wptw-button" onclick="exportText()" title="Export">Export</button>
-    <input type="file" id="fileInput" accept=".wptw,.wwptw,.txt,.html" style="display:none" onchange="loadFile(event)">
-    <button class="wptw-button" onclick="document.getElementById('fileInput').click()" title="Import">Import</button>
-  </div>
-  <div contenteditable="true" class="editor" id="editor"></div>
-  <div class="status" id="status">Ready</div>
-</div>
+    <div class="container">
+        <!-- File Management Section -->
+        <div class="file-manager">
+            <select class="file-selector" id="fileSelector" onchange="loadSelectedFile()">
+                <option value="">No file selected</option>
+            </select>
+            <button class="wptw-button" onclick="showFileModal('new')" title="New Document">+</button>
+            <button class="wptw-button" onclick="showFileModal('manage')" title="Manage Documents">≡</button>
+        </div>
+        
+        <!-- Editor Toolbar -->
+        <div class="toolbar">
+            <button class="wptw-button" onclick="execCommand('bold')" title="Bold">B</button>
+            <button class="wptw-button" onclick="execCommand('italic')" title="Italic">I</button>
+            <button class="wptw-button" onclick="execCommand('underline')" title="Underline">U</button>
+            <select class="wptw-select" onchange="changeFont(this.value)" title="Font Family">
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+            </select>
+            <select class="wptw-select" onchange="changeFontSize(this.value)" title="Font Size">
+                <option value="1">10px</option>
+                <option value="2">12px</option>
+                <option value="3">14px</option>
+                <option value="4">16px</option>
+                <option value="5">18px</option>
+                <option value="6">20px</option>
+                <option value="7">24px</option>
+            </select>
+            <input type="color" class="wptw-select" onchange="execCommand('foreColor', this.value)" title="Text Color">
+            <button class="wptw-button" onclick="execCommand('justifyLeft')" title="Align Left">L</button>
+            <button class="wptw-button" onclick="execCommand('justifyCenter')" title="Align Center">C</button>
+            <button class="wptw-button" onclick="execCommand('justifyRight')" title="Align Right">R</button>
+            <button class="wptw-button" onclick="execCommand('insertUnorderedList')" title="Bullet List">•</button>
+            <button class="wptw-button" onclick="execCommand('insertOrderedList')" title="Numbered List">1.</button>
+            <button class="wptw-button" onclick="exportText()" title="Export Document">Export</button>
+            <input type="file" id="fileInput" accept=".wptw,.wwptw,.txt,.html" style="display:none" onchange="importFile(event)">
+            <button class="wptw-button" onclick="document.getElementById('fileInput').click()" title="Import File">Import</button>
+        </div>
+        
+        <!-- Editor Area -->
+        <div contenteditable="true" class="editor" id="editor"></div>
+        <div class="status" id="status">Ready</div>
+        
+        <!-- File Management Modal -->
+        <div id="fileModal" class="modal">
+            <div class="modal-content">
+                <h3 id="modalTitle" style="margin-top:0">File Management</h3>
+                <div id="fileManagementContent">
+                    <!-- Dynamic content goes here -->
+                </div>
+                <div style="margin-top:15px; text-align:right;">
+                    <button class="wptw-button" onclick="hideModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script>
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('sw.js')
-      .then(function(registration) {
-        console.log('ServiceWorker registration successful');
-      })
-      .catch(function(err) {
-        console.log('ServiceWorker registration failed: ', err);
-      });
-  });
-}
+    <script>
+        // Storage Structure:
+        // {
+        //   files: {
+        //     [id]: {
+        //       id: string,
+        //       name: string,
+        //       content: string,
+        //       created: timestamp,
+        //       modified: timestamp
+        //     }
+        //   },
+        //   currentFile: string
+        // }
+        
+        const STORAGE_KEY = 'wptw_documents_v3';
+        
+        // Initialize storage
+        function initializeStorage() {
+            if (!localStorage.getItem(STORAGE_KEY)) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                    files: {},
+                    currentFile: null
+                }));
+            }
+        }
 
-// Editor Functions
-function execCommand(command, value = null) {
-  document.getElementById('editor').focus();
-  try {
-    document.execCommand(command, false, value);
-    showStatus(`Applied: ${command}`);
-    saveDocument();
-  } catch (e) {
-    showStatus(`Error: ${command} not supported`, true);
-  }
-}
+        // File Management Functions
+        function getStorage() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY));
+        }
 
-function changeFont(font) {
-  execCommand('fontName', font);
-}
+        function updateStorage(storage) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(storage));
+        }
 
-function changeFontSize(size) {
-  execCommand('fontSize', size);
-}
+        function createFile(name, content = '') {
+            const storage = getStorage();
+            const id = Date.now().toString();
+            
+            storage.files[id] = {
+                id,
+                name,
+                content,
+                created: Date.now(),
+                modified: Date.now()
+            };
+            
+            storage.currentFile = id;
+            updateStorage(storage);
+            refreshFileSelector();
+            return id;
+        }
 
-// Document Management
-function newDocument() {
-  if (confirm('Create new document? Unsaved changes will be lost.')) {
-    document.getElementById('editor').innerHTML = '';
-    localStorage.removeItem('wptw_currentDoc');
-    showStatus('New document created');
-  }
-}
+        function updateCurrentFile(content) {
+            const storage = getStorage();
+            if (storage.currentFile && storage.files[storage.currentFile]) {
+                storage.files[storage.currentFile].content = content;
+                storage.files[storage.currentFile].modified = Date.now();
+                updateStorage(storage);
+                refreshFileSelector();
+            }
+        }
 
-function saveDocument() {
-  const content = document.getElementById('editor').innerHTML;
-  localStorage.setItem('wptw_currentDoc', content);
-  showStatus('Document saved locally');
-}
+        function deleteFile(id) {
+            const storage = getStorage();
+            if (storage.files[id]) {
+                if (confirm(`Delete "${storage.files[id].name}" permanently?`)) {
+                    delete storage.files[id];
+                    if (storage.currentFile === id) {
+                        storage.currentFile = null;
+                        document.getElementById('editor').innerHTML = '';
+                    }
+                    updateStorage(storage);
+                    refreshFileSelector();
+                    showStatus(`Deleted: ${storage.files[id]?.name || 'document'}`);
+                }
+            }
+        }
 
-function loadDocument() {
-  const savedContent = localStorage.getItem('wptw_currentDoc');
-  if (savedContent) {
-    document.getElementById('editor').innerHTML = savedContent;
-    showStatus('Document loaded from local storage');
-  }
-}
+        function renameFile(id, newName) {
+            const storage = getStorage();
+            if (storage.files[id] && newName.trim()) {
+                storage.files[id].name = newName.trim();
+                storage.files[id].modified = Date.now();
+                updateStorage(storage);
+                refreshFileSelector();
+            }
+        }
 
-function exportText() {
-  const content = document.getElementById('editor').innerHTML;
-  const blob = new Blob([content], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `document_${new Date().toISOString().slice(0,10)}.html`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showStatus('Document exported');
-}
+        // UI Functions
+        function refreshFileSelector() {
+            const selector = document.getElementById('fileSelector');
+            const storage = getStorage();
+            
+            selector.innerHTML = '';
+            
+            if (Object.keys(storage.files).length === 0) {
+                selector.innerHTML = '<option value="">No files available</option>';
+                return;
+            }
+            
+            Object.values(storage.files).sort((a, b) => b.modified - a.modified).forEach(file => {
+                const option = document.createElement('option');
+                option.value = file.id;
+                option.textContent = `${file.name}`;
+                option.selected = file.id === storage.currentFile;
+                selector.appendChild(option);
+            });
+        }
 
-function loadFile(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+        function showFileModal(action) {
+            const modal = document.getElementById('fileModal');
+            const content = document.getElementById('fileManagementContent');
+            const title = document.getElementById('modalTitle');
+            modal.style.display = 'flex';
+            
+            if (action === 'new') {
+                title.textContent = 'New Document';
+                content.innerHTML = `
+                    <div style="margin-bottom:15px">
+                        <input type="text" id="fileName" placeholder="Document name" 
+                            style="width:100%; padding:8px; margin-bottom:10px; box-sizing:border-box">
+                        <button class="wptw-button" onclick="createNewDocument()" 
+                            style="width:100%">Create Document</button>
+                    </div>
+                `;
+                document.getElementById('fileName').focus();
+            } else if (action === 'manage') {
+                const storage = getStorage();
+                title.textContent = 'Manage Documents';
+                
+                if (Object.keys(storage.files).length === 0) {
+                    content.innerHTML = '<p>No documents found.</p>';
+                    return;
+                }
+                
+                content.innerHTML = `
+                    <div class="file-list">
+                        ${Object.values(storage.files).sort((a, b) => b.modified - a.modified).map(file => `
+                            <div class="file-item">
+                                <input type="text" class="file-name" value="${file.name}" 
+                                    onchange="renameFile('${file.id}', this.value)">
+                                <span class="file-date">${new Date(file.modified).toLocaleDateString()}</span>
+                                <button class="wptw-button" 
+                                    onclick="deleteFile('${file.id}')" title="Delete">✕</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <p>${Object.keys(storage.files).length} document(s) total</p>
+                `;
+            }
+        }
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('editor').innerHTML = e.target.result;
-    saveDocument();
-    showStatus(`Loaded: ${file.name}`);
-  };
-  reader.readAsText(file);
-}
+        function hideModal() {
+            document.getElementById('fileModal').style.display = 'none';
+        }
 
-// Utility Functions
-function showStatus(message, isError = false) {
-  const statusEl = document.getElementById('status');
-  statusEl.textContent = message;
-  statusEl.style.color = isError ? 'red' : '#666';
-  setTimeout(() => {
-    if (statusEl.textContent === message) {
-      statusEl.textContent = 'Ready';
-      statusEl.style.color = '#666';
-    }
-  }, 3000);
-}
+        function createNewDocument() {
+            const nameInput = document.getElementById('fileName');
+            const fileName = nameInput.value.trim() || `Document ${Object.keys(getStorage().files).length + 1}`;
+            const id = createFile(fileName);
+            loadSelectedFile();
+            hideModal();
+            showStatus(`Created: ${fileName}`);
+        }
 
-// Initialize
-document.addEventListener('DOMContentLoaded', function() {
-  loadDocument();
-  
-  // Auto-save every 30 seconds
-  setInterval(saveDocument, 30000);
-  
-  // Save on window close
-  window.addEventListener('beforeunload', function(e) {
-    if (document.getElementById('editor').innerHTML.trim() !== 
-        (localStorage.getItem('wptw_currentDoc') || '').trim()) {
-      saveDocument();
-    }
-  });
-});
+        function loadSelectedFile() {
+            const selector = document.getElementById('fileSelector');
+            const storage = getStorage();
+            const fileId = selector.value;
+            
+            if (fileId && storage.files[fileId]) {
+                storage.currentFile = fileId;
+                updateStorage(storage);
+                document.getElementById('editor').innerHTML = storage.files[fileId].content;
+                showStatus(`Loaded: ${storage.files[fileId].name}`);
+            } else if (!fileId) {
+                storage.currentFile = null;
+                updateStorage(storage);
+                document.getElementById('editor').innerHTML = '';
+                showStatus('Editor cleared');
+            }
+        }
 
-// Install Prompt for PWA
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  showStatus('Click the browser menu to install this app');
-});
-</script>
+        function importFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
+                createFile(fileName, e.target.result);
+                showStatus(`Imported: ${fileName}`);
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input
+        }
+
+        // Editor Functions
+        function execCommand(command, value = null) {
+            document.getElementById('editor').focus();
+            try {
+                document.execCommand(command, false, value);
+                saveCurrentDocument();
+            } catch (e) {
+                showStatus(`Error: ${command} not supported`, true);
+            }
+        }
+
+        function changeFont(font) {
+            execCommand('fontName', font);
+        }
+
+        function changeFontSize(size) {
+            execCommand('fontSize', size);
+        }
+
+        function saveCurrentDocument() {
+            const storage = getStorage();
+            const content = document.getElementById('editor').innerHTML;
+            
+            if (storage.currentFile && storage.files[storage.currentFile]) {
+                updateCurrentFile(content);
+            } else {
+                const fileName = prompt('Save as:', 'Untitled Document');
+                if (fileName) {
+                    createFile(fileName, content);
+                    showStatus(`Created: ${fileName}`);
+                }
+            }
+        }
+
+        function exportText() {
+            const storage = getStorage();
+            if (!storage.currentFile || !storage.files[storage.currentFile]) {
+                alert('No document selected to export');
+                return;
+            }
+
+            const currentFile = storage.files[storage.currentFile];
+            const blob = new Blob([currentFile.content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentFile.name}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showStatus(`Exported: ${currentFile.name}`);
+        }
+
+        function showStatus(message, isError = false) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.style.color = isError ? 'red' : '#666';
+            setTimeout(() => {
+                if (statusEl.textContent === message) {
+                    statusEl.textContent = 'Ready';
+                    statusEl.style.color = '#666';
+                }
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStorage();
+            refreshFileSelector();
+            
+            const storage = getStorage();
+            if (storage.currentFile && storage.files[storage.currentFile]) {
+                document.getElementById('editor').innerHTML = storage.files[storage.currentFile].content;
+            }
+
+            // Auto-save every 30 seconds
+            setInterval(saveCurrentDocument, 30000);
+            
+            // Save on window close
+            window.addEventListener('beforeunload', function(e) {
+                saveCurrentDocument();
+            });
+            
+            // Auto-save on editor changes
+            document.getElementById('editor').addEventListener('input', function() {
+                saveCurrentDocument();
+            });
+        });
+
+        // PWA Installation
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showStatus('Click the browser menu to install this app');
+        });
+    </script>
 </body>
 </html>
