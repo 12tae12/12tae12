@@ -1,0 +1,27 @@
+{
+    "name": "WritePad: Text Wizard",
+    "short_name": "WritePad",
+    "description": "Offline-capable rich text editor",
+    "start_url": "/wptw/",
+    "scope": "/wptw/",
+    "display": "standalone",
+    "background_color": "#f0f8ea",
+    "theme_color": "#4CAF50",
+    "icons": [
+      {
+        "src": "/wptw/icons/icon-72x72.png",
+        "sizes": "72x72",
+        "type": "image/png"
+      },
+      {
+        "src": "/wptw/icons/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/wptw/icons/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
