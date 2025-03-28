@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="WritePad: Text Wizard - Advanced offline text editor with file management">
     <meta name="theme-color" content="#4CAF50">
-    <title>WritePad: Text Wizard (WPTW) Version 3.3</title>
+    <title>WritePad: Text Wizard (WPTW) Version 3.4</title>
     <link rel="manifest" href="/wptw/manifest.webmanifest">
     <link rel="icon" href="/wptw/favicon.ico">
     <style>
@@ -168,6 +168,7 @@
             <button class="wptw-button" onclick="execCommand('justifyRight')" title="Align Right">R</button>
             <button class="wptw-button" onclick="execCommand('insertUnorderedList')" title="Bullet List">•</button>
             <button class="wptw-button" onclick="execCommand('insertOrderedList')" title="Numbered List">1.</button>
+            <button class="wptw-button" onclick="saveDocument()" title="Save Document">Save</button>
             <button class="wptw-button" onclick="exportText()" title="Export Document">Export</button>
             <input type="file" id="fileInput" accept=".wptw,.wwptw,.txt,.html" style="display:none" onchange="importFile(event)">
             <button class="wptw-button" onclick="document.getElementById('fileInput').click()" title="Import File">Import</button>
@@ -206,7 +207,7 @@
         //   currentFile: string
         // }
         
-        const STORAGE_KEY = 'wptw_documents_v3';
+        const STORAGE_KEY = 'wptw_documents_v4';
         
         // Initialize storage
         function initializeStorage() {
@@ -215,33 +216,38 @@
                     files: {},
                     currentFile: null
                 }));
+                console.log("Created new storage structure");
             }
         }
 
         // File Management Functions
         function getStorage() {
-            return JSON.parse(localStorage.getItem(STORAGE_KEY));
+            const storage = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            console.log("Current storage:", storage);
+            return storage;
         }
 
         function updateStorage(storage) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(storage));
+            console.log("Updated storage:", storage);
         }
 
         function createFile(name, content = '') {
             const storage = getStorage();
             const id = Date.now().toString();
+            const fileName = name.trim() || `Document ${Object.keys(storage.files).length + 1}`;
             
             storage.files[id] = {
                 id,
-                name,
+                name: fileName,
                 content,
                 created: Date.now(),
                 modified: Date.now()
             };
             
-            storage.currentFile = id;
             updateStorage(storage);
             refreshFileSelector();
+            console.log(`Created new file: ${fileName}`);
             return id;
         }
 
@@ -252,6 +258,7 @@
                 storage.files[storage.currentFile].modified = Date.now();
                 updateStorage(storage);
                 refreshFileSelector();
+                console.log(`Updated file: ${storage.files[storage.currentFile].name}`);
             }
         }
 
@@ -259,14 +266,18 @@
             const storage = getStorage();
             if (storage.files[id]) {
                 if (confirm(`Delete "${storage.files[id].name}" permanently?`)) {
+                    const fileName = storage.files[id].name;
                     delete storage.files[id];
+                    
                     if (storage.currentFile === id) {
                         storage.currentFile = null;
                         document.getElementById('editor').innerHTML = '';
                     }
+                    
                     updateStorage(storage);
                     refreshFileSelector();
-                    showStatus(`Deleted: ${storage.files[id]?.name || 'document'}`);
+                    showStatus(`Deleted: ${fileName}`);
+                    console.log(`Deleted file: ${fileName}`);
                 }
             }
         }
@@ -274,10 +285,12 @@
         function renameFile(id, newName) {
             const storage = getStorage();
             if (storage.files[id] && newName.trim()) {
+                const oldName = storage.files[id].name;
                 storage.files[id].name = newName.trim();
                 storage.files[id].modified = Date.now();
                 updateStorage(storage);
                 refreshFileSelector();
+                console.log(`Renamed file from ${oldName} to ${newName}`);
             }
         }
 
@@ -293,13 +306,20 @@
                 return;
             }
             
-            Object.values(storage.files).sort((a, b) => b.modified - a.modified).forEach(file => {
+            // Sort files by modification date (newest first)
+            const sortedFiles = Object.values(storage.files).sort((a, b) => b.modified - a.modified);
+            
+            sortedFiles.forEach(file => {
                 const option = document.createElement('option');
                 option.value = file.id;
                 option.textContent = `${file.name}`;
-                option.selected = file.id === storage.currentFile;
+                if (file.id === storage.currentFile) {
+                    option.selected = true;
+                }
                 selector.appendChild(option);
             });
+            
+            console.log("Refreshed file selector");
         }
 
         function showFileModal(action) {
@@ -333,7 +353,8 @@
                         ${Object.values(storage.files).sort((a, b) => b.modified - a.modified).map(file => `
                             <div class="file-item">
                                 <input type="text" class="file-name" value="${file.name}" 
-                                    onchange="renameFile('${file.id}', this.value)">
+                                    onchange="renameFile('${file.id}', this.value)"
+                                    style="flex-grow:1; padding:5px">
                                 <span class="file-date">${new Date(file.modified).toLocaleDateString()}</span>
                                 <button class="wptw-button" 
                                     onclick="deleteFile('${file.id}')" title="Delete">✕</button>
@@ -351,11 +372,17 @@
 
         function createNewDocument() {
             const nameInput = document.getElementById('fileName');
-            const fileName = nameInput.value.trim() || `Document ${Object.keys(getStorage().files).length + 1}`;
+            const fileName = nameInput.value.trim();
             const id = createFile(fileName);
+            
+            // Set as current file and load it
+            const storage = getStorage();
+            storage.currentFile = id;
+            updateStorage(storage);
+            
             loadSelectedFile();
             hideModal();
-            showStatus(`Created: ${fileName}`);
+            showStatus(`Created: ${fileName || 'Untitled Document'}`);
         }
 
         function loadSelectedFile() {
@@ -368,11 +395,13 @@
                 updateStorage(storage);
                 document.getElementById('editor').innerHTML = storage.files[fileId].content;
                 showStatus(`Loaded: ${storage.files[fileId].name}`);
-            } else if (!fileId) {
+                console.log(`Loaded file: ${storage.files[fileId].name}`);
+            } else {
                 storage.currentFile = null;
                 updateStorage(storage);
                 document.getElementById('editor').innerHTML = '';
                 showStatus('Editor cleared');
+                console.log("Cleared editor");
             }
         }
 
@@ -383,7 +412,14 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove extension
-                createFile(fileName, e.target.result);
+                const id = createFile(fileName, e.target.result);
+                
+                // Set as current file
+                const storage = getStorage();
+                storage.currentFile = id;
+                updateStorage(storage);
+                
+                loadSelectedFile();
                 showStatus(`Imported: ${fileName}`);
             };
             reader.readAsText(file);
@@ -395,7 +431,7 @@
             document.getElementById('editor').focus();
             try {
                 document.execCommand(command, false, value);
-                saveCurrentDocument();
+                saveDocument();
             } catch (e) {
                 showStatus(`Error: ${command} not supported`, true);
             }
@@ -409,16 +445,26 @@
             execCommand('fontSize', size);
         }
 
-        function saveCurrentDocument() {
+        function saveDocument() {
             const storage = getStorage();
             const content = document.getElementById('editor').innerHTML;
             
             if (storage.currentFile && storage.files[storage.currentFile]) {
-                updateCurrentFile(content);
+                // Update existing file
+                storage.files[storage.currentFile].content = content;
+                storage.files[storage.currentFile].modified = Date.now();
+                updateStorage(storage);
+                refreshFileSelector();
+                showStatus(`Saved: ${storage.files[storage.currentFile].name}`);
+                console.log(`Saved file: ${storage.files[storage.currentFile].name}`);
             } else {
+                // Create new file
                 const fileName = prompt('Save as:', 'Untitled Document');
                 if (fileName) {
-                    createFile(fileName, content);
+                    const id = createFile(fileName, content);
+                    storage.currentFile = id;
+                    updateStorage(storage);
+                    refreshFileSelector();
                     showStatus(`Created: ${fileName}`);
                 }
             }
@@ -464,19 +510,20 @@
             const storage = getStorage();
             if (storage.currentFile && storage.files[storage.currentFile]) {
                 document.getElementById('editor').innerHTML = storage.files[storage.currentFile].content;
+                showStatus(`Loaded: ${storage.files[storage.currentFile].name}`);
             }
 
             // Auto-save every 30 seconds
-            setInterval(saveCurrentDocument, 30000);
+            setInterval(saveDocument, 30000);
             
             // Save on window close
             window.addEventListener('beforeunload', function(e) {
-                saveCurrentDocument();
+                saveDocument();
             });
             
             // Auto-save on editor changes
             document.getElementById('editor').addEventListener('input', function() {
-                saveCurrentDocument();
+                saveDocument();
             });
         });
 
