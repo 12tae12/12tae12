@@ -100,10 +100,10 @@ function debounce(fn, delay) {
     };
 }
 
-// Parse XML to JS objects (only once)
-async function loadItems() {
-    if (cachedItems) return cachedItems;
-    if (loading) return new Promise(resolve => setTimeout(() => resolve(loadItems()), 100));
+// Parse XML to JS objects (only once, or when forced)
+async function loadItems(forceReload = false) {
+    if (cachedItems && !forceReload) return cachedItems;
+    if (loading) return new Promise(resolve => setTimeout(() => resolve(loadItems(forceReload)), 100));
     loading = true;
     const response = await fetch('items.xml');
     const text = await response.text();
@@ -163,6 +163,11 @@ document.getElementById("searchInput").addEventListener("keypress", function(eve
         performSearch();
     }
 });
+
+// Refresh XML cache every 3 minutes (180000 ms)
+setInterval(async () => {
+    await loadItems(true);
+}, 180000);
 </script>
 </body>
 </html>
