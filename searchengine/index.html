@@ -88,65 +88,82 @@
     <div id="results" class="results-page"></div>
 
     <script>
-        document.getElementById("searchInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                performSearch();
-            }
+let cachedItems = null;
+let loading = false;
+
+// Debounce utility
+function debounce(fn, delay) {
+    let timer = null;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+    };
+}
+
+// Parse XML to JS objects (only once)
+async function loadItems() {
+    if (cachedItems) return cachedItems;
+    if (loading) return new Promise(resolve => setTimeout(() => resolve(loadItems()), 100));
+    loading = true;
+    const response = await fetch('items.xml');
+    const text = await response.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, "application/xml");
+    const items = Array.from(xml.getElementsByTagName("item")).map(item => ({
+        title: item.getElementsByTagName("title")[0]?.textContent || "",
+        description: item.getElementsByTagName("description")[0]?.textContent || "",
+        url: item.getElementsByTagName("url")[0]?.textContent || ""
+    }));
+    cachedItems = items;
+    loading = false;
+    return items;
+}
+
+// Efficient search in cached JS array
+async function performSearch() {
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    if (!query) {
+        displayResults([]);
+        return;
+    }
+    const items = await loadItems();
+    const results = items.filter(item =>
+        item.title.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query)
+    );
+    displayResults(results);
+}
+
+// Display results (unchanged)
+function displayResults(results) {
+    const resultsContainer = document.getElementById("results");
+    resultsContainer.innerHTML = '';
+    if (results.length === 0) {
+        resultsContainer.innerHTML = '<p>No result found</p>';
+    } else {
+        results.forEach(result => {
+            const resultElement = document.createElement('div');
+            resultElement.className = 'result';
+            resultElement.innerHTML = `
+                <div class="result-title"><a href="${result.url}" target="_blank">${result.title}</a></div>
+                <div class="result-url">${result.url}</div>
+                <div class="result-description">${result.description}</div>
+            `;
+            resultsContainer.appendChild(resultElement);
         });
+    }
+}
 
-        async function fetchXML() {
-            const response = await fetch('items.xml');
-            const text = await response.text();
-            const parser = new DOMParser();
-            return parser.parseFromString(text, "application/xml");
-        }
-
-        async function performSearch() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            if (!query) return;
-            const xmlData = await fetchXML();
-            const results = searchItems(query, xmlData);
-            displayResults(results);
-        }
-
-        function searchItems(query, xmlData) {
-            const items = xmlData.getElementsByTagName("item");
-            const results = [];
-            for (let item of items) {
-                const title = item.getElementsByTagName("title")[0].textContent.toLowerCase();
-                const description = item.getElementsByTagName("description")[0].textContent.toLowerCase();
-                const url = item.getElementsByTagName("url")[0].textContent;
-                if (title.includes(query) || description.includes(query)) {
-                    results.push({
-                        title: item.getElementsByTagName("title")[0].textContent,
-                        description: item.getElementsByTagName("description")[0].textContent,
-                        url: url,
-                    });
-                }
-            }
-            return results;
-        }
-
-        function displayResults(results) {
-            const resultsContainer = document.getElementById("results");
-            resultsContainer.innerHTML = '';
-            if (results.length === 0) {
-                resultsContainer.innerHTML = '<p>No result found</p>';
-            } else {
-                results.forEach(result => {
-                    const resultElement = document.createElement('div');
-                    resultElement.className = 'result';
-                    resultElement.innerHTML = `
-                        <div class="result-title"><a href="${result.url}" target="_blank">${result.title}</a></div>
-                        <div class="result-url">${result.url}</div>
-                        <div class="result-description">${result.description}</div>
-                    `;
-                    resultsContainer.appendChild(resultElement);
-                });
-            }
-        }
-    </script>
+// Debounced search on input
+const debouncedSearch = debounce(performSearch, 200);
+document.getElementById("searchInput").addEventListener("input", debouncedSearch);
+document.getElementById("searchInput").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        performSearch();
+    }
+});
+</script>
 </body>
 </html>
 
