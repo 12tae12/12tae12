@@ -218,7 +218,7 @@
         }
         async function showResultsFromXML(query) {
             const xmlData = await fetchXML();
-            const results = searchItems(query.toLowerCase(), xmlData);
+            let results = searchItems(query.toLowerCase(), xmlData);
             let html = '';
             let aiPrompt = '';
             const aiResults = results.slice(0, 10);
@@ -226,6 +226,27 @@
             aiResults.forEach((r, i) => {
                 aiPrompt += `\n${i+1}. ${r.title}: ${r.description}`;
             });
+            // Fallback: If no results, try a less efficient scan (plain text search)
+            if (results.length === 0) {
+                try {
+                    const response = await fetch('items.xml');
+                    const text = await response.text();
+                    // Simple fallback: search for query in the raw XML text
+                    const regex = new RegExp(`<item>([\\s\\S]*?)<\\/item>`, 'g');
+                    let match;
+                    while ((match = regex.exec(text)) !== null) {
+                        const itemBlock = match[1];
+                        if (itemBlock.toLowerCase().includes(query)) {
+                            const title = (itemBlock.match(/<title>([\\s\\S]*?)<\\/title>/i) || [,''])[1];
+                            const url = (itemBlock.match(/<url>([\\s\\S]*?)<\\/url>/i) || [,''])[1];
+                            const description = (itemBlock.match(/<description>([\\s\\S]*?)<\\/description>/i) || [,''])[1];
+                            results.push({ title, url, description });
+                        }
+                    }
+                } catch (e) {
+                    // fallback failed
+                }
+            }
             for (const r of results) {
                 html += `<div class="result-card">
                     <div class="result-title"><a href="${r.url}" target="_blank">${r.title}</a></div>
@@ -238,7 +259,7 @@
             document.getElementById('ai-response').innerText = 'Click "Generate AI Overview" to get a summary.';
             const btn = document.getElementById('generate-ai-btn');
             btn.onclick = function() {
-                if (aiResults.length > 0 && window.puter && puter.ai) {
+                if (results.length > 0 && window.puter && puter.ai) {
                     document.getElementById('ai-response').innerHTML = '<span style="color:#7fffa7;">Generating overview...</span>';
                     puter.ai.chat(aiPrompt).then(response => {
                         document.getElementById('ai-response').innerText = response;
