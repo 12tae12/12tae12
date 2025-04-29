@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #181a1b;
+            color: #e8e6e3;
+            font-family: 'Rubik', sans-serif;
+        }
+        .search-header {
+            background: #23272a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+        .search-bar {
+            background: #23272a;
+            border: 1px solid #444950;
+        }
+        .search-input {
+            background: #23272a;
+            color: #e8e6e3;
+        }
+        .search-input::placeholder {
+            color: #888;
+        }
+        .search-button {
+            color: #e8e6e3;
+        }
+        .results-page {
+            background: #23272a;
+            color: #e8e6e3;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+        }
+        .result {
+            border-bottom: 1px solid #333;
+        }
+        .result-title a {
+            color: #4ea1f7;
+        }
+        .result-title a:hover {
+            color: #82c7ff;
+        }
+        .result-url {
+            color: #7ec699;
+        }
+        .result-description {
+            color: #b5b5b5;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-header">
+        <div class="search-bar">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search the web...">
+            <button class="search-button" onclick="redirectToResults()">🔍</button>
+        </div>
+    </div>
+    <div id="results" class="results-page"></div>
+    <script>
+        // Get query from URL
+        function getQuery() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('q') || '';
+        }
+        // Fill search box with query
+        document.getElementById('searchInput').value = getQuery();
+        // Allow Enter key to search
+        document.getElementById('searchInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') redirectToResults();
+        });
+        function redirectToResults() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            window.location.href = `results.html?q=${encodeURIComponent(query)}`;
+        }
+        // Fetch and search items.xml for the query
+        async function fetchXML() {
+            const response = await fetch('items.xml');
+            const text = await response.text();
+            const parser = new DOMParser();
+            return parser.parseFromString(text, "application/xml");
+        }
+        function searchItems(query, xmlData) {
+            const items = xmlData.getElementsByTagName("item");
+            const results = [];
+            for (let item of items) {
+                const title = item.getElementsByTagName("title")[0]?.textContent || '';
+                const description = item.getElementsByTagName("description")[0]?.textContent || '';
+                const url = item.getElementsByTagName("url")[0]?.textContent || '';
+                if (
+                    title.toLowerCase().includes(query) ||
+                    description.toLowerCase().includes(query)
+                ) {
+                    results.push({ title, url, description });
+                }
+            }
+            return results;
+        }
+        async function showResultsFromXML(query) {
+            const xmlData = await fetchXML();
+            const results = searchItems(query.toLowerCase(), xmlData);
+            let html = '';
+            for (const r of results) {
+                html += `<div class="result">
+                    <div class="result-title"><a href="${r.url}" target="_blank">${r.title}</a></div>
+                    <div class="result-url">${r.url}</div>
+                    <div class="result-description">${r.description}</div>
+                </div>`;
+            }
+            document.getElementById('results').innerHTML = html || '<div>No results found.</div>';
+        }
+        const q = getQuery();
+        if (q) showResultsFromXML(q);
+    </script>
+</body>
+</html>
