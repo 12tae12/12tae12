@@ -187,32 +187,50 @@
         // --- Safe Search Blocked Terms ---
         let blockedTerms = [];
         let safeSearchOn = true;
-        // Try to load from localStorage, else fetch from remote
+        // Try to load from localStorage, else fetch from remote, else prompt upload
         async function loadBlockedTerms() {
-            let csv = localStorage.getItem('blockedTermsCSV');
-            if (!csv) {
+            let txt = localStorage.getItem('blockedTermsTXT');
+            if (!txt) {
                 try {
-                    const resp = await fetch('https://www.frontgatemedia.com/wp-content/uploads/2014/03/Terms-to-Block.csv');
-                    csv = await resp.text();
-                    localStorage.setItem('blockedTermsCSV', csv);
+                    const resp = await fetch('https://potentiallyoffensive.com/wp-content/uploads/2023/03/OffensiveWords.txt');
+                    if (!resp.ok) throw new Error('Network error');
+                    txt = await resp.text();
+                    localStorage.setItem('blockedTermsTXT', txt);
                 } catch {
-                    csv = '';
+                    // Fallback: prompt user to upload file
+                    txt = await promptUploadBlockedTerms();
                 }
             }
             blockedTerms = [];
-            if (csv) {
-                // Parse CSV: terms are in the 2nd column, comma separated, possibly with whitespace
-                const lines = csv.split(/\r?\n/);
-                for (const line of lines) {
-                    const cols = line.split('\t');
-                    if (cols.length > 1) {
-                        const terms = cols[1].split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
-                        blockedTerms.push(...terms);
-                    }
-                }
-                // Remove duplicates and empty
-                blockedTerms = Array.from(new Set(blockedTerms)).filter(Boolean);
+            if (txt) {
+                blockedTerms = txt.split(/\r?\n/).map(t => t.trim().toLowerCase()).filter(Boolean);
+                blockedTerms = Array.from(new Set(blockedTerms));
             }
+        }
+        // Prompt user to upload the file if fetch fails
+        function promptUploadBlockedTerms() {
+            return new Promise((resolve) => {
+                let div = document.createElement('div');
+                div.innerHTML = `<div style='background:#222;padding:2em;border-radius:1em;max-width:400px;margin:2em auto;text-align:center;'>
+                    <b>Safe Search: Blocked Terms List Needed</b><br><br>
+                    <span style='color:#b5e5b5;'>Unable to download the blocked terms list automatically.<br>Please <a href='https://potentiallyoffensive.com/wp-content/uploads/2023/03/OffensiveWords.txt' target='_blank' style='color:#7fffa7;'>download this file</a> and upload it below:</span><br><br>
+                    <input type='file' id='blockedTermsFile' accept='.txt'><br><br>
+                </div>`;
+                document.body.appendChild(div);
+                const input = div.querySelector('#blockedTermsFile');
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        const txt = ev.target.result;
+                        localStorage.setItem('blockedTermsTXT', txt);
+                        document.body.removeChild(div);
+                        resolve(txt);
+                    };
+                    reader.readAsText(file);
+                };
+            });
         }
         // --- Safe Search Toggle ---
         function setSafeSearch(val) {
