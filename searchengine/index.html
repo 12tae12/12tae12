@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>">
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" crossorigin="anonymous">
     <style>
@@ -74,6 +74,7 @@
         }
     </style>
 </head>
+  
 <body>
     <div class="search-container">
         <img src="https://1t2.pages.dev/favicon.ico" alt="Logo" class="logo">
@@ -82,93 +83,58 @@
             <button class="search-button" onclick="performSearch()">🔍</button>
         </div>
         <p style="color: #555; margin-top: 10px;">This is a no tracker search engine. Your privacy is our priority.</p>
-        <p style="color: #ff0000; margin-top: 10px;">WARNING: Not censored!!!</p>
     </div>
 
     <div id="results" class="results-page"></div>
 
     <script>
-let cachedItems = null;
-let loading = false;
+        async function fetchXML() {
+            const response = await fetch('items.xml');
+            const text = await response.text();
+            const parser = new DOMParser();
+            return parser.parseFromString(text, "application/xml");
+        }
 
-// Debounce utility
-function debounce(fn, delay) {
-    let timer = null;
-    return function(...args) {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn.apply(this, args), delay);
-    };
-}
+        async function performSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            if (!query) return;
+            const xmlData = await fetchXML();
+            const results = searchItems(query, xmlData);
+            displayResults(results);
+        }
 
-// Parse XML to JS objects (only once, or when forced)
-async function loadItems(forceReload = false) {
-    if (cachedItems && !forceReload) return cachedItems;
-    if (loading) return new Promise(resolve => setTimeout(() => resolve(loadItems(forceReload)), 100));
-    loading = true;
-    const response = await fetch('items.xml');
-    const text = await response.text();
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, "application/xml");
-    const items = Array.from(xml.getElementsByTagName("item")).map(item => ({
-        title: item.getElementsByTagName("title")[0]?.textContent || "",
-        description: item.getElementsByTagName("description")[0]?.textContent || "",
-        url: item.getElementsByTagName("url")[0]?.textContent || ""
-    }));
-    cachedItems = items;
-    loading = false;
-    return items;
-}
+        function searchItems(query, xmlData) {
+            const items = xmlData.getElementsByTagName("item");
+            const results = [];
+            for (let item of items) {
+                const title = item.getElementsByTagName("title")[0].textContent.toLowerCase();
+                const description = item.getElementsByTagName("description")[0].textContent.toLowerCase();
+                const url = item.getElementsByTagName("url")[0].textContent;
+                if (title.includes(query) || description.includes(query)) {
+                    results.push({
+                        title: item.getElementsByTagName("title")[0].textContent,
+                        description: item.getElementsByTagName("description")[0].textContent,
+                        url: url,
+                    });
+                }
+            }
+            return results;
+        }
 
-// Efficient search in cached JS array
-async function performSearch() {
-    const query = document.getElementById('searchInput').value.trim().toLowerCase();
-    if (!query) {
-        displayResults([]);
-        return;
-    }
-    const items = await loadItems();
-    const results = items.filter(item =>
-        item.title.toLowerCase().includes(query) ||
-        item.description.toLowerCase().includes(query)
-    );
-    displayResults(results);
-}
-
-// Display results (unchanged)
-function displayResults(results) {
-    const resultsContainer = document.getElementById("results");
-    resultsContainer.innerHTML = '';
-    if (results.length === 0) {
-        resultsContainer.innerHTML = '<p>No result found</p>';
-    } else {
-        results.forEach(result => {
-            const resultElement = document.createElement('div');
-            resultElement.className = 'result';
-            resultElement.innerHTML = `
-                <div class="result-title"><a href="${result.url}" target="_blank">${result.title}</a></div>
-                <div class="result-url">${result.url}</div>
-                <div class="result-description">${result.description}</div>
-            `;
-            resultsContainer.appendChild(resultElement);
-        });
-    }
-}
-
-// Debounced search on input
-const debouncedSearch = debounce(performSearch, 200);
-document.getElementById("searchInput").addEventListener("input", debouncedSearch);
-document.getElementById("searchInput").addEventListener("keypress", function(event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        performSearch();
-    }
-});
-
-// Refresh XML cache every 3 minutes (180000 ms)
-setInterval(async () => {
-    await loadItems(true);
-}, 180000);
-</script>
+        function displayResults(results) {
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = '';
+            results.forEach(result => {
+                const resultElement = document.createElement('div');
+                resultElement.className = 'result';
+                resultElement.innerHTML = `
+                    <div class="result-title"><a href="${result.url}" target="_blank">${result.title}</a></div>
+                    <div class="result-url">${result.url}</div>
+                    <div class="result-description">${result.description}</div>
+                `;
+                resultsContainer.appendChild(resultElement);
+            });
+        }
+    </script>
 </body>
 </html>
-
