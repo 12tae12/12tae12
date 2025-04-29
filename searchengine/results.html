@@ -182,8 +182,16 @@
     <script>
         // --- Safe Search Blocked Terms ---
         let blockedTerms = [];
-        let safeSearchOn = true;
-        // Try to load from localStorage, else fetch from remote, else prompt upload
+        let safeSearchOn = localStorage.getItem('safeSearch') !== 'false';  // default to true unless explicitly set to false
+        
+        // Safe Search state management
+        function setSafeSearch(value) {
+            safeSearchOn = value;
+            localStorage.setItem('safeSearch', value);
+            updateSafeSearchBtn();
+        }
+
+        // Try to load from localStorage, else fetch from remote
         async function loadBlockedTerms() {
             let txt = localStorage.getItem('blockedTermsTXT');
             if (!txt) {
@@ -238,7 +246,6 @@
         function toggleSafeSearch() {
             safeSearchOn = !safeSearchOn;
             setSafeSearch(safeSearchOn);
-            updateSafeSearchBtn();
             window.location.reload();
         }
         document.addEventListener('DOMContentLoaded', function() {
