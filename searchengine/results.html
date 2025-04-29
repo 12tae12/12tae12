@@ -154,22 +154,7 @@
                 <button class="search-button" type="submit">🔍</button>
             </form>
         </div>
-        <div class="dropdown">
-            <button class="btn btn-success dropdown-toggle" type="button" id="optionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <!-- No title, just the dropdown arrow -->
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="optionsDropdown">
-                <li><a class="dropdown-item" href="#">Option 1</a></li>
-                <li><a class="dropdown-item" href="#">Option 2</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <div class="dropdown-item d-flex align-items-center justify-content-between">
-                        <span>Safe Search</span>
-                        <input type="checkbox" id="safeSearchToggle" checked style="margin-left:1em;">
-                    </div>
-                </li>
-            </ul>
-        </div>
+        <button id="safeSearchBtn" class="btn btn-success" onclick="toggleSafeSearch()">Safe Search: ON</button>
     </div>
     <nav class="nav nav-pills flex-row justify-content-start" style="background: #1a2b1a; border-bottom: 1px solid #2e4d2e; padding-left: 2vw;">
         <a class="nav-link active" style="color:#7fffa7;background:transparent;border:none;" href="#">All</a>
@@ -181,6 +166,7 @@
         <div class="row align-items-start" style="margin-top: 2.5rem;">
             <div class="col-lg-7 col-md-12" id="results-col" style="padding-top:0;">
                 <div id="results" class="results-page"></div>
+                <div id="pagination" style="text-align:center;margin:1.5em 0;"></div>
             </div>
             <div class="col-lg-5 col-md-12" id="ai-col" style="padding-top:0;">
                 <div id="ai-overview" class="result-card" style="min-height:200px;">
@@ -193,7 +179,7 @@
         </div>
     </div>
     <script src="https://js.puter.com/v2/"></script>
-        <script>
+    <script>
         // --- Safe Search Blocked Terms ---
         let blockedTerms = [];
         let safeSearchOn = true;
@@ -242,22 +228,21 @@
                 };
             });
         }
-        // --- Safe Search Toggle ---
-        function setSafeSearch(val) {
-            safeSearchOn = val;
-            localStorage.setItem('safeSearchOn', val ? '1' : '0');
+        // --- Safe Search Toggle Button ---
+        function updateSafeSearchBtn() {
+            const btn = document.getElementById('safeSearchBtn');
+            if (!btn) return;
+            btn.textContent = 'Safe Search: ' + (safeSearchOn ? 'ON' : 'OFF');
+            btn.className = 'btn ' + (safeSearchOn ? 'btn-success' : 'btn-danger');
         }
-        function getSafeSearch() {
-            return localStorage.getItem('safeSearchOn') !== '0';
+        function toggleSafeSearch() {
+            safeSearchOn = !safeSearchOn;
+            setSafeSearch(safeSearchOn);
+            updateSafeSearchBtn();
+            window.location.reload();
         }
         document.addEventListener('DOMContentLoaded', function() {
-            const safeSearchToggle = document.getElementById('safeSearchToggle');
-            safeSearchOn = getSafeSearch();
-            safeSearchToggle.checked = safeSearchOn;
-            safeSearchToggle.onchange = function() {
-                setSafeSearch(this.checked);
-                window.location.reload();
-            };
+            updateSafeSearchBtn();
         });
         // Get query from URL
         function getQuery() {
@@ -320,13 +305,44 @@
             }
             return results;
         }
-        async function showResultsFromXML(query) {
+        // Pagination logic
+        let currentPage = 1;
+        const RESULTS_PER_PAGE = 25;
+        function renderPagination(totalResults) {
+            const totalPages = Math.ceil(totalResults / RESULTS_PER_PAGE);
+            const pagDiv = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                pagDiv.innerHTML = '';
+                return;
+            }
+            let html = '';
+            if (currentPage > 1) {
+                html += `<button class='btn btn-secondary' onclick='gotoPage(${currentPage-1})'>Previous</button> `;
+            }
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class='btn ${i===currentPage?'btn-success':'btn-outline-success'}' style='margin:0 2px;' onclick='gotoPage(${i})'>${i}</button>`;
+            }
+            if (currentPage < totalPages) {
+                html += ` <button class='btn btn-secondary' onclick='gotoPage(${currentPage+1})'>Next</button>`;
+            }
+            pagDiv.innerHTML = html;
+        }
+        function gotoPage(page) {
+            currentPage = page;
+            showResultsFromXML(getQuery(), true);
+            window.scrollTo(0,0);
+        }
+        async function showResultsFromXML(query, keepPage) {
             await loadBlockedTerms();
             const xmlData = await fetchXML();
             const results = searchItems(query.toLowerCase(), xmlData);
+            if (!keepPage) currentPage = 1;
+            const totalResults = results.length;
+            const startIdx = (currentPage-1)*RESULTS_PER_PAGE;
+            const pagedResults = results.slice(startIdx, startIdx+RESULTS_PER_PAGE);
             let html = '';
             let aiPrompt = '';
-            const aiResults = results.slice(0, 20); // Up to 20 for GPT-4o
+            const aiResults = pagedResults.slice(0, 20); // Up to 20 for GPT-4o
             aiPrompt = 'You are GPT-4o, a highly capable AI. Give a concise, safe, and family-friendly overview of the following search results for the query: "' +
                 filterBlockedTerms(query) + '". Here are the results:';
             aiResults.forEach((r, i) => {
@@ -335,7 +351,7 @@
                 let d = safeSearchOn ? filterBlockedTerms(r.description) : r.description;
                 aiPrompt += `\n${i+1}. ${t}: ${d}`;
             });
-            for (const r of results) {
+            for (const r of pagedResults) {
                 let t = safeSearchOn ? filterBlockedTerms(r.title) : r.title;
                 let d = safeSearchOn ? filterBlockedTerms(r.description) : r.description;
                 let u = safeSearchOn ? filterBlockedTerms(r.url) : r.url;
@@ -346,11 +362,12 @@
                 </div>`;
             }
             document.getElementById('results').innerHTML = html || '<div class="result-card">No results found.</div>';
+            renderPagination(totalResults);
             // AI Overview is now optional
             document.getElementById('ai-response').innerText = 'Click "Generate AI Overview" to get a summary.';
             const btn = document.getElementById('generate-ai-btn');
             btn.onclick = function() {
-                if (results.length > 0 && window.puter && puter.ai) {
+                if (pagedResults.length > 0 && window.puter && puter.ai) {
                     document.getElementById('ai-response').innerHTML = '<span style="color:#7fffa7;">Generating overview...</span>';
                     puter.ai.chat(aiPrompt).then(response => {
                         document.getElementById('ai-response').innerText = response;
@@ -383,6 +400,19 @@
                 }
             };
         }
+        // Custom dropdown logic
+        function toggleOptionsMenu() {
+            const menu = document.getElementById('optionsMenu');
+            menu.style.display = (menu.style.display === 'none' || !menu.style.display) ? 'block' : 'none';
+        }
+        // Hide menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const btn = document.getElementById('optionsButton');
+            const menu = document.getElementById('optionsMenu');
+            if (!btn.contains(event.target) && !menu.contains(event.target)) {
+                menu.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>
