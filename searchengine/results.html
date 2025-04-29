@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: 'Source Sans 3', 'Segoe UI', 'Arial', sans-serif;
-            background: #181f1b;
+            background: #000;
             color: #e6f5e1;
         }
         .search-header {
@@ -50,7 +50,8 @@
             background: transparent;
             color: #e6f5e1;
             max-width: 700px;
-            margin: 2rem auto 0 auto;
+            margin: 0;
+            padding-top: 0;
         }
         .result-card {
             background: #232d23;
@@ -82,6 +83,30 @@
         .result-description {
             color: #b5e5b5;
             font-size: 1.05rem;
+        }
+        /* AI Overview Card - blue/green tinge */
+        #ai-overview.result-card {
+            background: linear-gradient(135deg, #1a2b1a 60%, #1a2b2f 100%);
+            border: 1px solid #2e4d2e;
+            box-shadow: 0 2px 24px 0 rgba(0,64,128,0.18);
+        }
+        #ai-overview b {
+            color: #7fd6ff;
+        }
+        #ai-response {
+            color: #b5e5ff;
+        }
+        #generate-ai-btn {
+            background: linear-gradient(90deg, #1a2b2f 60%, #1a2b1a 100%);
+            border: 1px solid #2e4d2e;
+            color: #7fd6ff;
+        }
+        #generate-ai-btn:hover {
+            background: #233a3f;
+            color: #fff;
+        }
+        #ai-warning {
+            color: #7fd6ff;
         }
         /* Fallback if Bootstrap is not loaded */
         body.no-bootstrap .search-bar,
@@ -136,16 +161,16 @@
         <a class="nav-link disabled" style="color:#7fffa7;background:transparent;border:none;" href="#">More</a>
     </nav>
     <div class="container-fluid" style="max-width: 1200px; margin: 0 auto;">
-        <div class="row">
-            <div class="col-lg-7 col-md-12" id="results-col">
+        <div class="row align-items-start" style="margin-top: 2.5rem;">
+            <div class="col-lg-7 col-md-12" id="results-col" style="padding-top:0;">
                 <div id="results" class="results-page"></div>
             </div>
-            <div class="col-lg-5 col-md-12" id="ai-col">
-                <div id="ai-overview" class="result-card" style="min-height:200px; background:#232d23; color:#e6f5e1;">
+            <div class="col-lg-5 col-md-12" id="ai-col" style="padding-top:0;">
+                <div id="ai-overview" class="result-card" style="min-height:200px;">
                     <b>AI Overview</b>
                     <div id="ai-response" style="margin-top:1em;"></div>
                     <button id="generate-ai-btn" class="btn btn-success mt-3">Generate AI Overview</button>
-                    <div id="ai-warning" style="font-size:0.95em;color:#b5e5b5;margin-top:0.5em;">This may share your search data with a third party (Puter.ai).</div>
+                    <div id="ai-warning" style="font-size:0.95em;margin-top:0.5em;">This may share your search data with a third party (Puter.ai).</div>
                 </div>
             </div>
         </div>
