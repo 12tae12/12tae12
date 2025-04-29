@@ -135,8 +135,22 @@
         <a class="nav-link" id="mapsTab" style="color:#7fffa7;background:transparent;border:none;cursor:pointer;" href="#">Maps</a>
         <a class="nav-link disabled" style="color:#7fffa7;background:transparent;border:none;" href="#">More</a>
     </nav>
-    <div id="results" class="results-page"></div>
-
+    <div class="container-fluid" style="max-width: 1200px; margin: 0 auto;">
+        <div class="row">
+            <div class="col-lg-7 col-md-12" id="results-col">
+                <div id="results" class="results-page"></div>
+            </div>
+            <div class="col-lg-5 col-md-12" id="ai-col">
+                <div id="ai-overview" class="result-card" style="min-height:200px; background:#232d23; color:#e6f5e1;">
+                    <b>AI Overview</b>
+                    <div id="ai-response" style="margin-top:1em;"></div>
+                    <button id="generate-ai-btn" class="btn btn-success mt-3">Generate AI Overview</button>
+                    <div id="ai-warning" style="font-size:0.95em;color:#b5e5b5;margin-top:0.5em;">This may share your search data with a third party (Puter.ai).</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://js.puter.com/v2/"></script>
     <script>
         // Get query from URL
         function getQuery() {
@@ -181,6 +195,12 @@
             const xmlData = await fetchXML();
             const results = searchItems(query.toLowerCase(), xmlData);
             let html = '';
+            let aiPrompt = '';
+            const aiResults = results.slice(0, 10);
+            aiPrompt = 'Give a concise overview of the following search results for the query: "' + query + '". Here are the results:';
+            aiResults.forEach((r, i) => {
+                aiPrompt += `\n${i+1}. ${r.title}: ${r.description}`;
+            });
             for (const r of results) {
                 html += `<div class="result-card">
                     <div class="result-title"><a href="${r.url}" target="_blank">${r.title}</a></div>
@@ -189,26 +209,43 @@
                 </div>`;
             }
             document.getElementById('results').innerHTML = html || '<div class="result-card">No results found.</div>';
+            // AI Overview is now optional
+            document.getElementById('ai-response').innerText = 'Click "Generate AI Overview" to get a summary.';
+            const btn = document.getElementById('generate-ai-btn');
+            btn.onclick = function() {
+                if (aiResults.length > 0 && window.puter && puter.ai) {
+                    document.getElementById('ai-response').innerHTML = '<span style="color:#7fffa7;">Generating overview...</span>';
+                    puter.ai.chat(aiPrompt).then(response => {
+                        document.getElementById('ai-response').innerText = response;
+                    }).catch(() => {
+                        document.getElementById('ai-response').innerText = 'AI overview unavailable.';
+                    });
+                } else {
+                    document.getElementById('ai-response').innerText = 'No results to summarize.';
+                }
+            };
         }
-        const q = getQuery();
-        if (q) showResultsFromXML(q);
-
-        // Hardcode Maps tab to open OpenStreetMap with the current search query
-        document.addEventListener('DOMContentLoaded', function() {
-            var mapsTab = document.getElementById('mapsTab');
-            if (mapsTab) {
-                mapsTab.onclick = function(e) {
-                    e.preventDefault();
-                    var query = document.getElementById('searchInput').value.trim();
-                    if (query) {
-                        var osmQuery = encodeURIComponent(query).replace(/%20/g, '+');
-                        window.open('https://www.openstreetmap.org/search?query=' + osmQuery, '_blank');
-                    } else {
-                        window.open('https://www.openstreetmap.org/', '_blank');
-                    }
-                };
+        // Execute search on page load if query exists
+        window.onload = function() {
+            const query = getQuery();
+            if (query) {
+                showResultsFromXML(query);
             }
-        });
+        };
+        // Maps tab functionality
+        var mapsTab = document.getElementById('mapsTab');
+        if (mapsTab) {
+            mapsTab.onclick = function(e) {
+                e.preventDefault();
+                var query = document.getElementById('searchInput').value.trim();
+                if (query) {
+                    var osmQuery = encodeURIComponent(query).replace(/%20/g, '+');
+                    window.open('https://www.openstreetmap.org/search?query=' + osmQuery, '_blank');
+                } else {
+                    window.open('https://www.openstreetmap.org/', '_blank');
+                }
+            };
+        }
     </script>
 </body>
 </html>
