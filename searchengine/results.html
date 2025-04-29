@@ -132,23 +132,10 @@
     <nav class="nav nav-pills flex-row justify-content-start" style="background: #1a2b1a; border-bottom: 1px solid #2e4d2e; padding-left: 2vw;">
         <a class="nav-link active" style="color:#7fffa7;background:transparent;border:none;" href="#">All</a>
         <a class="nav-link" style="color:#7fffa7;background:transparent;border:none;" href="#">Images</a>
-        <a class="nav-link" style="color:#7fffa7;background:transparent;border:none;" href="#">Maps</a>
+        <a class="nav-link" id="mapsTab" style="color:#7fffa7;background:transparent;border:none;cursor:pointer;" href="#">Maps</a>
         <a class="nav-link disabled" style="color:#7fffa7;background:transparent;border:none;" href="#">More</a>
     </nav>
     <div id="results" class="results-page"></div>
-
-    <!-- Popup Modal for Coming Soon -->
-    <div id="comingSoonModal" class="modal fade" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background:#232d23;color:#e6f5e1;border-radius:1.25rem;">
-                <div class="modal-body text-center">
-                    <div style="font-size:2.5rem;">⬅️</div>
-                    <h4>Coming soon!</h4>
-                    <button type="button" class="btn btn-success mt-3" data-bs-dismiss="modal">Exit</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script>
         // Get query from URL
@@ -206,25 +193,20 @@
         const q = getQuery();
         if (q) showResultsFromXML(q);
 
-        // Show popup for Maps and Options
+        // Hardcode Maps tab to open OpenStreetMap with the current search query
         document.addEventListener('DOMContentLoaded', function() {
-            // Maps tab
-            const mapsTab = document.querySelector('.nav-link[href="#"]:nth-child(3)');
+            var mapsTab = document.getElementById('mapsTab');
             if (mapsTab) {
-                mapsTab.addEventListener('click', function(e) {
+                mapsTab.onclick = function(e) {
                     e.preventDefault();
-                    var modal = new bootstrap.Modal(document.getElementById('comingSoonModal'));
-                    modal.show();
-                });
-            }
-            // Options dropdown
-            const optionsBtn = document.getElementById('optionsDropdown');
-            if (optionsBtn) {
-                optionsBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    var modal = new bootstrap.Modal(document.getElementById('comingSoonModal'));
-                    modal.show();
-                });
+                    var query = document.getElementById('searchInput').value.trim();
+                    if (query) {
+                        var osmQuery = encodeURIComponent(query).replace(/%20/g, '+');
+                        window.open('https://www.openstreetmap.org/search?query=' + osmQuery, '_blank');
+                    } else {
+                        window.open('https://www.openstreetmap.org/', '_blank');
+                    }
+                };
             }
         });
     </script>
