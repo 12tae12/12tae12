@@ -151,6 +151,13 @@
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="optionsDropdown">
                 <li><a class="dropdown-item" href="#">Option 1</a></li>
                 <li><a class="dropdown-item" href="#">Option 2</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <div class="dropdown-item d-flex align-items-center justify-content-between">
+                        <span>Safe Search</span>
+                        <input type="checkbox" id="safeSearchToggle" checked style="margin-left:1em;">
+                    </div>
+                </li>
             </ul>
         </div>
     </div>
@@ -177,6 +184,53 @@
     </div>
     <script src="https://js.puter.com/v2/"></script>
     <script>
+        // --- Safe Search Blocked Terms ---
+        let blockedTerms = [];
+        let safeSearchOn = true;
+        // Try to load from localStorage, else fetch from remote
+        async function loadBlockedTerms() {
+            let csv = localStorage.getItem('blockedTermsCSV');
+            if (!csv) {
+                try {
+                    const resp = await fetch('https://www.frontgatemedia.com/wp-content/uploads/2014/03/Terms-to-Block.csv');
+                    csv = await resp.text();
+                    localStorage.setItem('blockedTermsCSV', csv);
+                } catch {
+                    csv = '';
+                }
+            }
+            blockedTerms = [];
+            if (csv) {
+                // Parse CSV: terms are in the 2nd column, comma separated, possibly with whitespace
+                const lines = csv.split(/\r?\n/);
+                for (const line of lines) {
+                    const cols = line.split('\t');
+                    if (cols.length > 1) {
+                        const terms = cols[1].split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
+                        blockedTerms.push(...terms);
+                    }
+                }
+                // Remove duplicates and empty
+                blockedTerms = Array.from(new Set(blockedTerms)).filter(Boolean);
+            }
+        }
+        // --- Safe Search Toggle ---
+        function setSafeSearch(val) {
+            safeSearchOn = val;
+            localStorage.setItem('safeSearchOn', val ? '1' : '0');
+        }
+        function getSafeSearch() {
+            return localStorage.getItem('safeSearchOn') !== '0';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const safeSearchToggle = document.getElementById('safeSearchToggle');
+            safeSearchOn = getSafeSearch();
+            safeSearchToggle.checked = safeSearchOn;
+            safeSearchToggle.onchange = function() {
+                setSafeSearch(this.checked);
+                window.location.reload();
+            };
+        });
         // Get query from URL
         function getQuery() {
             const params = new URLSearchParams(window.location.search);
@@ -200,6 +254,24 @@
             const parser = new DOMParser();
             return parser.parseFromString(text, "application/xml");
         }
+        // --- Safe Search Filtering ---
+        function containsBlockedTerm(text) {
+            if (!text) return false;
+            const lower = text.toLowerCase();
+            return blockedTerms.some(term => term && lower.includes(term));
+        }
+        function filterBlockedTerms(text) {
+            if (!text) return text;
+            let filtered = text;
+            for (const term of blockedTerms) {
+                if (term) {
+                    // Replace whole word or substring, case-insensitive
+                    const re = new RegExp(term.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'), 'gi');
+                    filtered = filtered.replace(re, '[blocked]');
+                }
+            }
+            return filtered;
+        }
         function searchItems(query, xmlData) {
             const items = xmlData.getElementsByTagName("item");
             const results = [];
@@ -211,26 +283,38 @@
                     title.toLowerCase().includes(query) ||
                     description.toLowerCase().includes(query)
                 ) {
+                    // If safe search is on, block if any field contains a blocked term
+                    if (safeSearchOn && (containsBlockedTerm(title) || containsBlockedTerm(description) || containsBlockedTerm(url))) {
+                        continue;
+                    }
                     results.push({ title, url, description });
                 }
             }
             return results;
         }
         async function showResultsFromXML(query) {
+            await loadBlockedTerms();
             const xmlData = await fetchXML();
             const results = searchItems(query.toLowerCase(), xmlData);
             let html = '';
             let aiPrompt = '';
-            const aiResults = results.slice(0, 10);
-            aiPrompt = 'Give a concise overview of the following search results for the query: "' + query + '". Here are the results:';
+            const aiResults = results.slice(0, 20); // Up to 20 for GPT-4o
+            aiPrompt = 'You are GPT-4o, a highly capable AI. Give a concise, safe, and family-friendly overview of the following search results for the query: "' +
+                filterBlockedTerms(query) + '". Here are the results:';
             aiResults.forEach((r, i) => {
-                aiPrompt += `\n${i+1}. ${r.title}: ${r.description}`;
+                // Remove blocked terms from AI prompt if safe search is on
+                let t = safeSearchOn ? filterBlockedTerms(r.title) : r.title;
+                let d = safeSearchOn ? filterBlockedTerms(r.description) : r.description;
+                aiPrompt += `\n${i+1}. ${t}: ${d}`;
             });
             for (const r of results) {
+                let t = safeSearchOn ? filterBlockedTerms(r.title) : r.title;
+                let d = safeSearchOn ? filterBlockedTerms(r.description) : r.description;
+                let u = safeSearchOn ? filterBlockedTerms(r.url) : r.url;
                 html += `<div class="result-card">
-                    <div class="result-title"><a href="${r.url}" target="_blank">${r.title}</a></div>
-                    <div class="result-url">${r.url}</div>
-                    <div class="result-description">${r.description}</div>
+                    <div class="result-title"><a href="${u}" target="_blank">${t}</a></div>
+                    <div class="result-url">${u}</div>
+                    <div class="result-description">${d}</div>
                 </div>`;
             }
             document.getElementById('results').innerHTML = html || '<div class="result-card">No results found.</div>';
