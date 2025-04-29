@@ -5,62 +5,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results</title>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" crossorigin="anonymous" onerror="this.disabled=true;document.body.classList.add('no-bootstrap');">
     <style>
         body {
-            background-color: #181a1b;
-            color: #e8e6e3;
-            font-family: 'Rubik', sans-serif;
+            font-family: 'Source Sans 3', 'Segoe UI', 'Arial', sans-serif;
+            background: #181f1b;
+            color: #e6f5e1;
         }
         .search-header {
-            background: #23272a;
+            background: #1a2b1a;
             box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+            padding: 1rem 0;
         }
         .search-bar {
-            background: #23272a;
-            border: 1px solid #444950;
+            background: #232d23;
+            border: 1px solid #2e4d2e;
+            border-radius: 2rem;
+            max-width: 280px;
+            min-width: 180px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
         }
         .search-input {
-            background: #23272a;
-            color: #e8e6e3;
+            background: transparent;
+            color: #e6f5e1;
+            border: none;
+            flex: 1;
+            font-size: 1.1rem;
         }
         .search-input::placeholder {
-            color: #888;
+            color: #7fa87f;
         }
         .search-button {
-            color: #e8e6e3;
+            color: #7fffa7;
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            margin-left: 0.5rem;
         }
         .results-page {
-            background: #23272a;
-            color: #e8e6e3;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+            background: transparent;
+            color: #e6f5e1;
+            max-width: 700px;
+            margin: 2rem auto 0 auto;
         }
-        .result {
-            border-bottom: 1px solid #333;
+        .result-card {
+            background: #232d23;
+            border: 1px solid #2e4d2e;
+            border-radius: 1.25rem;
+            box-shadow: 0 2px 12px rgba(0,64,32,0.12);
+            margin-bottom: 1.5rem;
+            padding: 1.25rem 1.5rem;
+            transition: box-shadow 0.2s;
+        }
+        .result-card:hover {
+            box-shadow: 0 4px 24px rgba(0,255,128,0.10);
         }
         .result-title a {
-            color: #4ea1f7;
+            color: #7fffa7;
+            font-size: 1.25rem;
+            font-weight: 500;
+            text-decoration: none;
         }
         .result-title a:hover {
-            color: #82c7ff;
+            color: #baffc9;
+            text-decoration: underline;
         }
         .result-url {
-            color: #7ec699;
+            color: #4ec16e;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
         }
         .result-description {
-            color: #b5b5b5;
+            color: #b5e5b5;
+            font-size: 1.05rem;
+        }
+        /* Fallback if Bootstrap is not loaded */
+        body.no-bootstrap .search-bar,
+        body.no-bootstrap .result-card {
+            box-shadow: none !important;
+        }
+        body.no-bootstrap .search-bar {
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+        }
+        body.no-bootstrap .result-card {
+            border-radius: 1.25rem;
+            padding: 1.25rem 1.5rem;
+        }
+        @media (max-width: 600px) {
+            .results-page {
+                padding: 0 0.5rem;
+            }
+            .result-card {
+                padding: 1rem 0.75rem;
+            }
         }
     </style>
+    <noscript>
+        <style>
+            .search-bar, .result-card { box-shadow: none !important; }
+        </style>
+    </noscript>
 </head>
 <body>
-    <div class="search-header">
-        <div class="search-bar">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search the web...">
-            <button class="search-button" onclick="redirectToResults()">🔍</button>
+    <div class="search-header d-flex align-items-center justify-content-between" style="padding: 1rem 2vw;">
+        <div class="d-flex align-items-center" style="width: 320px; min-width: 220px;">
+            <form class="search-bar flex-grow-1" style="max-width: 220px; min-width: 160px;" onsubmit="redirectToResults(); return false;">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search the web...">
+                <button class="search-button" type="submit">🔍</button>
+            </form>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-success dropdown-toggle" type="button" id="optionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <!-- No title, just the dropdown arrow -->
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="optionsDropdown">
+                <li><a class="dropdown-item" href="#">Option 1</a></li>
+                <li><a class="dropdown-item" href="#">Option 2</a></li>
+            </ul>
         </div>
     </div>
+    <nav class="nav nav-pills flex-row justify-content-start" style="background: #1a2b1a; border-bottom: 1px solid #2e4d2e; padding-left: 2vw;">
+        <a class="nav-link active" style="color:#7fffa7;background:transparent;border:none;" href="#">All</a>
+        <a class="nav-link" style="color:#7fffa7;background:transparent;border:none;" href="#">Images</a>
+        <a class="nav-link" style="color:#7fffa7;background:transparent;border:none;" href="#">Maps</a>
+        <a class="nav-link disabled" style="color:#7fffa7;background:transparent;border:none;" href="#">More</a>
+    </nav>
     <div id="results" class="results-page"></div>
+
+    <!-- Popup Modal for Coming Soon -->
+    <div id="comingSoonModal" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background:#232d23;color:#e6f5e1;border-radius:1.25rem;">
+                <div class="modal-body text-center">
+                    <div style="font-size:2.5rem;">⬅️</div>
+                    <h4>Coming soon!</h4>
+                    <button type="button" class="btn btn-success mt-3" data-bs-dismiss="modal">Exit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Get query from URL
         function getQuery() {
@@ -106,16 +195,38 @@
             const results = searchItems(query.toLowerCase(), xmlData);
             let html = '';
             for (const r of results) {
-                html += `<div class="result">
+                html += `<div class="result-card">
                     <div class="result-title"><a href="${r.url}" target="_blank">${r.title}</a></div>
                     <div class="result-url">${r.url}</div>
                     <div class="result-description">${r.description}</div>
                 </div>`;
             }
-            document.getElementById('results').innerHTML = html || '<div>No results found.</div>';
+            document.getElementById('results').innerHTML = html || '<div class="result-card">No results found.</div>';
         }
         const q = getQuery();
         if (q) showResultsFromXML(q);
+
+        // Show popup for Maps and Options
+        document.addEventListener('DOMContentLoaded', function() {
+            // Maps tab
+            const mapsTab = document.querySelector('.nav-link[href="#"]:nth-child(3)');
+            if (mapsTab) {
+                mapsTab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var modal = new bootstrap.Modal(document.getElementById('comingSoonModal'));
+                    modal.show();
+                });
+            }
+            // Options dropdown
+            const optionsBtn = document.getElementById('optionsDropdown');
+            if (optionsBtn) {
+                optionsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var modal = new bootstrap.Modal(document.getElementById('comingSoonModal'));
+                    modal.show();
+                });
+            }
+        });
     </script>
 </body>
 </html>
