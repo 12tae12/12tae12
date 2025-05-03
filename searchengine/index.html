@@ -133,8 +133,10 @@
                 </button>
             </div>
         </form>
+        <div id="ai-suggestions" style="max-width:600px;margin:1em auto 0 auto;"></div>
     </div>
 
+    <script src="https://js.puter.com/v2/"></script>
     <script>
         function redirectToResults(event) {
             event.preventDefault();
@@ -147,6 +149,37 @@
         // Optional: Focus search input on page load
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('searchInput').focus();
+        });
+
+        // --- AI Suggestions for Index Page ---
+        const indexInput = document.getElementById('searchInput');
+        const aiSuggestionsDiv = document.getElementById('ai-suggestions');
+        let aiSuggestTimeout = null;
+        indexInput.addEventListener('input', function() {
+            if (aiSuggestTimeout) clearTimeout(aiSuggestTimeout);
+            const val = indexInput.value.trim();
+            if (!val) {
+                aiSuggestionsDiv.innerHTML = '';
+                return;
+            }
+            aiSuggestTimeout = setTimeout(async () => {
+                if (!window.puter || !puter.ai) return;
+                try {
+                    const prompt = `Suggest 3 possible next words or short phrases to follow: "${val}". Only give the suggestions, separated by newlines.`;
+                    const resp = await puter.ai.chat(prompt);
+                    const suggestions = resp.split('\n').map(s => s.trim()).filter(Boolean);
+                    if (suggestions.length) {
+                        aiSuggestionsDiv.innerHTML = suggestions.map(s => `<span style='background:#1a2b1a;color:#7fffa7;border-radius:0.5em;padding:0.3em 0.7em;margin:0.2em;cursor:pointer;display:inline-block;' onclick='document.getElementById("searchInput").value = "${s}";'>${s}</span>`).join(' ');
+                    } else {
+                        aiSuggestionsDiv.innerHTML = '';
+                    }
+                } catch {
+                    aiSuggestionsDiv.innerHTML = '';
+                }
+            }, 300);
+        });
+        indexInput.addEventListener('blur', function() {
+            setTimeout(() => aiSuggestionsDiv.innerHTML = '', 200);
         });
     </script>
 </body>

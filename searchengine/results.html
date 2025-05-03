@@ -171,6 +171,7 @@
     <div class="container-fluid" style="max-width: 1200px; margin: 0 auto;">
         <div class="row align-items-start" style="margin-top: 2.5rem;">
             <div class="col-lg-7 col-md-12" id="results-col" style="padding-top:0;">
+                <div id="ai-spellcheck-suggestion" style="max-width:700px;margin:1.5em auto 0 auto;"></div>
                 <div id="results" class="results-page"></div>
                 <div id="pagination" style="text-align:center;margin:1.5em 0;"></div>
             </div>
@@ -461,6 +462,30 @@
                 return null;
             }
         }
+        // --- AI Spell Checker Suggestion Above Results ---
+        async function showAISpellcheckSuggestion(query) {
+            const container = document.getElementById('ai-spellcheck-suggestion');
+            container.innerHTML = '';
+            if (!window.puter || !puter.ai || !query) return;
+            try {
+                const prompt = `Correct any spelling mistakes in this search query, but do not change its meaning: "${query}". Only return the corrected query.`;
+                const resp = await puter.ai.chat(prompt);
+                const corrected = resp.trim();
+                if (corrected && corrected !== query) {
+                    container.innerHTML = `<div style='background:#1a2b1a;border:1px solid #2e4d2e;border-radius:1em;padding:1em 1.5em;margin-bottom:1em;color:#7fffa7;'>
+                        Did you mean: <a href="results.html?q=${encodeURIComponent(corrected)}" style="color:#baffc9;text-decoration:underline;">${corrected}</a>?
+                    </div>`;
+                }
+            } catch {
+                // Hide suggestion on error
+                container.innerHTML = '';
+            }
+        }
+        // On page load, show AI spellcheck suggestion
+        window.addEventListener('DOMContentLoaded', function() {
+            const query = getQuery();
+            showAISpellcheckSuggestion(query);
+        });
         // On page load, spell check the search input if enabled
         window.addEventListener('DOMContentLoaded', async function() {
             if (aiSpellCheckOn) {
