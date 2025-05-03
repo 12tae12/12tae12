@@ -155,7 +155,12 @@
                 <button class="search-button" type="submit">🔍</button>
             </form>
         </div>
-        <button id="safeSearchBtn" class="btn btn-success" onclick="toggleSafeSearch()">Safe Search: ON</button>
+        <a href="settings.html" class="btn btn-outline-success" id="settingsBtn" style="margin-left: 1em;" title="Settings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="vertical-align:middle;">
+                <circle cx="12" cy="12" r="3.2" stroke="#7fffa7" stroke-width="2" fill="none"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 9 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="#7fffa7" stroke-width="2" fill="none"/>
+            </svg>
+        </a>
     </div>
     <nav class="nav nav-pills flex-row justify-content-start" style="background: #1a2b1a; border-bottom: 1px solid #2e4d2e; padding-left: 2vw;">
         <a class="nav-link active" style="color:#7fffa7;background:transparent;border:none;" href="#">All</a>
@@ -185,13 +190,6 @@
         let blockedTerms = [];
         let safeSearchOn = localStorage.getItem('safeSearch') !== 'false';  // default to true unless explicitly set to false
         
-        // Safe Search state management
-        function setSafeSearch(value) {
-            safeSearchOn = value;
-            localStorage.setItem('safeSearch', value);
-            updateSafeSearchBtn();
-        }
-
         // Try to load from localStorage, else fetch from remote
         async function loadBlockedTerms() {
             let txt = localStorage.getItem('blockedTermsTXT');
@@ -237,21 +235,6 @@
                 };
             });
         }
-        // --- Safe Search Toggle Button ---
-        function updateSafeSearchBtn() {
-            const btn = document.getElementById('safeSearchBtn');
-            if (!btn) return;
-            btn.textContent = 'Safe Search: ' + (safeSearchOn ? 'ON' : 'OFF');
-            btn.className = 'btn ' + (safeSearchOn ? 'btn-success' : 'btn-danger');
-        }
-        function toggleSafeSearch() {
-            safeSearchOn = !safeSearchOn;
-            setSafeSearch(safeSearchOn);
-            window.location.reload();
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            updateSafeSearchBtn();
-        });
         // Get query from URL
         function getQuery() {
             const params = new URLSearchParams(window.location.search);
@@ -387,6 +370,113 @@
                 }
             };
         }
+        // --- Autocorrect & Suggestions ---
+        let autocorrectOn = localStorage.getItem('autocorrect') === 'true';
+        let autocorrectTimeout = null;
+        let lastInputValue = '';
+        const searchInput = document.getElementById('searchInput');
+        let suggestionBox = null;
+
+        function showSuggestions(suggestions) {
+            if (!suggestionBox) {
+                suggestionBox = document.createElement('div');
+                suggestionBox.style.position = 'absolute';
+                suggestionBox.style.background = '#232d23';
+                suggestionBox.style.color = '#7fffa7';
+                suggestionBox.style.border = '1px solid #2e4d2e';
+                suggestionBox.style.borderRadius = '0.5em';
+                suggestionBox.style.zIndex = 1000;
+                suggestionBox.style.left = searchInput.getBoundingClientRect().left + 'px';
+                suggestionBox.style.top = (searchInput.getBoundingClientRect().bottom + window.scrollY) + 'px';
+                suggestionBox.style.minWidth = searchInput.offsetWidth + 'px';
+                suggestionBox.style.maxWidth = '420px';
+                suggestionBox.style.padding = '0.5em 0.75em';
+                suggestionBox.style.fontSize = '1.05em';
+                document.body.appendChild(suggestionBox);
+            }
+            suggestionBox.innerHTML = '';
+            suggestions.forEach(s => {
+                const div = document.createElement('div');
+                div.textContent = s;
+                div.style.cursor = 'pointer';
+                div.style.padding = '0.2em 0';
+                div.onclick = () => {
+                    searchInput.value = s;
+                    suggestionBox.style.display = 'none';
+                };
+                suggestionBox.appendChild(div);
+            });
+            suggestionBox.style.display = suggestions.length ? 'block' : 'none';
+        }
+
+        function hideSuggestions() {
+            if (suggestionBox) suggestionBox.style.display = 'none';
+        }
+
+        searchInput.addEventListener('input', function() {
+            if (!autocorrectOn) return;
+            if (autocorrectTimeout) clearTimeout(autocorrectTimeout);
+            const val = searchInput.value;
+            if (!val.trim()) {
+                hideSuggestions();
+                return;
+            }
+            autocorrectTimeout = setTimeout(async () => {
+                if (searchInput.value !== val) return;
+                // Use puter.ai to get suggestions
+                if (window.puter && puter.ai) {
+                    try {
+                        const prompt = `Suggest 3 possible next words or short phrases to follow: "${val}". Only give the suggestions, separated by newlines.`;
+                        const resp = await puter.ai.chat(prompt);
+                        const suggestions = resp.split('\n').map(s => s.trim()).filter(Boolean);
+                        showSuggestions(suggestions);
+                    } catch {
+                        hideSuggestions();
+                    }
+                }
+            }, 300);
+        });
+        searchInput.addEventListener('blur', function() {
+            setTimeout(hideSuggestions, 200);
+        });
+        // Listen for autocorrect setting changes
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'autocorrect') {
+                autocorrectOn = localStorage.getItem('autocorrect') === 'true';
+                if (!autocorrectOn) hideSuggestions();
+            }
+        });
+        // --- AI Spell Checker ---
+        let aiSpellCheckOn = localStorage.getItem('aiSpellCheck') === 'true';
+        async function aiSpellCheck(text) {
+            if (!aiSpellCheckOn || !window.puter || !puter.ai) return null;
+            try {
+                const prompt = `Correct any spelling mistakes in this search query, but do not change its meaning: "${text}". Only return the corrected query.`;
+                const resp = await puter.ai.chat(prompt);
+                return resp.trim();
+            } catch {
+                // If error, turn off spell check for this session
+                aiSpellCheckOn = false;
+                localStorage.setItem('aiSpellCheck', 'false');
+                return null;
+            }
+        }
+        // On page load, spell check the search input if enabled
+        window.addEventListener('DOMContentLoaded', async function() {
+            if (aiSpellCheckOn) {
+                const input = document.getElementById('searchInput');
+                if (input && input.value) {
+                    const corrected = await aiSpellCheck(input.value);
+                    if (corrected && corrected !== input.value) {
+                        input.value = corrected;
+                        // Optionally, show a subtle notification or highlight
+                        input.style.background = '#1a2b1a';
+                        input.style.color = '#7fffa7';
+                        input.title = 'Corrected by AI';
+                    }
+                }
+            }
+        });
         // Execute search on page load if query exists
         window.onload = function() {
             const query = getQuery();
