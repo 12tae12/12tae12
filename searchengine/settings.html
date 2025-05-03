@@ -78,8 +78,8 @@
 
         // Load AI Spell Checker state from localStorage
         const aiSpellCheckSwitch = document.getElementById('aiSpellCheckSwitch');
-        let aiSpellCheckOn = localStorage.getItem('aiSpellCheck') === 'true';
-        aiSpellCheckSwitch.checked = aiSpellCheckOn;
+        // Always read from localStorage, not from a variable
+        aiSpellCheckSwitch.checked = localStorage.getItem('aiSpellCheck') === 'true';
         aiSpellCheckSwitch.addEventListener('change', async function() {
             if (aiSpellCheckSwitch.checked) {
                 // Experiment: test if puter.ai is available for spell check
@@ -87,6 +87,7 @@
                     if (window.puter && puter.ai) {
                         await puter.ai.chat('Spell check: test');
                         localStorage.setItem('aiSpellCheck', 'true');
+                        aiSpellCheckSwitch.checked = true;
                     } else {
                         throw new Error('Puter.ai not available');
                     }
@@ -97,6 +98,7 @@
                 }
             } else {
                 localStorage.setItem('aiSpellCheck', 'false');
+                aiSpellCheckSwitch.checked = false;
             }
         });
     </script>
