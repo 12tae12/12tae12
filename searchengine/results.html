@@ -187,9 +187,44 @@
     </div>
     <script src="https://js.puter.com/v2/"></script>
     <script>
+        // Cookie and Settings Management
+        function setCookie(name, value, days) {
+            let expires = '';
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = '; expires=' + date.toUTCString();
+            }
+            document.cookie = name + '=' + (value || '') + expires + '; path=/';
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + '=';
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function loadSettings(key, defaultValue) {
+            const localValue = localStorage.getItem(key);
+            const cookieValue = getCookie(key);
+            return localValue || cookieValue || defaultValue;
+        }
+
+        // Check if cookies are allowed
+        const cookiesAllowed = getCookie('cookieConsent') === 'accepted';
+        
+        // --- Safe Search and other settings ---
+        let safeSearchOn = loadSettings('safeSearch', 'true') !== 'false';
+        let autocorrectOn = loadSettings('autocorrect', 'false') === 'true';
+        let aiSpellCheckOn = loadSettings('aiSpellCheck', 'false') === 'true' && cookiesAllowed;
+
         // --- Safe Search Blocked Terms ---
         let blockedTerms = [];
-        let safeSearchOn = localStorage.getItem('safeSearch') !== 'false';  // default to true unless explicitly set to false
         
         // Try to load from localStorage, else fetch from remote
         async function loadBlockedTerms() {
@@ -372,7 +407,6 @@
             };
         }
         // --- Autocorrect & Suggestions ---
-        let autocorrectOn = localStorage.getItem('autocorrect') === 'true';
         let autocorrectTimeout = null;
         let lastInputValue = '';
         const searchInput = document.getElementById('searchInput');
@@ -443,14 +477,13 @@
         // Listen for autocorrect setting changes
         window.addEventListener('storage', function(e) {
             if (e.key === 'autocorrect') {
-                autocorrectOn = localStorage.getItem('autocorrect') === 'true';
+                autocorrectOn = loadSettings('autocorrect', 'false') === 'true';
                 if (!autocorrectOn) hideSuggestions();
             }
         });
         // --- AI Spell Checker ---
-        let aiSpellCheckOn = localStorage.getItem('aiSpellCheck') === 'true';
         async function aiSpellCheck(text) {
-            if (!aiSpellCheckOn || !window.puter || !puter.ai) return null;
+            if (!aiSpellCheckOn || !cookiesAllowed || !window.puter || !puter.ai) return null;
             try {
                 const prompt = `Correct any spelling mistakes in this search query, but do not change its meaning: "${text}". Only return the corrected query.`;
                 const resp = await puter.ai.chat(prompt);
@@ -466,7 +499,10 @@
         async function showAISpellcheckSuggestion(query) {
             const container = document.getElementById('ai-spellcheck-suggestion');
             container.innerHTML = '';
-            if (!window.puter || !puter.ai || !query) return;
+            
+            // Only proceed if spell checker is enabled and cookies are accepted
+            if (!aiSpellCheckOn || !cookiesAllowed || !window.puter || !puter.ai || !query) return;
+            
             try {
                 const prompt = `Correct any spelling mistakes in this search query, but do not change its meaning: "${query}". Only return the corrected query.`;
                 const resp = await puter.ai.chat(prompt);

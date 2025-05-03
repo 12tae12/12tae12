@@ -38,6 +38,20 @@
             background: #2e4d2e;
             color: #fff;
         }
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1a2b1a;
+            padding: 1em;
+            text-align: center;
+            border-top: 1px solid #2e4d2e;
+            display: none;
+        }
+        .cookie-banner button {
+            margin: 0 0.5em;
+        }
     </style>
 </head>
 <body>
@@ -58,49 +72,137 @@
         </div>
         <!-- Add more settings options here -->
     </div>
+    <div class="cookie-banner" id="cookieBanner">
+        <p style="margin-bottom: 1em;">This site uses cookies to save your preferences. By continuing to use this site, you consent to our use of cookies.</p>
+        <button class="btn btn-success" onclick="acceptCookies()">Accept</button>
+        <button class="btn btn-outline-success" onclick="rejectCookies()">Reject</button>
+    </div>
     <script src="https://js.puter.com/v2/"></script>
     <script>
-        // Load Safe Search state from localStorage
+        // Cookie management functions
+        function setCookie(name, value, days) {
+            let expires = '';
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = '; expires=' + date.toUTCString();
+            }
+            document.cookie = name + '=' + (value || '') + expires + '; path=/';
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + '=';
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function acceptCookies() {
+            setCookie('cookieConsent', 'accepted', 365);
+            document.getElementById('cookieBanner').style.display = 'none';
+        }
+
+        function rejectCookies() {
+            setCookie('cookieConsent', 'rejected', 365);
+            document.getElementById('cookieBanner').style.display = 'none';
+            // Disable settings if cookies are rejected
+            aiSpellCheckSwitch.checked = false;
+            aiSpellCheckSwitch.disabled = true;
+            localStorage.removeItem('aiSpellCheck');
+        }
+
+        // Settings storage functions
+        function saveSettings(key, value) {
+            try {
+                localStorage.setItem(key, value);
+                setCookie(key, value, 365);
+            } catch (e) {
+                console.error('Error saving settings:', e);
+            }
+        }
+
+        function loadSettings(key, defaultValue) {
+            // Try localStorage first, then cookies
+            const localValue = localStorage.getItem(key);
+            const cookieValue = getCookie(key);
+            return localValue || cookieValue || defaultValue;
+        }
+
+        // Show cookie banner if consent not given
+        if (!getCookie('cookieConsent')) {
+            document.getElementById('cookieBanner').style.display = 'block';
+        }
+
+        // Load Safe Search state
         const safeSearchSwitch = document.getElementById('safeSearchSwitch');
-        let safeSearchOn = localStorage.getItem('safeSearch') !== 'false';
+        let safeSearchOn = loadSettings('safeSearch', 'true') !== 'false';
         safeSearchSwitch.checked = safeSearchOn;
         safeSearchSwitch.addEventListener('change', function() {
-            localStorage.setItem('safeSearch', safeSearchSwitch.checked);
+            saveSettings('safeSearch', safeSearchSwitch.checked);
         });
 
-        // Load Autocorrect state from localStorage
+        // Load Autocorrect state
         const autocorrectSwitch = document.getElementById('autocorrectSwitch');
-        let autocorrectOn = localStorage.getItem('autocorrect') === 'true';
+        let autocorrectOn = loadSettings('autocorrect', 'false') === 'true';
         autocorrectSwitch.checked = autocorrectOn;
         autocorrectSwitch.addEventListener('change', function() {
-            localStorage.setItem('autocorrect', autocorrectSwitch.checked);
+            saveSettings('autocorrect', autocorrectSwitch.checked);
         });
 
-        // Load AI Spell Checker state from localStorage
+        // Load AI Spell Checker state
         const aiSpellCheckSwitch = document.getElementById('aiSpellCheckSwitch');
-        // Always read from localStorage, not from a variable
-        aiSpellCheckSwitch.checked = localStorage.getItem('aiSpellCheck') === 'true';
-        aiSpellCheckSwitch.addEventListener('change', async function() {
+        let aiSpellCheckOn = loadSettings('aiSpellCheck', 'false') === 'true';
+        aiSpellCheckSwitch.checked = aiSpellCheckOn;
+
+        // Test puter.ai availability on page load if spell check is enabled
+        async function testPuterAI() {
             if (aiSpellCheckSwitch.checked) {
-                // Experiment: test if puter.ai is available for spell check
                 try {
                     if (window.puter && puter.ai) {
                         await puter.ai.chat('Spell check: test');
-                        localStorage.setItem('aiSpellCheck', 'true');
+                        saveSettings('aiSpellCheck', 'true');
+                    } else {
+                        throw new Error('Puter.ai not available');
+                    }
+                } catch {
+                    aiSpellCheckSwitch.checked = false;
+                    saveSettings('aiSpellCheck', 'false');
+                    alert('AI Spell Checker could not be enabled (Puter.ai unavailable).');
+                }
+            }
+        }
+        testPuterAI();
+
+        aiSpellCheckSwitch.addEventListener('change', async function() {
+            if (aiSpellCheckSwitch.checked) {
+                try {
+                    if (window.puter && puter.ai) {
+                        await puter.ai.chat('Spell check: test');
+                        saveSettings('aiSpellCheck', 'true');
                         aiSpellCheckSwitch.checked = true;
                     } else {
                         throw new Error('Puter.ai not available');
                     }
                 } catch {
                     aiSpellCheckSwitch.checked = false;
-                    localStorage.setItem('aiSpellCheck', 'false');
+                    saveSettings('aiSpellCheck', 'false');
                     alert('AI Spell Checker could not be enabled (Puter.ai unavailable).');
                 }
             } else {
-                localStorage.setItem('aiSpellCheck', 'false');
+                saveSettings('aiSpellCheck', 'false');
                 aiSpellCheckSwitch.checked = false;
             }
         });
+
+        // Disable settings if cookies were previously rejected
+        if (getCookie('cookieConsent') === 'rejected') {
+            aiSpellCheckSwitch.checked = false;
+            aiSpellCheckSwitch.disabled = true;
+        }
     </script>
 </body>
 </html>
