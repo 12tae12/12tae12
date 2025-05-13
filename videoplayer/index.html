@@ -76,6 +76,7 @@
     outline: none;
     box-shadow: none;
     display: block;
+    z-index: 1;
   }
   .custom-controls {
     display: flex;
@@ -118,11 +119,12 @@
     display: flex;
     align-items: center;
     gap: 0.3rem;
+    min-width: 2.5rem;
+    justify-content: center;
   }
 
-  .custom-controls button:hover {
-    background: #040;
-    transform: scale(1.05);
+  #skipForward, #skipBackward {
+    font-size: 0.8rem;
   }
 
   .progress-bar {
@@ -151,8 +153,8 @@
 
   .options-menu {
     position: absolute;
-    bottom: auto; /* Reset bottom alignment */
-    top: 100%; /* Align the menu below the button */
+    bottom: auto;
+    top: 100%;
     right: 0;
     background: rgba(0, 34, 0, 0.95);
     backdrop-filter: blur(5px);
@@ -161,10 +163,24 @@
     padding: 0.5rem;
     display: none;
     min-width: 150px;
-    z-index: 10; /* Ensure it appears above other elements */
+    z-index: 10;
   }
 
-  .options-menu.show {
+  .quality-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(0, 34, 0, 0.95);
+    backdrop-filter: blur(5px);
+    border: 1px solid #0f0;
+    border-radius: 4px;
+    padding: 0.5rem;
+    display: none;
+    min-width: 100px;
+    z-index: 10;
+  }
+
+  .options-menu.show, .quality-menu.show {
     display: block;
   }
 
@@ -195,12 +211,37 @@
 
   .volume-bar {
     width: 0;
-    transition: width 0.3s ease;
-    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(90deg, #0f0 100%, #222 100%);
+    border-radius: 2px;
+    height: 4px;
+  }
+
+  .volume-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #0f0;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .volume-bar::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #0f0;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
   }
 
   .volume-control:hover .volume-bar {
     width: 80px;
+    opacity: 1;
   }
 
   .audio-overlay {
@@ -287,15 +328,16 @@
 <main>
   <section class="video-section">
     <div class="video-title" id="videoTitle">No video loaded</div>
-    <div class="video-container">
+    <div class="video-container" id="videoContainer">
       <video id="videoPlayer" class="video-preview">
-        <source id="videoSource" src="" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       <div id="audioOverlay" class="audio-overlay" style="display: none;">🎵</div>
       <div class="custom-controls" id="customControls">
         <div class="controls-wrapper">
           <button id="playPause">⏵</button>
+          <button id="skipBackward">⏪</button>
+          <button id="skipForward">⏩</button>
           <button id="loopBtn">↻</button>
           <div class="volume-control">
             <button id="muteBtn">🔊</button>
@@ -305,7 +347,6 @@
         
         <div class="progress-bar" id="progressBar">
           <div class="progress" id="progress"></div>
-          <div class="progress-hover" id="progressHover"></div>
         </div>
 
         <div class="controls-wrapper">
@@ -326,6 +367,13 @@
           <div class="menu-item" data-speed="1.5">1.5x</div>
           <div class="menu-item" data-speed="2">2x</div>
         </div>
+
+        <div class="quality-menu" id="qualityMenu">
+          <div class="menu-item" data-quality="auto">Auto</div>
+          <div class="menu-item" data-quality="sd">SD</div>
+          <div class="menu-item active" data-quality="hd">HD</div>
+          <div class="menu-item" data-quality="4k">4K</div>
+        </div>
       </div>
     </div>
     <div class="upload-controls">
@@ -340,17 +388,17 @@
 <footer>Upload a video file to play it here.</footer>
 
 <script>
-  // Initialize all DOM elements
   const elements = {
     fileInput: document.getElementById('fileInput'),
     videoPlayer: document.getElementById('videoPlayer'),
-    videoSource: document.getElementById('videoSource'),
+    videoContainer: document.getElementById('videoContainer'),
     videoTitle: document.getElementById('videoTitle'),
     videoInfo: document.getElementById('videoInfo'),
     playPause: document.getElementById('playPause'),
+    skipForward: document.getElementById('skipForward'),
+    skipBackward: document.getElementById('skipBackward'),
     progressBar: document.getElementById('progressBar'),
     progress: document.getElementById('progress'),
-    progressHover: document.getElementById('progressHover'),
     currentTime: document.getElementById('currentTime'),
     duration: document.getElementById('duration'),
     volumeBar: document.getElementById('volumeBar'),
@@ -358,187 +406,279 @@
     customControls: document.getElementById('customControls'),
     fullscreenBtn: document.getElementById('fullscreenBtn'),
     loopBtn: document.getElementById('loopBtn'),
-    audioOverlay: document.getElementById('audioOverlay')
+    audioOverlay: document.getElementById('audioOverlay'),
+    speedBtn: document.getElementById('speedBtn'),
+    speedMenu: document.getElementById('speedMenu'),
+    qualityBtn: document.getElementById('qualityBtn'),
+    qualityMenu: document.getElementById('qualityMenu')
   };
 
-  let controlsTimeout;
   let isFullscreen = false;
   let isLooping = false;
+  let lastVolume = 1;
+  let currentSpeed = 1;
+  let currentQuality = 'hd';
 
-  // Check if all elements are available
-  const allElementsExist = Object.values(elements).every(element => element !== null);
-
-  if (allElementsExist) {
-    // Hide default controls, show custom
+  function initPlayer() {
     elements.videoPlayer.controls = false;
     elements.customControls.style.display = 'flex';
 
     // Play/Pause
-    elements.playPause.addEventListener('click', () => {
-      if (elements.videoPlayer.paused || elements.videoPlayer.ended) {
-        elements.videoPlayer.play();
-      } else {
-        elements.videoPlayer.pause();
-      }
+    elements.playPause.addEventListener('click', togglePlayPause);
+
+    // Skip controls
+    elements.skipForward.addEventListener('click', () => {
+      elements.videoPlayer.currentTime += 30;
+    });
+    elements.skipBackward.addEventListener('click', () => {
+      elements.videoPlayer.currentTime -= 30;
     });
 
-    elements.videoPlayer.addEventListener('play', () => {
-      elements.playPause.textContent = 'Pause';
-      showControls();
-    });
-
-    elements.videoPlayer.addEventListener('pause', () => {
-      elements.playPause.textContent = 'Play';
-      elements.customControls.classList.remove('hide');
-    });
-
-    // Progress bar and seeking
-    elements.progressHover.addEventListener('click', (e) => {
+    // Progress bar
+    elements.progressBar.addEventListener('click', (e) => {
       const rect = elements.progressBar.getBoundingClientRect();
       const pos = (e.clientX - rect.left) / rect.width;
       elements.videoPlayer.currentTime = pos * elements.videoPlayer.duration;
     });
 
-    elements.videoPlayer.addEventListener('timeupdate', () => {
-      const percent = (elements.videoPlayer.currentTime / elements.videoPlayer.duration) * 100;
-      elements.progress.style.width = `${percent}%`;
-      elements.currentTime.textContent = formatTime(elements.videoPlayer.currentTime);
-    });
-
-    // Volume control
+    // Volume controls
     elements.volumeBar.addEventListener('input', () => {
-      elements.videoPlayer.volume = elements.volumeBar.value;
+      const volume = parseFloat(elements.volumeBar.value);
+      elements.videoPlayer.volume = volume;
+      elements.videoPlayer.muted = volume === 0;
+      lastVolume = volume > 0 ? volume : lastVolume;
       updateVolumeUI();
     });
-
-    elements.muteBtn.addEventListener('click', () => {
-      elements.videoPlayer.muted = !elements.videoPlayer.muted;
-      updateVolumeUI();
-    });
-
-    // File upload
-    elements.fileInput.addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const fileURL = URL.createObjectURL(file);
-        const isAudio = file.type.startsWith('audio/');
-        
-        elements.videoSource.src = fileURL;
-        elements.videoPlayer.load();
-        elements.videoPlayer.play().catch(e => console.log('Auto-play prevented:', e));
-        elements.videoTitle.textContent = file.name;
-        elements.videoInfo.textContent = `File size: ${(file.size / (1024 * 1024)).toFixed(2)} MB | Type: ${file.type}`;
-        
-        // Handle audio visualization
-        elements.audioOverlay.style.display = isAudio ? 'block' : 'none';
-        elements.videoPlayer.classList.toggle('audio-mode', isAudio);
-        
-        // Always show video player
-        elements.videoPlayer.style.display = 'block';
-      }
-    });
-
-    // Loop toggle
-    elements.loopBtn.addEventListener('click', () => {
-      isLooping = !isLooping;
-      elements.videoPlayer.loop = isLooping;
-      elements.loopBtn.textContent = isLooping ? 'Loop On' : 'Loop Off';
-      elements.loopBtn.style.background = isLooping ? '#040' : '#000';
-    });
+    elements.muteBtn.addEventListener('click', toggleMute);
 
     // Fullscreen
-    elements.fullscreenBtn.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        elements.videoPlayer.parentElement.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
+    elements.fullscreenBtn.addEventListener('click', toggleFullscreen);
+    document.addEventListener('fullscreenchange', () => {
+      isFullscreen = !!document.fullscreenElement;
     });
 
-    // Speed control
-    const speedBtn = document.getElementById('speedBtn');
-    const speedMenu = document.getElementById('speedMenu');
-    let isSpeedMenuOpen = false;
+    // Loop
+    elements.loopBtn.addEventListener('click', toggleLoop);
 
-    speedBtn.addEventListener('click', () => {
-      isSpeedMenuOpen = !isSpeedMenuOpen;
-      speedMenu.classList.toggle('show', isSpeedMenuOpen);
+    // Speed controls
+    elements.speedBtn.addEventListener('click', (e) => {
+      elements.speedMenu.classList.toggle('show');
+      e.stopPropagation();
     });
-
-    document.querySelectorAll('.menu-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const speed = parseFloat(item.dataset.speed);
+    elements.speedMenu.addEventListener('click', (e) => {
+      if (e.target.classList.contains('menu-item')) {
+        const speed = parseFloat(e.target.dataset.speed);
+        currentSpeed = speed;
         elements.videoPlayer.playbackRate = speed;
-        speedBtn.textContent = speed + 'x';
-        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-        speedMenu.classList.remove('show');
-        isSpeedMenuOpen = false;
-      });
+        elements.speedBtn.textContent = speed === 1 ? '1x' : `${speed}x`;
+        document.querySelectorAll('#speedMenu .menu-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        e.target.classList.add('active');
+        elements.speedMenu.classList.remove('show');
+      }
     });
 
-    // Close speed menu when clicking outside
+    // Quality controls
+    elements.qualityBtn.addEventListener('click', (e) => {
+      elements.qualityMenu.classList.toggle('show');
+      e.stopPropagation();
+    });
+    elements.qualityMenu.addEventListener('click', (e) => {
+      if (e.target.classList.contains('menu-item')) {
+        currentQuality = e.target.dataset.quality;
+        elements.qualityBtn.textContent = currentQuality.toUpperCase();
+        document.querySelectorAll('#qualityMenu .menu-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        e.target.classList.add('active');
+        elements.qualityMenu.classList.remove('show');
+      }
+    });
+
+    // Close menus when clicking elsewhere
     document.addEventListener('click', (e) => {
-      if (isSpeedMenuOpen && !speedBtn.contains(e.target) && !speedMenu.contains(e.target)) {
-        speedMenu.classList.remove('show');
-        isSpeedMenuOpen = false;
+      if (!e.target.closest('.options-menu') && !e.target.closest('#speedBtn')) {
+        elements.speedMenu.classList.remove('show');
+      }
+      if (!e.target.closest('.quality-menu') && !e.target.closest('#qualityBtn')) {
+        elements.qualityMenu.classList.remove('show');
       }
     });
 
-    // Show/hide controls
-    function showControls() {
-      elements.customControls.classList.remove('hide');
-      clearTimeout(controlsTimeout);
-      if (!elements.videoPlayer.paused) {
-        controlsTimeout = setTimeout(() => {
-          elements.customControls.classList.add('hide');
-        }, 3000);
-      }
+    // File input handling
+    elements.fileInput.addEventListener('change', handleFileSelect);
+
+    // Video events
+    elements.videoPlayer.addEventListener('play', updatePlayButton);
+    elements.videoPlayer.addEventListener('pause', updatePlayButton);
+    elements.videoPlayer.addEventListener('ended', handleVideoEnd);
+    elements.videoPlayer.addEventListener('timeupdate', updateProgress);
+    elements.videoPlayer.addEventListener('loadedmetadata', updateDuration);
+    elements.videoPlayer.addEventListener('volumechange', updateVolumeUI);
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', handleKeyboardShortcuts);
+  }
+
+  function togglePlayPause() {
+    if (elements.videoPlayer.paused || elements.videoPlayer.ended) {
+      elements.videoPlayer.play().catch(e => {
+        elements.videoInfo.textContent = 'Click the play button to start playback';
+      });
+    } else {
+      elements.videoPlayer.pause();
     }
+  }
 
-    // Update volume UI
-    function updateVolumeUI() {
-      const volume = elements.videoPlayer.muted ? 0 : elements.videoPlayer.volume;
-      elements.volumeBar.value = volume;
-      elements.muteBtn.textContent = elements.videoPlayer.muted ? 'Unmute' : 'Mute';
-      elements.volumeBar.style.background = 
-        `linear-gradient(90deg, #0f0 ${volume * 100}%, #222 ${volume * 100}%)`;
+  function toggleMute() {
+    elements.videoPlayer.muted = !elements.videoPlayer.muted;
+    if (!elements.videoPlayer.muted && elements.videoPlayer.volume === 0) {
+      elements.videoPlayer.volume = lastVolume;
     }
+    updateVolumeUI();
+  }
 
-    // Mouse move events
-    elements.videoPlayer.parentElement.addEventListener('mousemove', showControls);
-    elements.videoPlayer.parentElement.addEventListener('mouseleave', () => {
-      if (!elements.videoPlayer.paused) {
-        elements.customControls.classList.add('hide');
+  function toggleFullscreen() {
+    if (!isFullscreen) {
+      elements.videoContainer.requestFullscreen?.().catch(err => {
+        console.log('Fullscreen error:', err);
+      });
+    } else {
+      document.exitFullscreen?.();
+    }
+    isFullscreen = !isFullscreen;
+  }
+
+  function toggleLoop() {
+    isLooping = !isLooping;
+    elements.videoPlayer.loop = isLooping;
+    elements.loopBtn.style.backgroundColor = isLooping ? '#040' : 'transparent';
+  }
+
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const fileURL = URL.createObjectURL(file);
+      const isAudio = file.type.startsWith('audio/');
+      
+      elements.videoPlayer.pause();
+      elements.videoPlayer.src = fileURL;
+      elements.videoPlayer.load();
+      
+      elements.videoTitle.textContent = file.name;
+      elements.videoInfo.textContent = `File size: ${(file.size / (1024 * 1024)).toFixed(2)} MB | Type: ${file.type}`;
+      
+      elements.audioOverlay.style.display = isAudio ? 'block' : 'none';
+      elements.videoPlayer.classList.toggle('audio-mode', isAudio);
+      
+      elements.videoPlayer.addEventListener('loadedmetadata', function onMetadataLoad() {
+        elements.videoPlayer.removeEventListener('loadedmetadata', onMetadataLoad);
+        updateDuration();
+        elements.videoPlayer.playbackRate = currentSpeed;
+        elements.videoPlayer.play().catch(e => {
+          elements.videoInfo.textContent = 'Click the play button to start playback';
+        });
+      });
+    }
+  }
+
+  function updatePlayButton() {
+    elements.playPause.textContent = elements.videoPlayer.paused ? '⏵' : '⏸';
+  }
+
+  function handleVideoEnd() {
+    updatePlayButton();
+    if (!isLooping) {
+      elements.progress.style.width = '0%';
+      elements.currentTime.textContent = '0:00';
+    }
+  }
+
+  function updateProgress() {
+    const percent = (elements.videoPlayer.currentTime / elements.videoPlayer.duration) * 100;
+    elements.progress.style.width = `${percent}%`;
+    elements.currentTime.textContent = formatTime(elements.videoPlayer.currentTime);
+  }
+
+  function updateDuration() {
+    elements.duration.textContent = formatTime(elements.videoPlayer.duration);
+  }
+
+  function updateVolumeUI() {
+    const volume = elements.videoPlayer.muted ? 0 : elements.videoPlayer.volume;
+    elements.volumeBar.value = volume;
+    elements.muteBtn.textContent = volume === 0 ? '🔇' : volume > 0.5 ? '🔊' : '🔉';
+  }
+
+  function handleKeyboardShortcuts(e) {
+    if (document.activeElement.tagName === 'INPUT') return;
+    
+    switch(e.key.toLowerCase()) {
+      case ' ':
+      case 'k':
+        e.preventDefault();
+        togglePlayPause();
+        break;
+      case 'f':
+        e.preventDefault();
+        toggleFullscreen();
+        break;
+      case 'm':
+        e.preventDefault();
+        toggleMute();
+        break;
+      case 'l':
+        e.preventDefault();
+        toggleLoop();
+        break;
+      case 'arrowright':
+        e.preventDefault();
+        elements.videoPlayer.currentTime += 5;
+        break;
+      case 'arrowleft':
+        e.preventDefault();
+        elements.videoPlayer.currentTime -= 5;
+        break;
+      case 'arrowup':
+        e.preventDefault();
+        elements.videoPlayer.volume = Math.min(1, elements.videoPlayer.volume + 0.1);
+        updateVolumeUI();
+        break;
+      case 'arrowdown':
+        e.preventDefault();
+        elements.videoPlayer.volume = Math.max(0, elements.videoPlayer.volume - 0.1);
+        updateVolumeUI();
+        break;
+      case '>':
+      case '.':
+        e.preventDefault();
+        changeSpeed(0.25);
+        break;
+      case '<':
+      case ',':
+        e.preventDefault();
+        changeSpeed(-0.25);
+        break;
+    }
+  }
+
+  function changeSpeed(amount) {
+    const newSpeed = Math.max(0.25, Math.min(4, currentSpeed + amount));
+    if (newSpeed !== currentSpeed) {
+      currentSpeed = parseFloat(newSpeed.toFixed(2));
+      elements.videoPlayer.playbackRate = currentSpeed;
+      elements.speedBtn.textContent = currentSpeed === 1 ? '1x' : `${currentSpeed}x`;
+      updateActiveSpeedMenuItem();
+    }
+  }
+
+  function updateActiveSpeedMenuItem() {
+    document.querySelectorAll('#speedMenu .menu-item').forEach(item => {
+      item.classList.remove('active');
+      if (parseFloat(item.dataset.speed) === currentSpeed) {
+        item.classList.add('active');
       }
-    });
-
-    // Duration
-    elements.videoPlayer.addEventListener('loadedmetadata', () => {
-      elements.duration.textContent = formatTime(elements.videoPlayer.duration);
-    });
-
-    // Prevent layout shift
-    elements.videoTitle.style.minHeight = '2rem';
-    elements.videoInfo.style.minHeight = '1.5rem';
-
-    // Update icons based on state
-    elements.muteBtn.innerHTML = '🔊';
-    elements.playPause.innerHTML = '⏵';
-    elements.loopBtn.innerHTML = '↻';
-    elements.fullscreenBtn.innerHTML = '⛶';
-
-    elements.videoPlayer.addEventListener('play', () => {
-      elements.playPause.innerHTML = '⏸';
-    });
-
-    elements.videoPlayer.addEventListener('pause', () => {
-      elements.playPause.innerHTML = '⏵';
-    });
-
-    elements.muteBtn.addEventListener('click', () => {
-      elements.videoPlayer.muted = !elements.videoPlayer.muted;
-      elements.muteBtn.innerHTML = elements.videoPlayer.muted ? '🔇' : '🔊';
     });
   }
 
@@ -548,6 +688,9 @@
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
+
+  // Initialize the player when DOM is loaded
+  document.addEventListener('DOMContentLoaded', initPlayer);
 </script>
 </body>
 </html>
