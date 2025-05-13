@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Green & Black Themed Video Player</title>
+<title>Top Video Player</title>
 <style>
   body {
     background-color: #000;
@@ -39,47 +39,193 @@
     flex: 3;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
   }
   .video-title {
     color: #0f0;
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
+    width: 80vw;
+    max-width: 900px;
+    text-align: left;
+    box-sizing: border-box;
+  }
+  .video-container {
+    width: 80vw;
+    max-width: 900px;
+    aspect-ratio: 16/9;
+    margin: 0 auto 1rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #0f0a;
+    position: relative;
+    min-height: 320px;
+    overflow: hidden;
   }
   video {
     width: 100%;
-    max-height: 540px;
+    height: 100%;
+    object-fit: contain;
     background-color: #111;
     border-radius: 8px;
     outline: none;
-    box-shadow: 0 0 10px #0f0;
+    box-shadow: none;
+    display: block;
   }
-  .upload-controls {
-    margin-top: 1rem;
+  .custom-controls {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    justify-content: space-between;
+    gap: 0.5rem;
+    background: rgba(0, 34, 0, 0.95);
+    backdrop-filter: blur(5px);
+    border-radius: 0 0 10px 10px;
+    padding: 0.75rem;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    z-index: 2;
   }
-  input[type="file"] {
-    background-color: #020;
-    border: 2px solid #0f0;
+
+  .controls-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .video-container:hover .custom-controls {
+    opacity: 1;
+  }
+
+  .custom-controls button {
+    background: transparent;
     color: #0f0;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
+    border: 1px solid #0f0;
+    border-radius: 4px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
     cursor: pointer;
-    font-size: 1rem;
+    transition: all 0.2s ease;
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
   }
-  input[type="file"]::-webkit-file-upload-button {
-    background-color: #020;
-    border: none;
+
+  .custom-controls button:hover {
+    background: #040;
+    transform: scale(1.05);
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+    transition: height 0.2s ease;
+  }
+
+  .progress-bar:hover {
+    height: 8px;
+  }
+
+  .progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #0f0;
+    border-radius: 2px;
+    transition: width 0.1s ease;
+  }
+
+  .options-menu {
+    position: absolute;
+    bottom: auto; /* Reset bottom alignment */
+    top: 100%; /* Align the menu below the button */
+    right: 0;
+    background: rgba(0, 34, 0, 0.95);
+    backdrop-filter: blur(5px);
+    border: 1px solid #0f0;
+    border-radius: 4px;
+    padding: 0.5rem;
+    display: none;
+    min-width: 150px;
+    z-index: 10; /* Ensure it appears above other elements */
+  }
+
+  .options-menu.show {
+    display: block;
+  }
+
+  .menu-item {
     color: #0f0;
-    padding: 0.5rem 1rem;
+    padding: 0.3rem 0.8rem;
     cursor: pointer;
-    font-weight: 700;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  input[type="file"]:hover {
-    background-color: #040;
+
+  .menu-item:hover {
+    background: #040;
   }
+
+  .menu-item.active {
+    background: #040;
+  }
+
+  .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+  }
+
+  .volume-bar {
+    width: 0;
+    transition: width 0.3s ease;
+    overflow: hidden;
+  }
+
+  .volume-control:hover .volume-bar {
+    width: 80px;
+  }
+
+  .audio-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5rem;
+    opacity: 0.7;
+    text-shadow: 0 0 10px #000;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .video-preview.audio-mode {
+    background: linear-gradient(45deg, #111 25%, #1a1a1a 25%, #1a1a1a 50%, #111 50%, #111 75%, #1a1a1a 75%, #1a1a1a);
+    background-size: 20px 20px;
+    animation: moveBackground 30s linear infinite;
+  }
+
+  @keyframes moveBackground {
+    from { background-position: 0 0; }
+    to { background-position: 40px 40px; }
+  }
+
   .sidebar {
     flex: 1;
     background-color: #121212;
@@ -105,19 +251,85 @@
     color: #0f0;
     box-shadow: 0 -2px 5px #0f0a;
   }
+
+  input[type="file"] {
+    background-color: #000;
+    border: 1px solid #0f0;
+    color: #0f0;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  input[type="file"]::-webkit-file-upload-button {
+    background-color: #020;
+    border: none;
+    color: #0f0;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: 700;
+    border-radius: 3px;
+    margin-right: 10px;
+    transition: background-color 0.2s ease;
+  }
+  input[type="file"]:hover {
+    background-color: #040;
+    border-color: #0f0;
+  }
+  input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: #060;
+  }
 </style>
 </head>
 <body>
-<header>Green & Black Video Player</header>
+<header>Top Video player</header>
 <main>
   <section class="video-section">
     <div class="video-title" id="videoTitle">No video loaded</div>
-    <video id="videoPlayer" controls>
-      <source id="videoSource" src="" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
+    <div class="video-container">
+      <video id="videoPlayer" class="video-preview">
+        <source id="videoSource" src="" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div id="audioOverlay" class="audio-overlay" style="display: none;">🎵</div>
+      <div class="custom-controls" id="customControls">
+        <div class="controls-wrapper">
+          <button id="playPause">⏵</button>
+          <button id="loopBtn">↻</button>
+          <div class="volume-control">
+            <button id="muteBtn">🔊</button>
+            <input type="range" id="volumeBar" class="volume-bar" min="0" max="1" step="0.01" value="1">
+          </div>
+        </div>
+        
+        <div class="progress-bar" id="progressBar">
+          <div class="progress" id="progress"></div>
+          <div class="progress-hover" id="progressHover"></div>
+        </div>
+
+        <div class="controls-wrapper">
+          <span class="time" id="currentTime">0:00</span>
+          <span class="time">/</span>
+          <span class="time" id="duration">0:00</span>
+          <button id="speedBtn">1x</button>
+          <button id="qualityBtn">HD</button>
+          <button id="fullscreenBtn" class="fullscreen-btn">⛶</button>
+        </div>
+
+        <div class="options-menu" id="speedMenu">
+          <div class="menu-item" data-speed="0.25">0.25x</div>
+          <div class="menu-item" data-speed="0.5">0.5x</div>
+          <div class="menu-item" data-speed="0.75">0.75x</div>
+          <div class="menu-item active" data-speed="1">Normal</div>
+          <div class="menu-item" data-speed="1.25">1.25x</div>
+          <div class="menu-item" data-speed="1.5">1.5x</div>
+          <div class="menu-item" data-speed="2">2x</div>
+        </div>
+      </div>
+    </div>
     <div class="upload-controls">
-      <input type="file" id="fileInput" accept="video/*" />
+      <input type="file" id="fileInput" accept="video/*,audio/*" />
     </div>
   </section>
   <aside class="sidebar">
@@ -128,23 +340,214 @@
 <footer>Upload a video file to play it here.</footer>
 
 <script>
-  const fileInput = document.getElementById('fileInput');
-  const videoPlayer = document.getElementById('videoPlayer');
-  const videoSource = document.getElementById('videoSource');
-  const videoTitle = document.getElementById('videoTitle');
-  const videoInfo = document.getElementById('videoInfo');
+  // Initialize all DOM elements
+  const elements = {
+    fileInput: document.getElementById('fileInput'),
+    videoPlayer: document.getElementById('videoPlayer'),
+    videoSource: document.getElementById('videoSource'),
+    videoTitle: document.getElementById('videoTitle'),
+    videoInfo: document.getElementById('videoInfo'),
+    playPause: document.getElementById('playPause'),
+    progressBar: document.getElementById('progressBar'),
+    progress: document.getElementById('progress'),
+    progressHover: document.getElementById('progressHover'),
+    currentTime: document.getElementById('currentTime'),
+    duration: document.getElementById('duration'),
+    volumeBar: document.getElementById('volumeBar'),
+    muteBtn: document.getElementById('muteBtn'),
+    customControls: document.getElementById('customControls'),
+    fullscreenBtn: document.getElementById('fullscreenBtn'),
+    loopBtn: document.getElementById('loopBtn'),
+    audioOverlay: document.getElementById('audioOverlay')
+  };
 
-  fileInput.addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const fileURL = URL.createObjectURL(file);
-      videoSource.src = fileURL;
-      videoPlayer.load();
-      videoPlayer.play();
-      videoTitle.textContent = file.name;
-      videoInfo.textContent = `File size: ${(file.size / (1024 * 1024)).toFixed(2)} MB | Type: ${file.type}`;
+  let controlsTimeout;
+  let isFullscreen = false;
+  let isLooping = false;
+
+  // Check if all elements are available
+  const allElementsExist = Object.values(elements).every(element => element !== null);
+
+  if (allElementsExist) {
+    // Hide default controls, show custom
+    elements.videoPlayer.controls = false;
+    elements.customControls.style.display = 'flex';
+
+    // Play/Pause
+    elements.playPause.addEventListener('click', () => {
+      if (elements.videoPlayer.paused || elements.videoPlayer.ended) {
+        elements.videoPlayer.play();
+      } else {
+        elements.videoPlayer.pause();
+      }
+    });
+
+    elements.videoPlayer.addEventListener('play', () => {
+      elements.playPause.textContent = 'Pause';
+      showControls();
+    });
+
+    elements.videoPlayer.addEventListener('pause', () => {
+      elements.playPause.textContent = 'Play';
+      elements.customControls.classList.remove('hide');
+    });
+
+    // Progress bar and seeking
+    elements.progressHover.addEventListener('click', (e) => {
+      const rect = elements.progressBar.getBoundingClientRect();
+      const pos = (e.clientX - rect.left) / rect.width;
+      elements.videoPlayer.currentTime = pos * elements.videoPlayer.duration;
+    });
+
+    elements.videoPlayer.addEventListener('timeupdate', () => {
+      const percent = (elements.videoPlayer.currentTime / elements.videoPlayer.duration) * 100;
+      elements.progress.style.width = `${percent}%`;
+      elements.currentTime.textContent = formatTime(elements.videoPlayer.currentTime);
+    });
+
+    // Volume control
+    elements.volumeBar.addEventListener('input', () => {
+      elements.videoPlayer.volume = elements.volumeBar.value;
+      updateVolumeUI();
+    });
+
+    elements.muteBtn.addEventListener('click', () => {
+      elements.videoPlayer.muted = !elements.videoPlayer.muted;
+      updateVolumeUI();
+    });
+
+    // File upload
+    elements.fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const fileURL = URL.createObjectURL(file);
+        const isAudio = file.type.startsWith('audio/');
+        
+        elements.videoSource.src = fileURL;
+        elements.videoPlayer.load();
+        elements.videoPlayer.play().catch(e => console.log('Auto-play prevented:', e));
+        elements.videoTitle.textContent = file.name;
+        elements.videoInfo.textContent = `File size: ${(file.size / (1024 * 1024)).toFixed(2)} MB | Type: ${file.type}`;
+        
+        // Handle audio visualization
+        elements.audioOverlay.style.display = isAudio ? 'block' : 'none';
+        elements.videoPlayer.classList.toggle('audio-mode', isAudio);
+        
+        // Always show video player
+        elements.videoPlayer.style.display = 'block';
+      }
+    });
+
+    // Loop toggle
+    elements.loopBtn.addEventListener('click', () => {
+      isLooping = !isLooping;
+      elements.videoPlayer.loop = isLooping;
+      elements.loopBtn.textContent = isLooping ? 'Loop On' : 'Loop Off';
+      elements.loopBtn.style.background = isLooping ? '#040' : '#000';
+    });
+
+    // Fullscreen
+    elements.fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        elements.videoPlayer.parentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // Speed control
+    const speedBtn = document.getElementById('speedBtn');
+    const speedMenu = document.getElementById('speedMenu');
+    let isSpeedMenuOpen = false;
+
+    speedBtn.addEventListener('click', () => {
+      isSpeedMenuOpen = !isSpeedMenuOpen;
+      speedMenu.classList.toggle('show', isSpeedMenuOpen);
+    });
+
+    document.querySelectorAll('.menu-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const speed = parseFloat(item.dataset.speed);
+        elements.videoPlayer.playbackRate = speed;
+        speedBtn.textContent = speed + 'x';
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        speedMenu.classList.remove('show');
+        isSpeedMenuOpen = false;
+      });
+    });
+
+    // Close speed menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (isSpeedMenuOpen && !speedBtn.contains(e.target) && !speedMenu.contains(e.target)) {
+        speedMenu.classList.remove('show');
+        isSpeedMenuOpen = false;
+      }
+    });
+
+    // Show/hide controls
+    function showControls() {
+      elements.customControls.classList.remove('hide');
+      clearTimeout(controlsTimeout);
+      if (!elements.videoPlayer.paused) {
+        controlsTimeout = setTimeout(() => {
+          elements.customControls.classList.add('hide');
+        }, 3000);
+      }
     }
-  });
+
+    // Update volume UI
+    function updateVolumeUI() {
+      const volume = elements.videoPlayer.muted ? 0 : elements.videoPlayer.volume;
+      elements.volumeBar.value = volume;
+      elements.muteBtn.textContent = elements.videoPlayer.muted ? 'Unmute' : 'Mute';
+      elements.volumeBar.style.background = 
+        `linear-gradient(90deg, #0f0 ${volume * 100}%, #222 ${volume * 100}%)`;
+    }
+
+    // Mouse move events
+    elements.videoPlayer.parentElement.addEventListener('mousemove', showControls);
+    elements.videoPlayer.parentElement.addEventListener('mouseleave', () => {
+      if (!elements.videoPlayer.paused) {
+        elements.customControls.classList.add('hide');
+      }
+    });
+
+    // Duration
+    elements.videoPlayer.addEventListener('loadedmetadata', () => {
+      elements.duration.textContent = formatTime(elements.videoPlayer.duration);
+    });
+
+    // Prevent layout shift
+    elements.videoTitle.style.minHeight = '2rem';
+    elements.videoInfo.style.minHeight = '1.5rem';
+
+    // Update icons based on state
+    elements.muteBtn.innerHTML = '🔊';
+    elements.playPause.innerHTML = '⏵';
+    elements.loopBtn.innerHTML = '↻';
+    elements.fullscreenBtn.innerHTML = '⛶';
+
+    elements.videoPlayer.addEventListener('play', () => {
+      elements.playPause.innerHTML = '⏸';
+    });
+
+    elements.videoPlayer.addEventListener('pause', () => {
+      elements.playPause.innerHTML = '⏵';
+    });
+
+    elements.muteBtn.addEventListener('click', () => {
+      elements.videoPlayer.muted = !elements.videoPlayer.muted;
+      elements.muteBtn.innerHTML = elements.videoPlayer.muted ? '🔇' : '🔊';
+    });
+  }
+
+  function formatTime(seconds) {
+    if (!seconds || isNaN(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
 </script>
 </body>
 </html>
