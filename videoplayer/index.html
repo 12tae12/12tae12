@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Green & Black Themed Video Player</title>
+<style>
+  body {
+    background-color: #000;
+    color: #0f0;
+    font-family: 'Roboto', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  header {
+    background-color: #121212;
+    width: 100%;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    color: #0f0;
+    font-weight: 700;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 5px #0f0a;
+  }
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    padding: 1rem 2rem;
+    gap: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .video-section {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+  }
+  .video-title {
+    color: #0f0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  video {
+    width: 100%;
+    max-height: 540px;
+    background-color: #111;
+    border-radius: 8px;
+    outline: none;
+    box-shadow: 0 0 10px #0f0;
+  }
+  .upload-controls {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  input[type="file"] {
+    background-color: #020;
+    border: 2px solid #0f0;
+    color: #0f0;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  input[type="file"]::-webkit-file-upload-button {
+    background-color: #020;
+    border: none;
+    color: #0f0;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  input[type="file"]:hover {
+    background-color: #040;
+  }
+  .sidebar {
+    flex: 1;
+    background-color: #121212;
+    border-radius: 8px;
+    padding: 1rem;
+    color: #0f0;
+    box-shadow: 0 0 10px #0f0a;
+    font-size: 0.9rem;
+  }
+  .sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  .sidebar p {
+    margin: 0.25rem 0;
+  }
+  footer {
+    background-color: #121212;
+    width: 100%;
+    padding: 0.5rem 2rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #0f0;
+    box-shadow: 0 -2px 5px #0f0a;
+  }
+</style>
+</head>
+<body>
+<header>Green & Black Video Player</header>
+<main>
+  <section class="video-section">
+    <div class="video-title" id="videoTitle">No video loaded</div>
+    <video id="videoPlayer" controls>
+      <source id="videoSource" src="" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="upload-controls">
+      <input type="file" id="fileInput" accept="video/*" />
+    </div>
+  </section>
+  <aside class="sidebar">
+    <h3>Video Info</h3>
+    <p id="videoInfo">Upload a video file to see details here.</p>
+  </aside>
+</main>
+<footer>Upload a video file to play it here.</footer>
+
+<script>
+  const fileInput = document.getElementById('fileInput');
+  const videoPlayer = document.getElementById('videoPlayer');
+  const videoSource = document.getElementById('videoSource');
+  const videoTitle = document.getElementById('videoTitle');
+  const videoInfo = document.getElementById('videoInfo');
+
+  fileInput.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const fileURL = URL.createObjectURL(file);
+      videoSource.src = fileURL;
+      videoPlayer.load();
+      videoPlayer.play();
+      videoTitle.textContent = file.name;
+      videoInfo.textContent = `File size: ${(file.size / (1024 * 1024)).toFixed(2)} MB | Type: ${file.type}`;
+    }
+  });
+</script>
+</body>
+</html>
