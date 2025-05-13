@@ -1,0 +1,32 @@
+[
+    {
+        "title": "Space Shooter X",
+        "imageSrc": "https://via.placeholder.com/300x200/00FF00/000000?text=Space+Shooter+X",
+        "altText": "Space Shooter X Game"
+    },
+    {
+        "title": "Puzzle Mania",
+        "imageSrc": "https://via.placeholder.com/300x200/00FFFF/000000?text=Puzzle+Mania",
+        "altText": "Puzzle Mania Game"
+    },
+    {
+        "title": "Speed Racer Pro",
+        "imageSrc": "https://via.placeholder.com/300x200/FF00FF/000000?text=Speed+Racer+Pro",
+        "altText": "Speed Racer Pro Game"
+    },
+    {
+        "title": "Adventure Quest",
+        "imageSrc": "https://via.placeholder.com/300x200/FFFF00/000000?text=Adventure+Quest",
+        "altText": "Adventure Quest Game"
+    },
+    {
+        "title": "Chicken Run 3D",
+        "imageSrc": "https://via.placeholder.com/300x200/FF0000/FFFFFF?text=Chicken+Run+3D",
+        "altText": "Chicken Run 3D Game"
+    },
+    {
+        "title": "Block Breaker",
+        "imageSrc": "https://via.placeholder.com/300x200/0000FF/FFFFFF?text=Block+Breaker",
+        "altText": "Block Breaker Game"
+    }
+]

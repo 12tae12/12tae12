@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChickenGames</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000; /* Flat black */
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            background-color: #000000; /* Flat black */
+            padding: 10px 0;
+            text-align: center;
+            border-bottom: 2px solid #00FF00; /* Green accent */
+        }
+        
+        header h1 {
+            color: #00FFFF; /* Blue accent */
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #0d0d0d; /* Darker gray for nav */
+            padding: 10px 0;
+        }
+        
+        nav a {
+            color: #00FFFF; /* Blue accent */
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            border: 1px solid #00FFFF; /* Blue border */
+        }
+        
+        nav a:hover {
+            background-color: #00FF00; /* Green accent */
+            color: #000000; /* Black text on hover */
+            border-color: #00FF00; /* Green border on hover */
+        }
+        
+        .games-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .game-card {
+            background-color: #0d0d0d; /* Darker gray for card */
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #00FFFF; /* Blue border for card */
+        }
+        
+        .game-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .game-card h3 {
+            padding: 10px;
+            margin: 0;
+            font-size: 1.2em;
+        }
+        
+        .game-card button {
+            background-color: #00FF00; /* Green accent */
+            color: #000000; /* Black text */
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .game-card button:hover {
+            background-color: #00FFFF; /* Blue accent */
+            color: #000000; /* Black text */
+        }
+        
+        footer {
+            background-color: #000000; /* Flat black */
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            border-top: 2px solid #00FF00; /* Green accent */
+        }
+        
+        footer a {
+            color: #00FFFF; /* Blue accent */
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #00FF00; /* Green accent on hover */
+        }
+        
+        /* Mobile-friendly adjustments */
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav a {
+                margin: 5px 0;
+            }
+            
+            .games-container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ChickenGames</h1>
+    </header>
+
+    <nav>
+        <a href="#">Action</a>
+        <a href="#">Puzzle</a>
+        <a href="#">Racing</a>
+        <a href="#">Adventure</a>
+    </nav>
+
+    <section class="games-container">
+        <!-- Game cards will be loaded here by JavaScript -->
+    </section>
+
+    <footer>
+        <a href="#">Social Media</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Contact</a>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gamesContainer = document.querySelector('.games-container');
+
+            fetch('games.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(games => {
+                    games.forEach(game => {
+                        const gameCard = document.createElement('div');
+                        gameCard.classList.add('game-card');
+
+                        const gameImage = document.createElement('img');
+                        gameImage.src = game.imageSrc;
+                        gameImage.alt = game.altText;
+
+                        const gameTitle = document.createElement('h3');
+                        gameTitle.textContent = game.title;
+
+                        const playButton = document.createElement('button');
+                        playButton.textContent = 'Play Now';
+                        playButton.addEventListener('click', () => {
+                            window.location.href = `game-page.html?game=${encodeURIComponent(game.title)}`;
+                        });
+
+                        gameCard.appendChild(gameImage);
+                        gameCard.appendChild(gameTitle);
+                        gameCard.appendChild(playButton);
+
+                        gamesContainer.appendChild(gameCard);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching or parsing games:', error);
+                    gamesContainer.innerHTML = '<p>Error loading games. Please try again later.</p>';
+                });
+        });
+    </script>
+</body>
+</html>
