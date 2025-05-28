@@ -330,10 +330,89 @@
     margin-top: 1rem;
     display: none;
   }
+
+  /* Playlist Styles */
+  .playlist-section {
+    margin-top: 1rem;
+  }
+
+  .playlist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    height: 1.5rem;
+  }
+
+  .playlist-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .playlist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    margin: 0.25rem 0;
+    background: #001100;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .playlist-item:hover {
+    background: #002200;
+  }
+
+  .playlist-item.active {
+    background: #004400;
+    border-left: 3px solid #0f0;
+  }
+
+  .playlist-item-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .playlist-item button,
+  #addFiles {
+    background: transparent;
+    color: #0f0;
+    border: 1px solid #0f0;
+    border-radius: 4px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-width: 2.5rem;
+    justify-content: center;
+  }
+
+  .playlist-item button:hover,
+  #addFiles:hover {
+    background-color: #040;
+  }
+
+  .drag-handle {
+    cursor: move;
+    margin-right: 0.5rem;
+  }
+
+  .dragging {
+    opacity: 0.5;
+  }
 </style>
 </head>
 <body>
-<header>Top Video player</header>
+<header>Top Video Player</header>
 <main>
   <section class="video-section">
     <div class="video-title" id="videoTitle">No video loaded</div>
@@ -385,17 +464,22 @@
         </div>
       </div>
     </div>
-    <div class="upload-controls">
-      <input type="file" id="fileInput" accept="video/*,audio/*" />
-    </div>
+    <input type="file" id="fileInput" accept="video/*,audio/*" multiple style="display: none;" />
     <canvas id="audioVisualizer" class="audio-visualizer" style="display: none;"></canvas>
   </section>
   <aside class="sidebar">
-    <h3>Video Info</h3>
+    <div class="playlist-section">
+      <div class="playlist-header">
+        <h3>Playlist</h3>
+        <button id="addFiles" class="insert-btn">+ Add Files</button>
+      </div>
+      <ul class="playlist-list" id="playlistList"></ul>
+    </div>
+    <h3>Now Playing</h3>
     <p id="videoInfo">Upload a video file to see details here.</p>
   </aside>
 </main>
-<footer>Upload a video file to play it here.</footer>
+<footer>Upload video/audio files to create a playlist</footer>
 
 <script>
   const elements = {
@@ -421,7 +505,9 @@
     speedMenu: document.getElementById('speedMenu'),
     qualityBtn: document.getElementById('qualityBtn'),
     qualityMenu: document.getElementById('qualityMenu'),
-    audioVisualizer: document.getElementById('audioVisualizer')
+    audioVisualizer: document.getElementById('audioVisualizer'),
+    addFiles: document.getElementById('addFiles'),
+    playlistList: document.getElementById('playlistList')
   };
 
   let isFullscreen = false;
@@ -429,6 +515,10 @@
   let lastVolume = 1;
   let currentSpeed = 1;
   let currentQuality = 'hd';
+  let playlist = [];
+  let currentFileIndex = -1;
+  let isDragging = false;
+  let dragStartIndex;
 
   // Audio visualizer setup
   const visualizer = {
@@ -511,6 +601,369 @@
       }
     }
   };
+
+  function createPlaylistItem(file, index) {
+    const li = document.createElement('li');
+    li.className = `playlist-item ${index === currentFileIndex ? 'active' : ''}`;
+    li.dataset.index = index;
+    li.draggable = true;
+    li.innerHTML = `
+      <div class="drag-handle">≡</div>
+      <span class="file-name">${file.name}</span>
+      <div class="playlist-item-actions">
+        <button class="insert-btn" title="Insert file after this">+</button>
+        <button class="remove-btn" title="Remove from playlist">×</button>
+      </div>
+    `;
+    return li;
+  }
+
+  function updatePlaylistDisplay() {
+    elements.playlistList.innerHTML = '';
+    playlist.forEach((file, index) => {
+      const item = createPlaylistItem(file, index);
+      elements.playlistList.appendChild(item);
+    });
+  }
+
+  function handlePlaylistClick(e) {
+    const target = e.target;
+    const listItem = target.closest('.playlist-item');
+    
+    if (!listItem) return;
+    
+    const index = parseInt(listItem.dataset.index);
+    
+    if (target.classList.contains('remove-btn')) {
+      playlist.splice(index, 1);
+      if (currentFileIndex >= index) currentFileIndex--;
+      updatePlaylistDisplay();
+      if (index === currentFileIndex) loadFileAtIndex(currentFileIndex);
+    } 
+    else if (target.classList.contains('insert-btn')) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.multiple = true;
+      input.accept = 'video/*,audio/*';
+      input.onchange = (e) => {
+        const newFiles = Array.from(e.target.files);
+        playlist.splice(index + 1, 0, ...newFiles);
+        updatePlaylistDisplay();
+      };
+      input.click();
+    }
+    else {
+      loadFileAtIndex(index);
+    }
+  }
+
+  function loadFileAtIndex(index) {
+    if (index >= 0 && index < playlist.length) {
+      currentFileIndex = index;
+      const file = playlist[index];
+      handleFileLoad(file);
+      updatePlaylistDisplay();
+    }
+  }
+
+  function handleFileLoad(file) {
+    const fileURL = URL.createObjectURL(file);
+    const isAudio = file.type.startsWith('audio/');
+    
+    elements.videoPlayer.pause();
+    elements.videoTitle.textContent = file.name;
+    elements.audioOverlay.style.display = isAudio ? 'block' : 'none';
+    elements.videoPlayer.classList.toggle('audio-mode', isAudio);
+    
+    elements.videoInfo.textContent = 'Loading media info...';
+    elements.videoPlayer.src = fileURL;
+    
+    // Set up metadata loading handlers
+    const loadMetadata = new Promise((resolve) => {
+      elements.videoPlayer.addEventListener('loadedmetadata', resolve, { once: true });
+    });
+    
+    const loadedData = new Promise((resolve) => {
+      elements.videoPlayer.addEventListener('loadeddata', resolve, { once: true });
+    });
+    
+    Promise.all([loadMetadata, loadedData]).then(() => {
+      updateVideoInfo(file);
+      elements.videoPlayer.play().catch(() => {
+        elements.videoInfo.textContent = 'Click the play button to start playback';
+      });
+    });
+    
+    elements.videoPlayer.load();
+  }
+
+  function handleDragStart(e) {
+    isDragging = true;
+    dragStartIndex = parseInt(e.target.closest('.playlist-item').dataset.index);
+    e.target.closest('.playlist-item').classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    if (!isDragging) return;
+    
+    const dragItem = document.querySelector('.dragging');
+    const items = [...elements.playlistList.children];
+    const closest = items.reduce((closest, child, index) => {
+      const box = child.getBoundingClientRect();
+      const offset = e.clientY - box.top - box.height / 2;
+      if (offset < 0 && offset > closest.offset) {
+        return { offset, index };
+      }
+      return closest;
+    }, { offset: Number.NEGATIVE_INFINITY, index: -1 });
+
+    if (dragItem && closest.index !== -1) {
+      elements.playlistList.insertBefore(dragItem, items[closest.index]);
+    }
+  }
+
+  function handleDragEnd() {
+    isDragging = false;
+    const dragItem = document.querySelector('.dragging');
+    if (!dragItem) return;
+    
+    const newIndex = [...elements.playlistList.children].findIndex(
+      item => item.classList.contains('dragging')
+    );
+    
+    dragItem.classList.remove('dragging');
+    
+    if (dragStartIndex !== newIndex && newIndex > -1) {
+      const [movedItem] = playlist.splice(dragStartIndex, 1);
+      playlist.splice(newIndex, 0, movedItem);
+      if (currentFileIndex === dragStartIndex) {
+        currentFileIndex = newIndex;
+      } else if (currentFileIndex > dragStartIndex && currentFileIndex <= newIndex) {
+        currentFileIndex--;
+      } else if (currentFileIndex < dragStartIndex && currentFileIndex >= newIndex) {
+        currentFileIndex++;
+      }
+      updatePlaylistDisplay();
+    }
+  }
+
+  function handleFileSelect(event) {
+    const newFiles = Array.from(event.target.files);
+    if (newFiles.length > 0) {
+      playlist.push(...newFiles);
+      if (currentFileIndex === -1) loadFileAtIndex(0);
+      updatePlaylistDisplay();
+    }
+  }
+
+  function updateVideoInfo(file) {
+    const video = elements.videoPlayer;
+    
+    // Basic file info
+    const fileSize = (file.size / (1024 * 1024)).toFixed(1);
+    const fileType = file.type.split('/');
+    const mediaType = fileType[0].toUpperCase();
+    const codec = fileType[1].toUpperCase();
+    
+    // Video/Audio specific info
+    const resolution = (video.videoWidth && video.videoHeight) ? 
+      `${video.videoWidth}×${video.videoHeight}` : null;
+    
+    const duration = video.duration || 0;
+    const durationStr = formatTime(duration);
+    
+    // Calculate accurate bitrate (file size in bits / duration in seconds)
+    const bitrate = duration > 0 ? Math.round(file.size * 8 / duration / 1000) : 0;
+    const bitrateStr = bitrate > 1000 ? 
+      `${(bitrate/1000).toFixed(2)} Mbps` : 
+      `${bitrate} kbps`;
+    
+    // Calculate display aspect ratio for video
+    let aspectRatio = null;
+    if (video.videoWidth && video.videoHeight) {
+      const gcd = (a, b) => b ? gcd(b, a % b) : a;
+      const w = video.videoWidth;
+      const h = video.videoHeight;
+      const divisor = gcd(w, h);
+      aspectRatio = `${w/divisor}:${h/divisor}`;
+    }
+    
+    // Build info sections
+    const sections = [
+      // Basic info
+      `${fileSize} MB`,
+      codec,
+      
+      // Resolution and aspect ratio for video
+      resolution && `${resolution}${aspectRatio ? ` (${aspectRatio})` : ''}`,
+      
+      // Duration and bitrate
+      durationStr,
+      bitrateStr
+    ].filter(Boolean);
+    
+    // Join sections with more visible separator
+    elements.videoInfo.textContent = sections.join(' │ ');
+  }
+
+  function formatTime(seconds) {
+    if (!seconds || isNaN(seconds)) return '0:00';
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    return hours > 0 ?
+      `${hours}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}` :
+      `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  function togglePlayPause() {
+    if (elements.videoPlayer.paused || elements.videoPlayer.ended) {
+      elements.videoPlayer.play().catch(e => {
+        elements.videoInfo.textContent = 'Click the play button to start playback';
+      });
+    } else {
+      elements.videoPlayer.pause();
+    }
+  }
+
+  function toggleMute() {
+    elements.videoPlayer.muted = !elements.videoPlayer.muted;
+    if (!elements.videoPlayer.muted && elements.videoPlayer.volume === 0) {
+      elements.videoPlayer.volume = lastVolume;
+    }
+    updateVolumeUI();
+  }
+
+  function toggleFullscreen() {
+    if (!isFullscreen) {
+      elements.videoContainer.requestFullscreen?.().catch(err => {
+        console.log('Fullscreen error:', err);
+      });
+    } else {
+      document.exitFullscreen?.();
+    }
+    isFullscreen = !isFullscreen;
+  }
+
+  function toggleLoop() {
+    isLooping = !isLooping;
+    elements.videoPlayer.loop = isLooping;
+    elements.loopBtn.style.backgroundColor = isLooping ? '#040' : 'transparent';
+  }
+
+  function updatePlayButton() {
+    elements.playPause.textContent = elements.videoPlayer.paused ? '⏵' : '⏸';
+  }
+
+  function handleVideoEnd() {
+    updatePlayButton();
+    if (!isLooping) {
+      elements.progress.style.width = '0%';
+      elements.currentTime.textContent = '0:00';
+    }
+  }
+
+  function updateProgress() {
+    const percent = (elements.videoPlayer.currentTime / elements.videoPlayer.duration) * 100;
+    elements.progress.style.width = `${percent}%`;
+    elements.currentTime.textContent = formatTime(elements.videoPlayer.currentTime);
+  }
+
+  function updateDuration() {
+    elements.duration.textContent = formatTime(elements.videoPlayer.duration);
+  }
+
+  function updateVolumeUI() {
+    const volume = elements.videoPlayer.muted ? 0 : elements.videoPlayer.volume;
+    elements.volumeBar.value = volume;
+    elements.muteBtn.textContent = volume === 0 ? '🔇' : volume > 0.5 ? '🔊' : '🔉';
+    if (volume > 0) lastVolume = volume;
+  }
+
+  function handleKeyboardShortcuts(e) {
+    if (document.activeElement.tagName === 'INPUT') return;
+    
+    switch(e.key.toLowerCase()) {
+      case ' ':
+      case 'k':
+        e.preventDefault();
+        togglePlayPause();
+        break;
+      case 'f':
+        e.preventDefault();
+        toggleFullscreen();
+        break;
+      case 'm':
+        e.preventDefault();
+        toggleMute();
+        break;
+      case 'l':
+        e.preventDefault();
+        toggleLoop();
+        break;
+      case 'arrowright':
+        e.preventDefault();
+        elements.videoPlayer.currentTime += 5;
+        break;
+      case 'arrowleft':
+        e.preventDefault();
+        elements.videoPlayer.currentTime -= 5;
+        break;
+      case 'arrowup':
+        e.preventDefault();
+        elements.videoPlayer.volume = Math.min(1, elements.videoPlayer.volume + 0.1);
+        updateVolumeUI();
+        break;
+      case 'arrowdown':
+        e.preventDefault();
+        elements.videoPlayer.volume = Math.max(0, elements.videoPlayer.volume - 0.1);
+        updateVolumeUI();
+        break;
+      case '>':
+      case '.':
+        e.preventDefault();
+        changeSpeed(0.25);
+        break;
+      case '<':
+      case ',':
+        e.preventDefault();
+        changeSpeed(-0.25);
+        break;
+      case 'n':
+        e.preventDefault();
+        if (currentFileIndex < playlist.length - 1) {
+          loadFileAtIndex(currentFileIndex + 1);
+        }
+        break;
+      case 'p':
+        e.preventDefault();
+        if (currentFileIndex > 0) {
+          loadFileAtIndex(currentFileIndex - 1);
+        }
+        break;
+    }
+  }
+
+  function changeSpeed(amount) {
+    const newSpeed = Math.max(0.25, Math.min(4, currentSpeed + amount));
+    if (newSpeed !== currentSpeed) {
+      currentSpeed = parseFloat(newSpeed.toFixed(2));
+      elements.videoPlayer.playbackRate = currentSpeed;
+      elements.speedBtn.textContent = currentSpeed === 1 ? '1x' : `${currentSpeed}x`;
+      updateActiveSpeedMenuItem();
+    }
+  }
+
+  function updateActiveSpeedMenuItem() {
+    document.querySelectorAll('#speedMenu .menu-item').forEach(item => {
+      item.classList.remove('active');
+      if (parseFloat(item.dataset.speed) === currentSpeed) {
+        item.classList.add('active');
+      }
+    });
+  }
 
   function initPlayer() {
     elements.videoPlayer.controls = false;
@@ -600,7 +1053,45 @@
     });
 
     // File input handling
+    elements.fileInput.style.display = 'none';
+    elements.addFiles.addEventListener('click', () => elements.fileInput.click());
     elements.fileInput.addEventListener('change', handleFileSelect);
+
+    // Playlist events
+    elements.playlistList.addEventListener('click', handlePlaylistClick);
+    elements.playlistList.addEventListener('dragstart', handleDragStart);
+    elements.playlistList.addEventListener('dragover', handleDragOver);
+    elements.playlistList.addEventListener('dragend', handleDragEnd);
+
+    // Drag and drop for files
+    elements.videoContainer.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      elements.videoContainer.style.backgroundColor = '#001100';
+    });
+
+    elements.videoContainer.addEventListener('dragleave', () => {
+      elements.videoContainer.style.backgroundColor = '#111';
+    });
+
+    elements.videoContainer.addEventListener('drop', (e) => {
+      e.preventDefault();
+      elements.videoContainer.style.backgroundColor = '#111';
+      const files = Array.from(e.dataTransfer.files).filter(file => 
+        file.type.startsWith('video/') || file.type.startsWith('audio/')
+      );
+      if (files.length > 0) {
+        playlist.push(...files);
+        if (currentFileIndex === -1) loadFileAtIndex(0);
+        updatePlaylistDisplay();
+      }
+    });
+
+    // Auto-advance to next file
+    elements.videoPlayer.addEventListener('ended', () => {
+      if (!isLooping && currentFileIndex < playlist.length - 1) {
+        loadFileAtIndex(currentFileIndex + 1);
+      }
+    });
 
     // Video events
     elements.videoPlayer.addEventListener('play', updatePlayButton);
@@ -617,212 +1108,6 @@
     elements.videoPlayer.addEventListener('play', () => visualizer.start());
     elements.videoPlayer.addEventListener('pause', () => visualizer.stop());
     elements.videoPlayer.addEventListener('ended', () => visualizer.stop());
-  }
-
-  function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const fileURL = URL.createObjectURL(file);
-      const isAudio = file.type.startsWith('audio/');
-      
-      elements.videoPlayer.pause();
-      elements.videoPlayer.src = fileURL;
-      elements.videoPlayer.load();
-      
-      elements.videoTitle.textContent = file.name;
-      elements.videoInfo.textContent = 'Loading...';
-      elements.audioOverlay.style.display = isAudio ? 'block' : 'none';
-      elements.videoPlayer.classList.toggle('audio-mode', isAudio);
-      
-      let metadataLoaded = false;
-      let dataLoaded = false;
-      
-      elements.videoPlayer.addEventListener('loadedmetadata', function onMetaLoad() {
-        elements.videoPlayer.removeEventListener('loadedmetadata', onMetaLoad);
-        metadataLoaded = true;
-        if (dataLoaded) updateMedia();
-      });
-      
-      elements.videoPlayer.addEventListener('loadeddata', function onDataLoad() {
-        elements.videoPlayer.removeEventListener('loadeddata', onDataLoad);
-        dataLoaded = true;
-        if (metadataLoaded) updateMedia();
-      });
-      
-      function updateMedia() {
-        updateDuration();
-        updateVideoInfo(file);
-        elements.videoPlayer.playbackRate = currentSpeed;
-        elements.videoPlayer.play().catch(e => {
-          elements.videoInfo.textContent = 'Click the play button to start playback';
-        });
-      }
-    }
-  }
-
-  function updateVideoInfo(file) {
-    const video = elements.videoPlayer;
-    const resolution = video.videoWidth && video.videoHeight ? `${video.videoWidth}x${video.videoHeight}` : 'N/A';
-    const duration = formatTime(video.duration || 0);
-    const codec = file.type;
-    const bitrate = (file.size * 8 / (video.duration || 1) / 1024).toFixed(0);
-    const hours = Math.floor(video.duration / 3600);
-    const minutes = Math.floor((video.duration % 3600) / 60);
-    const seconds = Math.floor(video.duration % 60);
-    const durationStr = hours > 0 ? 
-      `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}` :
-      `${minutes}:${seconds.toString().padStart(2, '0')}`;
-
-    elements.videoInfo.textContent = 
-      `File size: ${(file.size / (1024 * 1024)).toFixed(2)} MB | ` +
-      `Type: ${codec} | ` +
-      `Resolution: ${resolution} | ` +
-      `Duration: ${durationStr} | ` +
-      `Bitrate: ${bitrate} kbps`;
-  }
-
-  function formatTime(seconds) {
-    if (!seconds || isNaN(seconds)) return '0:00';
-    const hours = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-    return hours > 0 ?
-      `${hours}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}` :
-      `${mins}:${secs.toString().padStart(2, '0')}`;
-  }
-
-  function togglePlayPause() {
-    if (elements.videoPlayer.paused || elements.videoPlayer.ended) {
-      elements.videoPlayer.play().catch(e => {
-        elements.videoInfo.textContent = 'Click the play button to start playback';
-      });
-    } else {
-      elements.videoPlayer.pause();
-    }
-  }
-
-  function toggleMute() {
-    elements.videoPlayer.muted = !elements.videoPlayer.muted;
-    if (!elements.videoPlayer.muted && elements.videoPlayer.volume === 0) {
-      elements.videoPlayer.volume = lastVolume;
-    }
-    updateVolumeUI();
-  }
-
-  function toggleFullscreen() {
-    if (!isFullscreen) {
-      elements.videoContainer.requestFullscreen?.().catch(err => {
-        console.log('Fullscreen error:', err);
-      });
-    } else {
-      document.exitFullscreen?.();
-    }
-    isFullscreen = !isFullscreen;
-  }
-
-  function toggleLoop() {
-    isLooping = !isLooping;
-    elements.videoPlayer.loop = isLooping;
-    elements.loopBtn.style.backgroundColor = isLooping ? '#040' : 'transparent';
-  }
-
-  function updatePlayButton() {
-    elements.playPause.textContent = elements.videoPlayer.paused ? '⏵' : '⏸';
-  }
-
-  function handleVideoEnd() {
-    updatePlayButton();
-    if (!isLooping) {
-      elements.progress.style.width = '0%';
-      elements.currentTime.textContent = '0:00';
-    }
-  }
-
-  function updateProgress() {
-    const percent = (elements.videoPlayer.currentTime / elements.videoPlayer.duration) * 100;
-    elements.progress.style.width = `${percent}%`;
-    elements.currentTime.textContent = formatTime(elements.videoPlayer.currentTime);
-  }
-
-  function updateDuration() {
-    elements.duration.textContent = formatTime(elements.videoPlayer.duration);
-  }
-
-  function updateVolumeUI() {
-    const volume = elements.videoPlayer.muted ? 0 : elements.videoPlayer.volume;
-    elements.volumeBar.value = volume;
-    elements.muteBtn.textContent = volume === 0 ? '🔇' : volume > 0.5 ? '🔊' : '🔉';
-  }
-
-  function handleKeyboardShortcuts(e) {
-    if (document.activeElement.tagName === 'INPUT') return;
-    
-    switch(e.key.toLowerCase()) {
-      case ' ':
-      case 'k':
-        e.preventDefault();
-        togglePlayPause();
-        break;
-      case 'f':
-        e.preventDefault();
-        toggleFullscreen();
-        break;
-      case 'm':
-        e.preventDefault();
-        toggleMute();
-        break;
-      case 'l':
-        e.preventDefault();
-        toggleLoop();
-        break;
-      case 'arrowright':
-        e.preventDefault();
-        elements.videoPlayer.currentTime += 5;
-        break;
-      case 'arrowleft':
-        e.preventDefault();
-        elements.videoPlayer.currentTime -= 5;
-        break;
-      case 'arrowup':
-        e.preventDefault();
-        elements.videoPlayer.volume = Math.min(1, elements.videoPlayer.volume + 0.1);
-        updateVolumeUI();
-        break;
-      case 'arrowdown':
-        e.preventDefault();
-        elements.videoPlayer.volume = Math.max(0, elements.videoPlayer.volume - 0.1);
-        updateVolumeUI();
-        break;
-      case '>':
-      case '.':
-        e.preventDefault();
-        changeSpeed(0.25);
-        break;
-      case '<':
-      case ',':
-        e.preventDefault();
-        changeSpeed(-0.25);
-        break;
-    }
-  }
-
-  function changeSpeed(amount) {
-    const newSpeed = Math.max(0.25, Math.min(4, currentSpeed + amount));
-    if (newSpeed !== currentSpeed) {
-      currentSpeed = parseFloat(newSpeed.toFixed(2));
-      elements.videoPlayer.playbackRate = currentSpeed;
-      elements.speedBtn.textContent = currentSpeed === 1 ? '1x' : `${currentSpeed}x`;
-      updateActiveSpeedMenuItem();
-    }
-  }
-
-  function updateActiveSpeedMenuItem() {
-    document.querySelectorAll('#speedMenu .menu-item').forEach(item => {
-      item.classList.remove('active');
-      if (parseFloat(item.dataset.speed) === currentSpeed) {
-        item.classList.add('active');
-      }
-    });
   }
 
   document.addEventListener('DOMContentLoaded', initPlayer);
