@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal-Style Text Encoder/Decoder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #000;
+            color: #0f0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        header {
+            background-color: #121212;
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            color: #0f0;
+            font-weight: 700;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 5px #0f0a;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            flex: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .panel {
+            background-color: #121212;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 0 10px #0f0a;
+        }
+        
+        .panel-title {
+            color: #0f0;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #0f0;
+            padding-bottom: 0.5rem;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 180px;
+            background: #000;
+            border: 1px solid #0f0;
+            border-radius: 8px;
+            padding: 15px;
+            color: #0f0;
+            font-size: 1.1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+            font-family: monospace;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #0f0;
+            box-shadow: 0 0 8px #0f0;
+        }
+        
+        .password-container {
+            margin: 20px 0;
+        }
+        
+        .password-label {
+            display: block;
+            color: #0f0;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #000;
+            border: 1px solid #0f0;
+            border-radius: 8px;
+            color: #0f0;
+            font-size: 1.1rem;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: #0f0;
+            box-shadow: 0 0 8px #0f0;
+        }
+        
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 14px;
+            background: transparent;
+            color: #0f0;
+            border: 1px solid #0f0;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: #001100;
+            box-shadow: 0 0 15px #0f0a;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .action-btn {
+            padding: 10px 15px;
+            background: transparent;
+            border: 1px solid #0f0;
+            border-radius: 4px;
+            color: #0f0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: #001100;
+        }
+        
+        .info-panel {
+            grid-column: span 2;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .info-panel {
+                grid-column: span 1;
+            }
+        }
+        
+        .info-content {
+            color: #0f0;
+            line-height: 1.6;
+        }
+        
+        .info-content h3 {
+            color: #0f0;
+            margin: 15px 0 10px;
+            border-bottom: 1px solid #0f0;
+            padding-bottom: 5px;
+        }
+        
+        .info-content ul {
+            padding-left: 25px;
+            margin: 10px 0;
+        }
+        
+        .info-content li {
+            margin-bottom: 8px;
+        }
+        
+        .char-set {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 15px 0;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .char {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 51, 0, 0.3);
+            border-radius: 5px;
+            font-weight: bold;
+            border: 1px solid #0f0;
+        }
+        
+        .complexity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+        }
+        
+        .complexity-bar {
+            flex: 1;
+            height: 10px;
+            background: #000;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #0f0;
+        }
+        
+        .complexity-level {
+            height: 100%;
+            width: 90%;
+            background: linear-gradient(to right, #0a0, #0f0);
+            border-radius: 5px;
+        }
+        
+        .complexity-text {
+            color: #0f0;
+            font-weight: bold;
+        }
+        
+        footer {
+            background-color: #121212;
+            width: 100%;
+            padding: 0.5rem 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #0f0;
+            box-shadow: 0 -2px 5px #0f0a;
+            margin-top: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .password-strength {
+            height: 5px;
+            background: #000;
+            border-radius: 5px;
+            margin-top: 8px;
+            overflow: hidden;
+            border: 1px solid #0f0;
+        }
+        
+        .strength-meter {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background 0.3s;
+        }
+        
+        .password-strength-container {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            border: 1px solid #0f0;
+        }
+        
+        .strength-label {
+            color: #0f0;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            border: 1px solid #0f0;
+        }
+        
+        .status-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #333;
+        }
+        
+        .status-icon.active {
+            background: #0f0;
+            box-shadow: 0 0 8px #0f0;
+        }
+        
+        .status-text {
+            color: #0f0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">TEXT ENCODER/DECODER THINGY</div>
+    </header>
+    
+    <div class="app-container">
+        <div class="panel">
+            <h2 class="panel-title">
+                <span>🔒</span> ENCODING PANEL
+            </h2>
+            <textarea id="inputText" placeholder="Enter text to encode..."></textarea>
+            
+            <div class="password-container">
+                <label class="password-label">Password (optional):</label>
+                <input type="password" id="encodePassword" class="password-input" placeholder="Enter password...">
+                
+                <div class="password-strength-container">
+                    <div class="strength-label">Password Strength:</div>
+                    <div class="password-strength">
+                        <div class="strength-meter" id="encodeStrength"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn" id="encodeBtn">
+                    <span>🔐</span> Encode Text
+                </button>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn" id="clearInputBtn">Clear Input</button>
+                <button class="action-btn" id="sampleTextBtn">Load Sample</button>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <h2 class="panel-title">
+                <span>🔓</span> DECODING PANEL
+            </h2>
+            <textarea id="outputText" placeholder="Encoded text will appear here..."></textarea>
+            
+            <div class="password-container">
+                <label class="password-label">Password (if used for encoding):</label>
+                <input type="password" id="decodePassword" class="password-input" placeholder="Enter password...">
+                
+                <div class="password-strength-container">
+                    <div class="strength-label">Password Strength:</div>
+                    <div class="password-strength">
+                        <div class="strength-meter" id="decodeStrength"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn" id="decodeBtn">
+                    <span>🔓</span> Decode Text
+                </button>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn" id="clearOutputBtn">Clear Output</button>
+                <button class="action-btn" id="copyOutputBtn">Copy to Clipboard</button>
+            </div>
+        </div>
+        
+        <div class="panel info-panel">
+            <h2 class="panel-title">
+                <span>ℹ️</span> ABOUT THIS TOOL
+            </h2>
+            <div class="info-content">
+                <p>This advanced encoder/decoder uses a complex algorithm to transform your text using all available keyboard characters (phew).</p>
+                
+                <div class="complexity">
+                    <div class="complexity-bar">
+                        <div class="complexity-level"></div>
+                    </div>
+                    <div class="complexity-text">High Complexity Encryption</div>
+                </div>
+                
+                <h3>Supported Characters:</h3>
+                <div class="char-set" id="charSet">
+                    <!-- Characters will be inserted by JavaScript -->
+                </div>
+                
+                <h3>How It Works:</h3>
+                <ul>
+                    <li><strong>I dont want to write this:</strong> Look in the code yourself</li>
+                </ul>
+                
+                <h3>Usage Tips:</h3>
+                <ul>
+                    <li>For maximum security, use a strong password with uppercase, lowercase, numbers, and symbols</li>
+                    <li>Remember the password used for encoding - it's required for decoding</li>
+                    <li>Without the correct password, decoding is close to 100% impossible</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>12Tae12.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize character set display
+            initCharSet();
+            
+            // Setup event listeners
+            document.getElementById('encodeBtn').addEventListener('click', encodeText);
+            document.getElementById('decodeBtn').addEventListener('click', decodeText);
+            document.getElementById('clearInputBtn').addEventListener('click', () => {
+                document.getElementById('inputText').value = '';
+            });
+            document.getElementById('clearOutputBtn').addEventListener('click', () => {
+                document.getElementById('outputText').value = '';
+            });
+            document.getElementById('copyOutputBtn').addEventListener('click', copyToClipboard);
+            document.getElementById('sampleTextBtn').addEventListener('click', loadSampleText);
+            
+            // Password strength indicators
+            const encodePassword = document.getElementById('encodePassword');
+            const decodePassword = document.getElementById('decodePassword');
+            const encodeStrength = document.getElementById('encodeStrength');
+            const decodeStrength = document.getElementById('decodeStrength');
+            
+            encodePassword.addEventListener('input', function() {
+                updatePasswordStrength(this.value, encodeStrength);
+            });
+            
+            decodePassword.addEventListener('input', function() {
+                updatePasswordStrength(this.value, decodeStrength);
+            });
+        });
+        
+        // Initialize character set display
+        function initCharSet() {
+            const charSetElement = document.getElementById('charSet');
+            // Printable ASCII characters (32-126)
+            for (let i = 32; i <= 126; i++) {
+                const char = String.fromCharCode(i);
+                const charElement = document.createElement('div');
+                charElement.className = 'char';
+                charElement.textContent = char;
+                charSetElement.appendChild(charElement);
+            }
+        }
+        
+        // Update password strength indicator
+        function updatePasswordStrength(password, strengthElement) {
+            let strength = 0;
+            
+            // Length check
+            if (password.length > 10) strength += 40;
+            else if (password.length > 6) strength += 25;
+            else if (password.length > 3) strength += 10;
+            
+            // Complexity checks
+            if (/[A-Z]/.test(password)) strength += 15;
+            if (/[a-z]/.test(password)) strength += 15;
+            if (/[0-9]/.test(password)) strength += 15;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 15;
+            
+            // Cap at 100
+            strength = Math.min(strength, 100);
+            
+            // Update UI
+            strengthElement.style.width = `${strength}%`;
+            
+            // Update color
+            if (strength < 30) {
+                strengthElement.style.background = '#ff5252';
+            } else if (strength < 70) {
+                strengthElement.style.background = '#ffb142';
+            } else {
+                strengthElement.style.background = '#2ed573';
+            }
+        }
+        
+        // Load sample text
+        function loadSampleText() {
+            const sampleText = `This is a sample text, press the button, do it-`;
+            document.getElementById('inputText').value = sampleText;
+        }
+        
+        // Copy to clipboard
+        function copyToClipboard() {
+            const outputText = document.getElementById('outputText');
+            outputText.select();
+            document.execCommand('copy');
+            
+            // Show visual feedback
+            const originalText = outputBtn.textContent;
+            outputBtn.textContent = '✓ Copied!';
+            setTimeout(() => {
+                outputBtn.textContent = originalText;
+            }, 2000);
+        }
+        
+        // Encode text
+        function encodeText() {
+            const inputText = document.getElementById('inputText').value;
+            const password = document.getElementById('encodePassword').value;
+            
+            if (!inputText) {
+                alert('Please enter text to encode');
+                return;
+            }
+            
+            const encoded = complexEncode(inputText, password);
+            document.getElementById('outputText').value = encoded;
+        }
+        
+        // Decode text
+        function decodeText() {
+            const inputText = document.getElementById('outputText').value;
+            const password = document.getElementById('decodePassword').value;
+            
+            if (!inputText) {
+                alert('Please enter text to decode');
+                return;
+            }
+            
+            try {
+                const decoded = complexDecode(inputText, password);
+                document.getElementById('inputText').value = decoded;
+            } catch (e) {
+                alert('Decoding failed. Please check your password and try again.');
+                console.error('Decoding error:', e);
+            }
+        }
+        
+        // Complex encoding algorithm
+        function complexEncode(text, password = '') {
+            // Create a character set of all printable ASCII characters (32-126)
+            const charSet = [];
+            for (let i = 32; i <= 126; i++) {
+                charSet.push(String.fromCharCode(i));
+            }
+            const base = charSet.length;
+            
+            // Password processing
+            let shiftKey = 0;
+            let multiplier = 1;
+            if (password) {
+                for (let i = 0; i < password.length; i++) {
+                    shiftKey = (shiftKey + password.charCodeAt(i) * (i + 1)) % base;
+                    multiplier = (multiplier * (password.charCodeAt(i) % base || 1)) % base;
+                }
+            }
+            
+            // Encode each character
+            let encoded = '';
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const originalIndex = charSet.indexOf(char);
+                
+                if (originalIndex === -1) {
+                    // Character not in our set - leave as is
+                    encoded += char;
+                    continue;
+                }
+                
+                // Complex transformation
+                let transformedIndex = (originalIndex * multiplier + shiftKey + i) % base;
+                if (transformedIndex < 0) transformedIndex += base;
+                
+                // Additional transformation based on position
+                if (i % 3 === 0) {
+                    transformedIndex = (transformedIndex * 3) % base;
+                } else if (i % 3 === 1) {
+                    transformedIndex = (transformedIndex + base - 17) % base;
+                } else {
+                    transformedIndex = (base - transformedIndex - 1) % base;
+                }
+                
+                // Ensure we're within bounds
+                transformedIndex = (transformedIndex + base) % base;
+                
+                encoded += charSet[transformedIndex];
+            }
+            
+            return encoded;
+        }
+        
+        // Complex decoding algorithm
+        function complexDecode(text, password = '') {
+            // Create a character set of all printable ASCII characters (32-126)
+            const charSet = [];
+            for (let i = 32; i <= 126; i++) {
+                charSet.push(String.fromCharCode(i));
+            }
+            const base = charSet.length;
+            
+            // Password processing (must match encoding)
+            let shiftKey = 0;
+            let multiplier = 1;
+            if (password) {
+                for (let i = 0; i < password.length; i++) {
+                    shiftKey = (shiftKey + password.charCodeAt(i) * (i + 1)) % base;
+                    multiplier = (multiplier * (password.charCodeAt(i) % base || 1)) % base;
+                }
+            }
+            
+            // Calculate modular inverse for multiplier
+            let inverseMultiplier = 1;
+            for (let i = 1; i < base; i++) {
+                if ((multiplier * i) % base === 1) {
+                    inverseMultiplier = i;
+                    break;
+                }
+            }
+            
+            // Decode each character
+            let decoded = '';
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const encodedIndex = charSet.indexOf(char);
+                
+                if (encodedIndex === -1) {
+                    // Character not in our set - leave as is
+                    decoded += char;
+                    continue;
+                }
+                
+                // Reverse the transformation
+                let transformedIndex = encodedIndex;
+                
+                // Reverse position-based transformation
+                if (i % 3 === 0) {
+                    // Find modular inverse for multiplication by 3
+                    let inv = 1;
+                    for (let j = 1; j < base; j++) {
+                        if ((3 * j) % base === 1) {
+                            inv = j;
+                            break;
+                        }
+                    }
+                    transformedIndex = (transformedIndex * inv) % base;
+                } else if (i % 3 === 1) {
+                    transformedIndex = (transformedIndex - base + 17) % base;
+                } else {
+                    transformedIndex = (base - transformedIndex - 1) % base;
+                }
+                
+                // Reverse the main transformation
+                let originalIndex = (transformedIndex - shiftKey - i) * inverseMultiplier;
+                originalIndex = originalIndex % base;
+                if (originalIndex < 0) originalIndex += base;
+                
+                decoded += charSet[originalIndex];
+            }
+            
+            return decoded;
+        }
+    </script>
+</body>
+</html>
