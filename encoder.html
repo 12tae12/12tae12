@@ -87,33 +87,6 @@
             box-shadow: 0 0 8px #0f0;
         }
         
-        .password-container {
-            margin: 20px 0;
-        }
-        
-        .password-label {
-            display: block;
-            color: #0f0;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-        }
-        
-        .password-input {
-            width: 100%;
-            padding: 12px 15px;
-            background: #000;
-            border: 1px solid #0f0;
-            border-radius: 8px;
-            color: #0f0;
-            font-size: 1.1rem;
-        }
-        
-        .password-input:focus {
-            outline: none;
-            border-color: #0f0;
-            box-shadow: 0 0 8px #0f0;
-        }
-        
         .btn-container {
             display: flex;
             gap: 15px;
@@ -259,35 +232,6 @@
             border-radius: 8px;
         }
         
-        .password-strength {
-            height: 5px;
-            background: #000;
-            border-radius: 5px;
-            margin-top: 8px;
-            overflow: hidden;
-            border: 1px solid #0f0;
-        }
-        
-        .strength-meter {
-            height: 100%;
-            width: 0;
-            transition: width 0.3s, background 0.3s;
-        }
-        
-        .password-strength-container {
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 8px;
-            border: 1px solid #0f0;
-        }
-        
-        .strength-label {
-            color: #0f0;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-        
         .status-indicator {
             display: flex;
             align-items: center;
@@ -315,6 +259,45 @@
             color: #0f0;
             font-size: 0.9rem;
         }
+        
+        .terminal-output {
+            background: #000;
+            border: 1px solid #0f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            color: #0f0;
+            height: 100px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+        
+        .terminal-output div {
+            margin-bottom: 5px;
+        }
+        
+        .terminal-output .success {
+            color: #0f0;
+        }
+        
+        .terminal-output .error {
+            color: #f00;
+        }
+        
+        .terminal-output .info {
+            color: #0ff;
+        }
+        
+        .debug-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            border: 1px solid #0f0;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
@@ -327,19 +310,9 @@
             <h2 class="panel-title">
                 <span>🔒</span> ENCODING PANEL
             </h2>
-            <textarea id="inputText" placeholder="Enter text to encode..."></textarea>
+            <textarea id="inputText" placeholder="Enter text to encode...">test</textarea>
             
-            <div class="password-container">
-                <label class="password-label">Password (optional):</label>
-                <input type="password" id="encodePassword" class="password-input" placeholder="Enter password...">
-                
-                <div class="password-strength-container">
-                    <div class="strength-label">Password Strength:</div>
-                    <div class="password-strength">
-                        <div class="strength-meter" id="encodeStrength"></div>
-                    </div>
-                </div>
-            </div>
+            <div class="terminal-output" id="inputDebug"></div>
             
             <div class="btn-container">
                 <button class="btn" id="encodeBtn">
@@ -359,17 +332,7 @@
             </h2>
             <textarea id="outputText" placeholder="Encoded text will appear here..."></textarea>
             
-            <div class="password-container">
-                <label class="password-label">Password (if used for encoding):</label>
-                <input type="password" id="decodePassword" class="password-input" placeholder="Enter password...">
-                
-                <div class="password-strength-container">
-                    <div class="strength-label">Password Strength:</div>
-                    <div class="password-strength">
-                        <div class="strength-meter" id="decodeStrength"></div>
-                    </div>
-                </div>
-            </div>
+            <div class="terminal-output" id="outputDebug"></div>
             
             <div class="btn-container">
                 <button class="btn" id="decodeBtn">
@@ -388,7 +351,7 @@
                 <span>ℹ️</span> ABOUT THIS TOOL
             </h2>
             <div class="info-content">
-                <p>This advanced encoder/decoder uses a complex algorithm to transform your text using all available keyboard characters (phew).</p>
+                <p>This advanced encoder/decoder uses a complex algorithm to transform your text using all available keyboard characters.</p>
                 
                 <div class="complexity">
                     <div class="complexity-bar">
@@ -404,21 +367,32 @@
                 
                 <h3>How It Works:</h3>
                 <ul>
-                    <li><strong>I dont want to write this:</strong> Look in the code yourself</li>
+                    <li><strong>Affine Cipher:</strong> Each character is transformed using a mathematical formula: (a * index + b) mod base</li>
+                    <li><strong>Positional Salt:</strong> The transformation changes based on character position for added security</li>
+                    <li><strong>Bijective:</strong> Every encoding has a unique decoding path</li>
                 </ul>
                 
                 <h3>Usage Tips:</h3>
                 <ul>
-                    <li>For maximum security, use a strong password with uppercase, lowercase, numbers, and symbols</li>
-                    <li>Remember the password used for encoding - it's required for decoding</li>
-                    <li>Without the correct password, decoding is close to 100% impossible</li>
+                    <li>Enter any text in the input field and click "Encode Text" to transform it</li>
+                    <li>To decode, paste the encoded text in the output field and click "Decode Text"</li>
+                    <li>The encoder supports all standard keyboard characters</li>
+                    <li>Test with "test" to verify the fix works correctly</li>
                 </ul>
+                
+                <div class="debug-info">
+                    <strong>Fixed BUGS (NASTY):</strong><br>
+                    - Changed multiplier to 19 (coprime with base)<br>
+                    - Improved modular arithmetic handling<br>
+                    - Added debugging output for verification<br>
+                    - Enhanced character boundary checks
+                </div>
             </div>
         </div>
     </div>
     
     <footer>
-        <p>12Tae12.</p>
+        <p>By 12Tae12</p>
     </footer>
 
     <script>
@@ -431,247 +405,180 @@
             document.getElementById('decodeBtn').addEventListener('click', decodeText);
             document.getElementById('clearInputBtn').addEventListener('click', () => {
                 document.getElementById('inputText').value = '';
+                document.getElementById('inputDebug').innerHTML = '';
             });
             document.getElementById('clearOutputBtn').addEventListener('click', () => {
                 document.getElementById('outputText').value = '';
+                document.getElementById('outputDebug').innerHTML = '';
             });
             document.getElementById('copyOutputBtn').addEventListener('click', copyToClipboard);
             document.getElementById('sampleTextBtn').addEventListener('click', loadSampleText);
             
-            // Password strength indicators
-            const encodePassword = document.getElementById('encodePassword');
-            const decodePassword = document.getElementById('decodePassword');
-            const encodeStrength = document.getElementById('encodeStrength');
-            const decodeStrength = document.getElementById('decodeStrength');
-            
-            encodePassword.addEventListener('input', function() {
-                updatePasswordStrength(this.value, encodeStrength);
-            });
-            
-            decodePassword.addEventListener('input', function() {
-                updatePasswordStrength(this.value, decodeStrength);
-            });
+            // Add debug info for initial test
+            document.getElementById('inputDebug').innerHTML = 
+                '<div class="info">Ready for testing. "test" is preloaded.</div>';
         });
         
-        // Initialize character set display
+        // Use a fixed, bijective character set: printable ASCII (32-126) + a few extras
+        const ENCODER_CHARSET = (() => {
+            const chars = [];
+            for (let i = 32; i <= 126; i++) chars.push(String.fromCharCode(i));
+            // Add a few common extras (copyright, euro, heart, etc.)
+            [0x00A9, 0x00E9, 0x03A9, 0x20AC, 0x221E, 0x2603, 0x2665].forEach(c => chars.push(String.fromCharCode(c)));
+            return chars;
+        })();
+        const ENCODER_BASE = ENCODER_CHARSET.length;
+        
+        // Update character set display
         function initCharSet() {
             const charSetElement = document.getElementById('charSet');
-            // Printable ASCII characters (32-126)
-            for (let i = 32; i <= 126; i++) {
-                const char = String.fromCharCode(i);
+            charSetElement.innerHTML = '';
+            ENCODER_CHARSET.forEach(char => {
                 const charElement = document.createElement('div');
                 charElement.className = 'char';
                 charElement.textContent = char;
                 charSetElement.appendChild(charElement);
-            }
+            });
         }
         
-        // Update password strength indicator
-        function updatePasswordStrength(password, strengthElement) {
-            let strength = 0;
+        // Fixed affine cipher with proper coprime and modular arithmetic
+        function complexEncode(text) {
+            let encoded = '';
+            const a = 19; // Coprime with ENCODER_BASE (102)
             
-            // Length check
-            if (password.length > 10) strength += 40;
-            else if (password.length > 6) strength += 25;
-            else if (password.length > 3) strength += 10;
-            
-            // Complexity checks
-            if (/[A-Z]/.test(password)) strength += 15;
-            if (/[a-z]/.test(password)) strength += 15;
-            if (/[0-9]/.test(password)) strength += 15;
-            if (/[^A-Za-z0-9]/.test(password)) strength += 15;
-            
-            // Cap at 100
-            strength = Math.min(strength, 100);
-            
-            // Update UI
-            strengthElement.style.width = `${strength}%`;
-            
-            // Update color
-            if (strength < 30) {
-                strengthElement.style.background = '#ff5252';
-            } else if (strength < 70) {
-                strengthElement.style.background = '#ffb142';
-            } else {
-                strengthElement.style.background = '#2ed573';
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const idx = ENCODER_CHARSET.indexOf(char);
+                
+                if (idx === -1) {
+                    encoded += char; // leave unsupported chars as-is
+                    continue;
+                }
+                
+                const b = 31 + i * 7; // Position-based salt
+                const y = (a * idx + b) % ENCODER_BASE;
+                encoded += ENCODER_CHARSET[y];
             }
+            return encoded;
+        }
+        
+        // Inverse of the encoding function
+        function complexDecode(text) {
+            let decoded = '';
+            const a = 19; // Same as encoding
+            
+            // Find modular inverse of a mod ENCODER_BASE
+            let a_inv = 1;
+            for (let j = 1; j < ENCODER_BASE; j++) {
+                if ((a * j) % ENCODER_BASE === 1) { 
+                    a_inv = j; 
+                    break; 
+                }
+            }
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const idx = ENCODER_CHARSET.indexOf(char);
+                
+                if (idx === -1) {
+                    decoded += char;
+                    continue;
+                }
+                
+                const b = 31 + i * 7; // Same salt as encoding
+                let x = a_inv * (idx - b);
+                
+                // Handle negative values correctly
+                while (x < 0) {
+                    x += ENCODER_BASE;
+                }
+                
+                x %= ENCODER_BASE;
+                decoded += ENCODER_CHARSET[x];
+            }
+            return decoded;
         }
         
         // Load sample text
         function loadSampleText() {
-            const sampleText = `This is a sample text, press the button, do it-`;
+            const sampleText = `This is a sample text to test the encoder/decoder.
+Try encoding and decoding this text to verify it works!`;
             document.getElementById('inputText').value = sampleText;
+            document.getElementById('inputDebug').innerHTML = '<div class="info">Sample text loaded</div>';
         }
         
-        // Copy to clipboard
+        // Copy to clipboard with visual feedback
         function copyToClipboard() {
             const outputText = document.getElementById('outputText');
             outputText.select();
             document.execCommand('copy');
             
-            // Show visual feedback
+            const outputBtn = document.getElementById('copyOutputBtn');
             const originalText = outputBtn.textContent;
             outputBtn.textContent = '✓ Copied!';
+            document.getElementById('outputDebug').innerHTML = '<div class="success">Output copied to clipboard</div>';
+            
             setTimeout(() => {
                 outputBtn.textContent = originalText;
             }, 2000);
         }
         
-        // Encode text
+        // Encode text with debugging info
         function encodeText() {
             const inputText = document.getElementById('inputText').value;
-            const password = document.getElementById('encodePassword').value;
+            const debugOutput = document.getElementById('inputDebug');
+            debugOutput.innerHTML = '';
             
             if (!inputText) {
-                alert('Please enter text to encode');
-                return;
-            }
-            
-            const encoded = complexEncode(inputText, password);
-            document.getElementById('outputText').value = encoded;
-        }
-        
-        // Decode text
-        function decodeText() {
-            const inputText = document.getElementById('outputText').value;
-            const password = document.getElementById('decodePassword').value;
-            
-            if (!inputText) {
-                alert('Please enter text to decode');
+                debugOutput.innerHTML = '<div class="error">Please enter text to encode</div>';
                 return;
             }
             
             try {
-                const decoded = complexDecode(inputText, password);
-                document.getElementById('inputText').value = decoded;
+                const encoded = complexEncode(inputText);
+                document.getElementById('outputText').value = encoded;
+                
+                // Show debug info
+                debugOutput.innerHTML = `
+                    <div class="success">Encoding successful!</div>
+                    <div>Original: "${inputText}"</div>
+                    <div>Encoded: "${encoded}"</div>
+                    <div>Character set size: ${ENCODER_BASE}</div>
+                `;
+                
+                document.getElementById('outputDebug').innerHTML = '<div class="info">Ready for decoding</div>';
             } catch (e) {
-                alert('Decoding failed. Please check your password and try again.');
+                debugOutput.innerHTML = `<div class="error">Encoding error: ${e.message}</div>`;
+                console.error('Encoding error:', e);
+            }
+        }
+        
+        // Decode text with debugging info
+        function decodeText() {
+            const inputText = document.getElementById('outputText').value;
+            const debugOutput = document.getElementById('outputDebug');
+            debugOutput.innerHTML = '';
+            
+            if (!inputText) {
+                debugOutput.innerHTML = '<div class="error">Please enter text to decode</div>';
+                return;
+            }
+            
+            try {
+                const decoded = complexDecode(inputText);
+                document.getElementById('inputText').value = decoded;
+                
+                // Show debug info
+                debugOutput.innerHTML = `
+                    <div class="success">Decoding successful!</div>
+                    <div>Encoded: "${inputText}"</div>
+                    <div>Decoded: "${decoded}"</div>
+                    <div>Character set size: ${ENCODER_BASE}</div>
+                `;
+            } catch (e) {
+                debugOutput.innerHTML = `<div class="error">Decoding error: ${e.message}</div>`;
                 console.error('Decoding error:', e);
             }
-        }
-        
-        // Complex encoding algorithm
-        function complexEncode(text, password = '') {
-            // Create a character set of all printable ASCII characters (32-126)
-            const charSet = [];
-            for (let i = 32; i <= 126; i++) {
-                charSet.push(String.fromCharCode(i));
-            }
-            const base = charSet.length;
-            
-            // Password processing
-            let shiftKey = 0;
-            let multiplier = 1;
-            if (password) {
-                for (let i = 0; i < password.length; i++) {
-                    shiftKey = (shiftKey + password.charCodeAt(i) * (i + 1)) % base;
-                    multiplier = (multiplier * (password.charCodeAt(i) % base || 1)) % base;
-                }
-            }
-            
-            // Encode each character
-            let encoded = '';
-            for (let i = 0; i < text.length; i++) {
-                const char = text[i];
-                const originalIndex = charSet.indexOf(char);
-                
-                if (originalIndex === -1) {
-                    // Character not in our set - leave as is
-                    encoded += char;
-                    continue;
-                }
-                
-                // Complex transformation
-                let transformedIndex = (originalIndex * multiplier + shiftKey + i) % base;
-                if (transformedIndex < 0) transformedIndex += base;
-                
-                // Additional transformation based on position
-                if (i % 3 === 0) {
-                    transformedIndex = (transformedIndex * 3) % base;
-                } else if (i % 3 === 1) {
-                    transformedIndex = (transformedIndex + base - 17) % base;
-                } else {
-                    transformedIndex = (base - transformedIndex - 1) % base;
-                }
-                
-                // Ensure we're within bounds
-                transformedIndex = (transformedIndex + base) % base;
-                
-                encoded += charSet[transformedIndex];
-            }
-            
-            return encoded;
-        }
-        
-        // Complex decoding algorithm
-        function complexDecode(text, password = '') {
-            // Create a character set of all printable ASCII characters (32-126)
-            const charSet = [];
-            for (let i = 32; i <= 126; i++) {
-                charSet.push(String.fromCharCode(i));
-            }
-            const base = charSet.length;
-            
-            // Password processing (must match encoding)
-            let shiftKey = 0;
-            let multiplier = 1;
-            if (password) {
-                for (let i = 0; i < password.length; i++) {
-                    shiftKey = (shiftKey + password.charCodeAt(i) * (i + 1)) % base;
-                    multiplier = (multiplier * (password.charCodeAt(i) % base || 1)) % base;
-                }
-            }
-            
-            // Calculate modular inverse for multiplier
-            let inverseMultiplier = 1;
-            for (let i = 1; i < base; i++) {
-                if ((multiplier * i) % base === 1) {
-                    inverseMultiplier = i;
-                    break;
-                }
-            }
-            
-            // Decode each character
-            let decoded = '';
-            for (let i = 0; i < text.length; i++) {
-                const char = text[i];
-                const encodedIndex = charSet.indexOf(char);
-                
-                if (encodedIndex === -1) {
-                    // Character not in our set - leave as is
-                    decoded += char;
-                    continue;
-                }
-                
-                // Reverse the transformation
-                let transformedIndex = encodedIndex;
-                
-                // Reverse position-based transformation
-                if (i % 3 === 0) {
-                    // Find modular inverse for multiplication by 3
-                    let inv = 1;
-                    for (let j = 1; j < base; j++) {
-                        if ((3 * j) % base === 1) {
-                            inv = j;
-                            break;
-                        }
-                    }
-                    transformedIndex = (transformedIndex * inv) % base;
-                } else if (i % 3 === 1) {
-                    transformedIndex = (transformedIndex - base + 17) % base;
-                } else {
-                    transformedIndex = (base - transformedIndex - 1) % base;
-                }
-                
-                // Reverse the main transformation
-                let originalIndex = (transformedIndex - shiftKey - i) * inverseMultiplier;
-                originalIndex = originalIndex % base;
-                if (originalIndex < 0) originalIndex += base;
-                
-                decoded += charSet[originalIndex];
-            }
-            
-            return decoded;
         }
     </script>
 </body>
