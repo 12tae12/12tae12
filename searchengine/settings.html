@@ -62,14 +62,7 @@
             <input class="form-check-input" type="checkbox" id="safeSearchSwitch">
             <label class="form-check-label" for="safeSearchSwitch">Safe Search</label>
         </div>
-        <div class="form-check form-switch mb-4">
-            <input class="form-check-input" type="checkbox" id="autocorrectSwitch">
-            <label class="form-check-label" for="autocorrectSwitch">Autocorrect & Suggestions</label>
-        </div>
-        <div class="form-check form-switch mb-4">
-            <input class="form-check-input" type="checkbox" id="aiSpellCheckSwitch">
-            <label class="form-check-label" for="aiSpellCheckSwitch">AI Spell Checker (Experimental)</label>
-        </div>
+        <!-- Autocorrect & Suggestions and AI Spell Checker removed -->
         <!-- Add more settings options here -->
     </div>
     <div class="cookie-banner" id="cookieBanner">
@@ -145,64 +138,7 @@
             saveSettings('safeSearch', safeSearchSwitch.checked);
         });
 
-        // Load Autocorrect state
-        const autocorrectSwitch = document.getElementById('autocorrectSwitch');
-        let autocorrectOn = loadSettings('autocorrect', 'false') === 'true';
-        autocorrectSwitch.checked = autocorrectOn;
-        autocorrectSwitch.addEventListener('change', function() {
-            saveSettings('autocorrect', autocorrectSwitch.checked);
-        });
-
-        // Load AI Spell Checker state
-        const aiSpellCheckSwitch = document.getElementById('aiSpellCheckSwitch');
-        let aiSpellCheckOn = loadSettings('aiSpellCheck', 'false') === 'true';
-        aiSpellCheckSwitch.checked = aiSpellCheckOn;
-
-        // Test puter.ai availability on page load if spell check is enabled
-        async function testPuterAI() {
-            if (aiSpellCheckSwitch.checked) {
-                try {
-                    if (window.puter && puter.ai) {
-                        await puter.ai.chat('Spell check: test');
-                        saveSettings('aiSpellCheck', 'true');
-                    } else {
-                        throw new Error('Puter.ai not available');
-                    }
-                } catch {
-                    aiSpellCheckSwitch.checked = false;
-                    saveSettings('aiSpellCheck', 'false');
-                    alert('AI Spell Checker could not be enabled (Puter.ai unavailable).');
-                }
-            }
-        }
-        testPuterAI();
-
-        aiSpellCheckSwitch.addEventListener('change', async function() {
-            if (aiSpellCheckSwitch.checked) {
-                try {
-                    if (window.puter && puter.ai) {
-                        await puter.ai.chat('Spell check: test');
-                        saveSettings('aiSpellCheck', 'true');
-                        aiSpellCheckSwitch.checked = true;
-                    } else {
-                        throw new Error('Puter.ai not available');
-                    }
-                } catch {
-                    aiSpellCheckSwitch.checked = false;
-                    saveSettings('aiSpellCheck', 'false');
-                    alert('AI Spell Checker could not be enabled (Puter.ai unavailable).');
-                }
-            } else {
-                saveSettings('aiSpellCheck', 'false');
-                aiSpellCheckSwitch.checked = false;
-            }
-        });
-
-        // Disable settings if cookies were previously rejected
-        if (getCookie('cookieConsent') === 'rejected') {
-            aiSpellCheckSwitch.checked = false;
-            aiSpellCheckSwitch.disabled = true;
-        }
+        // Autocorrect & Suggestions and AI Spell Checker code removed
     </script>
 </body>
 </html>

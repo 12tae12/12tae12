@@ -133,7 +133,7 @@
                 </button>
             </div>
         </form>
-        <div id="ai-suggestions" style="max-width:600px;margin:1em auto 0 auto;"></div>
+        <!-- AI suggestions removed -->
     </div>
     <footer class="footer" style="background:#1a2b1a;color:#b5e5b5;text-align:center;padding:1.2em 0 1em 0;font-size:1em;border-top:1px solid #2e4d2e;">
         &copy; 2025 12Tae12. <a href="credits.html" style="color:#7fffa7;">Credits</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" style="color:#7fffa7;">OpenStreetMap contributors</a>.
@@ -152,37 +152,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('searchInput').focus();
         });
-
-        // --- AI Suggestions for Index Page ---
-        const indexInput = document.getElementById('searchInput');
-        const aiSuggestionsDiv = document.getElementById('ai-suggestions');
-        let aiSuggestTimeout = null;
-        indexInput.addEventListener('input', function() {
-            if (aiSuggestTimeout) clearTimeout(aiSuggestTimeout);
-            const val = indexInput.value.trim();
-            if (!val) {
-                aiSuggestionsDiv.innerHTML = '';
-                return;
-            }
-            aiSuggestTimeout = setTimeout(async () => {
-                if (!window.puter || !puter.ai) return;
-                try {
-                    const prompt = `Suggest 3 possible next words or short phrases to follow: "${val}". Only give the suggestions, separated by newlines.`;
-                    const resp = await puter.ai.chat(prompt);
-                    const suggestions = resp.split('\n').map(s => s.trim()).filter(Boolean);
-                    if (suggestions.length) {
-                        aiSuggestionsDiv.innerHTML = suggestions.map(s => `<span style='background:#1a2b1a;color:#7fffa7;border-radius:0.5em;padding:0.3em 0.7em;margin:0.2em;cursor:pointer;display:inline-block;' onclick='document.getElementById("searchInput").value = "${s}";'>${s}</span>`).join(' ');
-                    } else {
-                        aiSuggestionsDiv.innerHTML = '';
-                    }
-                } catch {
-                    aiSuggestionsDiv.innerHTML = '';
-                }
-            }, 300);
-        });
-        indexInput.addEventListener('blur', function() {
-            setTimeout(() => aiSuggestionsDiv.innerHTML = '', 200);
-        });
+        // AI suggestions code removed
     </script>
 </body>
 </html>

@@ -571,8 +571,11 @@
         document.addEventListener('click', function(event) {
             const btn = document.getElementById('optionsButton');
             const menu = document.getElementById('optionsMenu');
-            if (!btn.contains(event.target) && !menu.contains(event.target)) {
-                menu.style.display = 'none';
+            // Only proceed if both elements exist
+            if (btn && menu) {
+                if (!btn.contains(event.target) && !menu.contains(event.target)) {
+                    menu.style.display = 'none';
+                }
             }
         });
     </script>
