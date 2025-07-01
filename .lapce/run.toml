@@ -1,0 +1,20 @@
+# Bash Script Runner
+[[configs]]
+name = "bash"
+program = "bash"
+args = ["${file}"]
+cwd = "${workspace}"
+
+# Python Script Runner
+[[configs]]
+name = "python"
+program = "python3"
+args = ["${file}"]
+cwd = "${workspace}"
+
+# HTML Viewer using xdg-open (Linux)
+[[configs]]
+name = "html"
+program = "xdg-open"
+args = ["${file}"]
+cwd = "${workspace}"
