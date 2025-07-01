@@ -189,6 +189,7 @@
         &copy; 2025 12Tae12. <a href="credits.html" style="color:#7fffa7;">Credits</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" style="color:#7fffa7;">OpenStreetMap contributors</a>.
     </footer>
     <script src="https://js.puter.com/v2/"></script>
+    <script src="https://cdn.puter.com/puter.js"></script>
     <script>
         // Cookie and Settings Management
         function setCookie(name, value, days) {
@@ -412,13 +413,20 @@
             document.getElementById('ai-response').innerText = 'Click "Generate AI Overview" to get a summary.';
             const btn = document.getElementById('generate-ai-btn');
             btn.onclick = function() {
-                if (pagedResults.length > 0 && window.puter && puter.ai) {
+                if (pagedResults.length > 0 && window.puter && puter.ai && puter.ai.gpt) {
                     document.getElementById('ai-response').innerHTML = '<span style="color:#7fffa7;">Generating overview...</span>';
-                    puter.ai.chat(aiPrompt).then(response => {
-                        document.getElementById('ai-response').innerText = response;
-                    }).catch(() => {
-                        document.getElementById('ai-response').innerText = 'AI overview unavailable.';
-                    });
+                    const gpt = puter.ai.gpt('gpt-4o');
+                    gpt.chat([{ role: 'user', content: aiPrompt }])
+                        .then(response => {
+                            if (response && response.choices && response.choices[0] && response.choices[0].message && response.choices[0].message.content) {
+                                document.getElementById('ai-response').innerText = response.choices[0].message.content;
+                            } else {
+                                document.getElementById('ai-response').innerText = 'AI overview unavailable.';
+                            }
+                        })
+                        .catch(() => {
+                            document.getElementById('ai-response').innerText = 'AI overview unavailable.';
+                        });
                 } else {
                     document.getElementById('ai-response').innerText = 'No results to summarize.';
                 }
