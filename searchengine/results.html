@@ -364,7 +364,22 @@
         }
         async function showResultsFromXML(query, keepPage) {
             await loadBlockedTerms();
-            const xmlData = await fetchXML();
+            let xmlData;
+            try {
+                xmlData = await fetchXML();
+            } catch (e) {
+                document.getElementById('results').innerHTML = '<div class="result-card">Failed to load search data.</div>';
+                return;
+            }
+            if (!xmlData || !xmlData.getElementsByTagName) {
+                document.getElementById('results').innerHTML = '<div class="result-card">No results found (XML error).</div>';
+                return;
+            }
+            const items = xmlData.getElementsByTagName("item");
+            if (!items || items.length === 0) {
+                document.getElementById('results').innerHTML = '<div class="result-card">No results found (no items in XML).</div>';
+                return;
+            }
             const results = searchItems(query.toLowerCase(), xmlData);
             if (!keepPage) currentPage = 1;
             const totalResults = results.length;
