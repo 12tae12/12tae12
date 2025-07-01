@@ -169,6 +169,7 @@
         <a class="nav-link disabled" style="color:#7fffa7;background:transparent;border:none;" href="#">More</a>
     </nav>
     <div class="container-fluid" style="max-width: 1200px; margin: 0 auto;">
+        <div id="browser-warning" style="display:none;max-width:700px;margin:1.5em auto 0 auto;"></div>
         <div class="row align-items-start" style="margin-top: 2.5rem;">
             <div class="col-lg-7 col-md-12" id="results-col" style="padding-top:0;">
                 <div id="ai-spellcheck-suggestion" style="max-width:700px;margin:1.5em auto 0 auto;"></div>
@@ -189,7 +190,21 @@
         &copy; 2025 12Tae12. <a href="credits.html" style="color:#7fffa7;">Credits</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" style="color:#7fffa7;">OpenStreetMap contributors</a>.
     </footer>
     <script src="https://js.puter.com/v2/"></script>
-    <script src="https://cdn.puter.com/puter.js"></script>
+    <script>
+    // Show browser/extension warning if Puter fails to load
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            if (!window.puter || !puter.ai) {
+                var warn = document.getElementById('browser-warning');
+                warn.style.display = 'block';
+                warn.innerHTML = `<div style="background:#1a2b1a;border:1.5px solid #ff9800;color:#ff9800;border-radius:0.7em;padding:0.7em 1.2em;font-size:1.08em;margin-bottom:1.2em;box-shadow:0 2px 8px rgba(255,152,0,0.10);font-weight:500;">
+                ⚠️ <b>Warning:</b> Some browsers or extensions (privacy, adblock, security, etc) may block AI features or search results from working properly. If you see missing results or errors, try disabling extensions or using a different browser.<br>
+                <span style='color:#b5e5b5;font-size:0.97em;font-weight:400;'>This does not affect your privacy or security, but may break AI and search features.</span>
+                </div>`;
+            }
+        }, 1200);
+    });
+    </script>
     <script>
         // Cookie and Settings Management
         function setCookie(name, value, days) {
@@ -319,15 +334,27 @@
         function searchItems(query, xmlData) {
             const items = xmlData.getElementsByTagName("item");
             const results = [];
+            if (!query || query.trim() === "") {
+                // If query is empty, return all items (or none, depending on your preference)
+                for (let item of items) {
+                    const title = item.getElementsByTagName("title")[0]?.textContent || '';
+                    const description = item.getElementsByTagName("description")[0]?.textContent || '';
+                    const url = item.getElementsByTagName("url")[0]?.textContent || '';
+                    if (safeSearchOn && (containsBlockedTerm(title) || containsBlockedTerm(description) || containsBlockedTerm(url))) {
+                        continue;
+                    }
+                    results.push({ title, url, description });
+                }
+                return results;
+            }
             for (let item of items) {
                 const title = item.getElementsByTagName("title")[0]?.textContent || '';
                 const description = item.getElementsByTagName("description")[0]?.textContent || '';
                 const url = item.getElementsByTagName("url")[0]?.textContent || '';
                 if (
-                    title.toLowerCase().includes(query) ||
-                    description.toLowerCase().includes(query)
+                    title.toLowerCase().includes(query.toLowerCase()) ||
+                    description.toLowerCase().includes(query.toLowerCase())
                 ) {
-                    // If safe search is on, block if any field contains a blocked term
                     if (safeSearchOn && (containsBlockedTerm(title) || containsBlockedTerm(description) || containsBlockedTerm(url))) {
                         continue;
                     }
@@ -381,7 +408,8 @@
                 document.getElementById('results').innerHTML = '<div class="result-card">No results found (no items in XML).</div>';
                 return;
             }
-            const results = searchItems(query.toLowerCase(), xmlData);
+            // Use the original query for searchItems, not lowercased, to preserve original case for AI prompt
+            const results = searchItems(query, xmlData);
             if (!keepPage) currentPage = 1;
             const totalResults = results.length;
             const startIdx = (currentPage-1)*RESULTS_PER_PAGE;
