@@ -618,18 +618,22 @@
             const streamFunc = (streamId) => new Promise((resolve) => {
                 const testData = generateTestData(sizeMB);
                 let uploaded = 0;
+                let lastUploaded = 0;
                 let finished = false;
-                // Warmup phase
-                const warmupXhr = new XMLHttpRequest();
-                warmupXhr.open('POST', TEST_SERVER, true);
-                warmupXhr.onload = () => {
-                    // Main test
+                let mainTestStarted = false;
+                // Helper for main upload test
+                const startMainTest = () => {
+                    if (mainTestStarted) return;
+                    mainTestStarted = true;
                     const xhr = new XMLHttpRequest();
                     const start = performance.now();
                     xhr.upload.onprogress = (e) => {
                         if (e.lengthComputable) {
+                            // Only add the delta since last event
+                            const delta = e.loaded - lastUploaded;
+                            if (delta > 0) totalUploaded += delta;
+                            lastUploaded = e.loaded;
                             uploaded = e.loaded;
-                            totalUploaded += e.loaded;
                             const now = performance.now();
                             // Throttle output: update progress every 1s (only stream 0)
                             if (streamId === 0 && now - progressThrottle > 1000) {
@@ -645,11 +649,11 @@
                         }
                     };
                     xhr.onload = () => {
-                        const duration = performance.now() - start;
-                        const speed = calculateSpeed(uploaded, duration > testDuration ? testDuration : duration);
+                        finished = true;
                         resolve(uploaded);
                     };
                     xhr.onerror = () => {
+                        finished = true;
                         resolve(uploaded);
                     };
                     xhr.open('POST', TEST_SERVER, true);
@@ -660,49 +664,28 @@
                             xhr.abort();
                         }
                     }, testDuration);
+                };
+                // Warmup phase with fallback
+                const warmupXhr = new XMLHttpRequest();
+                let warmupDone = false;
+                warmupXhr.open('POST', TEST_SERVER, true);
+                warmupXhr.onload = () => {
+                    if (!warmupDone) {
+                        warmupDone = true;
+                        startMainTest();
+                    }
                 };
                 warmupXhr.onerror = () => {
-                    // If warmup fails, still run main test
-                    const xhr = new XMLHttpRequest();
-                    const start = performance.now();
-                    xhr.upload.onprogress = (e) => {
-                        if (e.lengthComputable) {
-                            uploaded = e.loaded;
-                            totalUploaded += e.loaded;
-                            const now = performance.now();
-                            if (streamId === 0 && now - progressThrottle > 1000) {
-                                const elapsed = now - start;
-                                const speed = calculateSpeed(totalUploaded, elapsed);
-                                writeOutput(`Upload progress: ~${speed} Mbps (all streams)`, 'info');
-                                progressThrottle = now;
-                            }
-                            if (!finished && (now - start) >= testDuration) {
-                                finished = true;
-                                xhr.abort();
-                            }
-                        }
-                    };
-                    xhr.onload = () => {
-                        const duration = performance.now() - start;
-                        const speed = calculateSpeed(uploaded, duration > testDuration ? testDuration : duration);
-                        resolve(uploaded);
-                    };
-                    xhr.onerror = () => {
-                        resolve(uploaded);
-                    };
-                    xhr.open('POST', TEST_SERVER, true);
-                    xhr.send(testData);
-                    setTimeout(() => {
-                        if (!finished) {
-                            finished = true;
-                            xhr.abort();
-                        }
-                    }, testDuration);
+                    if (!warmupDone) {
+                        warmupDone = true;
+                        startMainTest();
+                    }
                 };
                 setTimeout(() => {
-                    if (!finished) {
-                        finished = true;
-                        warmupXhr.abort();
+                    if (!warmupDone) {
+                        warmupDone = true;
+                        try { warmupXhr.abort(); } catch {};
+                        startMainTest();
                     }
                 }, warmupDuration);
                 warmupXhr.send(testData);
