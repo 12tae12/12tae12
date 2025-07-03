@@ -656,7 +656,7 @@
             return bestSpeed;
         };
         
-        // Run the complete speed test (3 times, 4s each, average results)
+        // Run the complete speed test (3 times, 4s each, average results, with server bottleneck warning)
         const runSpeedTest = async () => {
             outputEl.innerHTML = `
                 <div class="output-line">
@@ -668,6 +668,7 @@
             startBtn.textContent = 'TESTING...';
             const networkType = detectNetworkType();
             connectionTypeEl.textContent = networkType.toUpperCase();
+            // No reference speeds: test is based only on actual measured results and server performance
             try {
                 writeOutput('Starting network speed test...', 'highlight');
                 writeOutput(`Network type: ${networkType}`, 'info');
@@ -699,11 +700,23 @@
                 // Final results
                 writeOutput('Speed test completed! (Averaged over 3 runs)', 'highlight');
                 writeOutput('---------------------------------', 'info');
-                writeOutput(`Ping: ${pingCount ? (pingSum/pingCount).toFixed(2) : '-'} ms`, 'result');
-                writeOutput(`Jitter: ${jitterCount ? (jitterSum/jitterCount).toFixed(2) : '-'} ms`, 'result');
-                writeOutput(`Download: ${downloadCount ? (downloadSum/downloadCount).toFixed(2) : '-'} Mbps`, 'result');
-                writeOutput(`Upload: ${uploadCount ? (uploadSum/uploadCount).toFixed(2) : '-'} Mbps`, 'result');
+                const avgPing = pingCount ? (pingSum/pingCount).toFixed(2) : '-';
+                const avgJitter = jitterCount ? (jitterSum/jitterCount).toFixed(2) : '-';
+                const avgDownload = downloadCount ? (downloadSum/downloadCount).toFixed(2) : '-';
+                const avgUpload = uploadCount ? (uploadSum/uploadCount).toFixed(2) : '-';
+                writeOutput(`Ping: ${avgPing} ms`, 'result');
+                writeOutput(`Jitter: ${avgJitter} ms`, 'result');
+                writeOutput(`Download: ${avgDownload} Mbps`, 'result');
+                writeOutput(`Upload: ${avgUpload} Mbps`, 'result');
                 writeOutput('---------------------------------', 'info');
+                // Warn if measured speed is suspiciously low (absolute threshold, not user-specific)
+                if (avgDownload !== '-' && avgDownload < 5) {
+                    writeOutput('Warning: Download speed is very low. The test server or your connection may be the bottleneck.', 'error');
+                }
+                if (avgUpload !== '-' && avgUpload < 2) {
+                    writeOutput('Warning: Upload speed is very low. The test server or your connection may be the bottleneck.', 'error');
+                }
+                writeOutput('Note: This test measures the speed between your browser and the test server. Results may be limited by the server or your network.', 'highlight');
                 startBtn.textContent = 'TEST AGAIN';
             } catch (error) {
                 writeOutput(`Test failed: ${(error && error.message) ? error.message : 'Unknown error'}`, 'error');
