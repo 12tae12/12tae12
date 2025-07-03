@@ -587,38 +587,27 @@
             }
         };
         
-        // Upload Test (runs for 8 seconds, returns average Mbps, uses 2 parallel streams, warms up, and averages best result)
+        // Upload Test (runs for 8 seconds, single stream, no warmup, larger payload, robust)
         const testUpload = async () => {
-            const sizeMB = navigator.connection && navigator.connection.downlink > 10 ? 2 : 1;
+            const sizeMB = 4; // Use 4MB for better accuracy
             const testData = generateTestData(sizeMB);
-            const PARALLEL = 2;
-            let bestSpeed = 0;
-            let allSpeeds = [];
-            writeOutput(`Starting upload test (${sizeMB} MB x ${PARALLEL} streams) for 8 seconds...`, 'command');
-            const uploadWorker = () => new Promise((resolve) => {
+            writeOutput(`Starting upload test (${sizeMB} MB) for 8 seconds...`, 'command');
+            return new Promise((resolve) => {
                 const xhr = new XMLHttpRequest();
                 let uploaded = 0;
                 const start = performance.now();
                 let finished = false;
                 let progressThrottle = 0;
-                let warmupDone = false;
-                let warmupStart = null;
                 xhr.upload.onprogress = (e) => {
                     if (e.lengthComputable) {
                         uploaded = e.loaded;
                         const now = performance.now();
-                        // Ignore first 2 seconds as warmup
-                        if (!warmupDone && now - start > 2000) {
-                            warmupDone = true;
-                            warmupStart = now;
-                            uploaded = 0;
-                        }
-                        // Throttle output: update progress every 1s (only from first worker)
-                        if (progressThrottle === 0 && now - start > 1000) {
-                            const elapsed = warmupDone ? now - warmupStart : now - start;
+                        // Throttle output: update progress every 1s
+                        if (now - progressThrottle > 1000) {
+                            const elapsed = now - start;
                             const speed = calculateSpeed(uploaded, elapsed);
-                            writeOutput(`Upload progress: ~${((uploaded / (sizeMB * 1024 * 1024)) * 100).toFixed(1)}% @ ${speed} Mbps`, 'info');
-                            progressThrottle = now - start;
+                            writeOutput(`Upload progress: ${(uploaded / e.total * 100).toFixed(1)}% @ ${speed} Mbps`, 'info');
+                            progressThrottle = now;
                         }
                         if (!finished && (now - start) >= 8000) {
                             finished = true;
@@ -627,16 +616,16 @@
                     }
                 };
                 xhr.onload = () => {
-                    const duration = warmupDone ? performance.now() - warmupStart : performance.now() - start;
-                    const speed = calculateSpeed(uploaded, duration > 6000 ? 6000 : duration);
-                    allSpeeds.push(speed);
+                    const duration = performance.now() - start;
+                    const speed = calculateSpeed(uploaded, duration > 8000 ? 8000 : duration);
+                    writeOutput(`Upload completed: ${speed} Mbps`, 'result');
                     resolve(speed);
                 };
                 xhr.onerror = () => {
-                    const duration = warmupDone ? performance.now() - warmupStart : performance.now() - start;
-                    const speed = calculateSpeed(uploaded, duration > 6000 ? 6000 : duration);
-                    allSpeeds.push(speed);
-                    resolve(speed);
+                    const duration = performance.now() - start;
+                    const speed = calculateSpeed(uploaded, duration > 8000 ? 8000 : duration);
+                    writeOutput('Upload test failed. Server may be offline.', 'error');
+                    resolve(speed > 0 ? speed : null);
                 };
                 xhr.open('POST', TEST_SERVER, true);
                 xhr.send(testData);
@@ -647,13 +636,6 @@
                     }
                 }, 8000);
             });
-            const workers = [];
-            for (let i = 0; i < PARALLEL; i++) workers.push(uploadWorker());
-            await Promise.all(workers);
-            // Use the best speed from the parallel uploads
-            bestSpeed = Math.max(...allSpeeds);
-            writeOutput(`Upload completed: ${bestSpeed} Mbps`, 'result');
-            return bestSpeed;
         };
         
         // Run the complete speed test (3 times, 4s each, average results, with server bottleneck warning)
