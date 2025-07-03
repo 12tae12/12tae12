@@ -605,98 +605,55 @@
             return speed;
         };
         
-        // Upload Test (parallel, warmup, 8s main test, 3 streams, larger payload)
+        // Upload Test (runs for 8 seconds, single stream, no warmup, larger payload, robust)
         const testUpload = async () => {
-            const numStreams = 3;
-            const testDuration = 8000; // ms
-            const warmupDuration = 1000; // ms
-            const sizeMB = 8; // 8MB per stream
-            writeOutput(`Starting upload test (${sizeMB} MB x${numStreams}) for 8 seconds...`, 'command');
-            let totalUploaded = 0;
-            let progressThrottle = 0;
-            let running = true;
-            const streamFunc = (streamId) => new Promise((resolve) => {
-                const testData = generateTestData(sizeMB);
+            const sizeMB = 4; // Use 4MB for better accuracy
+            const testData = generateTestData(sizeMB);
+            writeOutput(`Starting upload test (${sizeMB} MB) for 8 seconds...`, 'command');
+            return new Promise((resolve) => {
+                const xhr = new XMLHttpRequest();
                 let uploaded = 0;
-                let lastUploaded = 0;
+                const start = performance.now();
                 let finished = false;
-                let mainTestStarted = false;
-                // Helper for main upload test
-                const startMainTest = () => {
-                    if (mainTestStarted) return;
-                    mainTestStarted = true;
-                    const xhr = new XMLHttpRequest();
-                    const start = performance.now();
-                    xhr.upload.onprogress = (e) => {
-                        if (e.lengthComputable) {
-                            // Only add the delta since last event
-                            const delta = e.loaded - lastUploaded;
-                            if (delta > 0) totalUploaded += delta;
-                            lastUploaded = e.loaded;
-                            uploaded = e.loaded;
-                            const now = performance.now();
-                            // Throttle output: update progress every 1s (only stream 0)
-                            if (streamId === 0 && now - progressThrottle > 1000) {
-                                const elapsed = now - start;
-                                const speed = calculateSpeed(totalUploaded, elapsed);
-                                writeOutput(`Upload progress: ~${speed} Mbps (all streams)`, 'info');
-                                progressThrottle = now;
-                            }
-                            if (!finished && (now - start) >= testDuration) {
-                                finished = true;
-                                xhr.abort();
-                            }
+                let progressThrottle = 0;
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        uploaded = e.loaded;
+                        const now = performance.now();
+                        // Throttle output: update progress every 1s
+                        if (now - progressThrottle > 1000) {
+                            const elapsed = now - start;
+                            const speed = calculateSpeed(uploaded, elapsed);
+                            writeOutput(`Upload progress: ${(uploaded / e.total * 100).toFixed(1)}% @ ${speed} Mbps`, 'info');
+                            progressThrottle = now;
                         }
-                    };
-                    xhr.onload = () => {
-                        finished = true;
-                        resolve(uploaded);
-                    };
-                    xhr.onerror = () => {
-                        finished = true;
-                        resolve(uploaded);
-                    };
-                    xhr.open('POST', TEST_SERVER, true);
-                    xhr.send(testData);
-                    setTimeout(() => {
-                        if (!finished) {
+                        if (!finished && (now - start) >= 8000) {
                             finished = true;
                             xhr.abort();
                         }
-                    }, testDuration);
-                };
-                // Warmup phase with fallback
-                const warmupXhr = new XMLHttpRequest();
-                let warmupDone = false;
-                warmupXhr.open('POST', TEST_SERVER, true);
-                warmupXhr.onload = () => {
-                    if (!warmupDone) {
-                        warmupDone = true;
-                        startMainTest();
                     }
                 };
-                warmupXhr.onerror = () => {
-                    if (!warmupDone) {
-                        warmupDone = true;
-                        startMainTest();
-                    }
+                xhr.onload = () => {
+                    const duration = performance.now() - start;
+                    const speed = calculateSpeed(uploaded, duration > 8000 ? 8000 : duration);
+                    writeOutput(`Upload completed: ${speed} Mbps`, 'result');
+                    resolve(speed);
                 };
+                xhr.onerror = () => {
+                    const duration = performance.now() - start;
+                    const speed = calculateSpeed(uploaded, duration > 8000 ? 8000 : duration);
+                    writeOutput('Upload test failed. Server may be offline.', 'error');
+                    resolve(speed > 0 ? speed : null);
+                };
+                xhr.open('POST', TEST_SERVER, true);
+                xhr.send(testData);
                 setTimeout(() => {
-                    if (!warmupDone) {
-                        warmupDone = true;
-                        try { warmupXhr.abort(); } catch {};
-                        startMainTest();
+                    if (!finished) {
+                        finished = true;
+                        xhr.abort();
                     }
-                }, warmupDuration);
-                warmupXhr.send(testData);
+                }, 8000);
             });
-            const startTime = performance.now();
-            const results = await Promise.all(Array.from({length: numStreams}, (_, i) => streamFunc(i)));
-            running = false;
-            const totalElapsed = performance.now() - startTime;
-            const speed = calculateSpeed(totalUploaded, totalElapsed > testDuration ? testDuration : totalElapsed);
-            writeOutput(`Upload completed: ${speed} Mbps`, 'result');
-            return speed;
         };
         
         // Run the complete speed test (3 times, 4s each, average results, with server bottleneck warning)
