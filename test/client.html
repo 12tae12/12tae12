@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LM Studio Chat - qwen3-0.6b</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --sidebar-bg: #202123;
+            --main-bg: #343541;
+            --chat-bg: #444654;
+            --user-bg: #343541;
+            --input-bg: #40414f;
+            --border-color: #4e4f60;
+            --primary: #10a37f;
+            --primary-hover: #0d8a6a;
+            --text-light: #ececf1;
+            --text-gray: #8e8ea0;
+        }
+        
+        body {
+            background-color: var(--main-bg);
+            color: var(--text-light);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+        
+        .new-chat-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            padding: 12px;
+            margin: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .new-chat-btn:hover {
+            background-color: #2a2b32;
+        }
+        
+        .chat-history {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .chat-item {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .chat-item:hover {
+            background-color: #2a2b32;
+        }
+        
+        .chat-item.active {
+            background-color: #2a2b32;
+        }
+        
+        /* Main Chat Area */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+        }
+        
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .user-message {
+            background-color: var(--user-bg);
+        }
+        
+        .ai-message {
+            background-color: var(--chat-bg);
+        }
+        
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .user-avatar {
+            background-color: var(--primary);
+        }
+        
+        .ai-avatar {
+            background-color: #9859b7;
+        }
+        
+        .message-content {
+            flex: 1;
+            line-height: 1.6;
+        }
+        
+        .message-content pre {
+            background-color: #2d2d39;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .message-content code {
+            background-color: #2d2d39;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+        }
+        
+        /* Thinking Box */
+        .thinking-box {
+            background-color: var(--chat-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .thinking-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--text-light);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .dot:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        
+        .dot:nth-child(3) {
+            animation-delay: 1s;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        /* Input Area */
+        .input-container {
+            padding: 20px;
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .input-box {
+            position: relative;
+            background-color: var(--input-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .input-box:focus-within {
+            border-color: var(--primary);
+        }
+        
+        textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            padding: 16px 45px 16px 16px;
+            resize: none;
+            height: 60px;
+            max-height: 200px;
+            outline: none;
+            font-size: 16px;
+        }
+        
+        .send-btn {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            background-color: var(--primary);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .send-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .send-btn:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+        
+        /* Mobile menu button */
+        .menu-btn {
+            display: none;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--sidebar-bg);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            z-index: 10;
+        }
+        
+        /* Footer info */
+        .model-info {
+            text-align: center;
+            padding: 10px;
+            color: var(--text-gray);
+            font-size: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                z-index: 5;
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-btn" id="menuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="sidebar" id="sidebar">
+        <button class="new-chat-btn" id="newChatBtn">
+            <i class="fas fa-plus"></i> New chat
+        </button>
+        
+        <div class="chat-history" id="chatHistory">
+            <!-- Chat history will be populated here -->
+        </div>
+    </div>
+    
+    <div class="main">
+        <div class="chat-container" id="chatContainer">
+            <div class="message ai-message">
+                <div class="avatar ai-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <p>Hello! I'm your qwen3-0.6b AI assistant running locally via LM Studio.</p>
+                    <p>You can ask me anything - I specialize in reasoning and problem-solving tasks.</p>
+                    <p>What would you like to discuss today?</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <div class="input-box">
+                <textarea id="messageInput" placeholder="Message qwen3-0.6b..." rows="1"></textarea>
+                <button class="send-btn" id="sendBtn" disabled>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="model-info">
+            Model: qwen3-0.6b (reasoning) | Connection: Local Network
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const chatContainer = document.getElementById('chatContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const newChatBtn = document.getElementById('newChatBtn');
+        const chatHistory = document.getElementById('chatHistory');
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        
+        // Chat state
+        let currentChatId = 'chat_' + Date.now();
+        let chats = JSON.parse(localStorage.getItem('chats')) || {};
+        
+        // Initialize the app
+        function init() {
+            // Load chat history
+            loadChatHistory();
+            
+            // Set up current chat
+            if (!chats[currentChatId]) {
+                chats[currentChatId] = [];
+                saveChats();
+            }
+            
+            // Set up event listeners
+            messageInput.addEventListener('input', handleInput);
+            messageInput.addEventListener('keydown', handleKeyDown);
+            sendBtn.addEventListener('click', sendMessage);
+            newChatBtn.addEventListener('click', createNewChat);
+            menuBtn.addEventListener('click', toggleSidebar);
+            
+            // Auto-resize textarea
+            autoResizeTextarea();
+        }
+        
+        // Load chat history from localStorage
+        function loadChatHistory() {
+            chatHistory.innerHTML = '';
+            
+            Object.keys(chats).forEach(chatId => {
+                const chat = chats[chatId];
+                const firstMessage = chat.length > 0 ? chat[0].content : 'New Chat';
+                const truncated = firstMessage.length > 30 ? firstMessage.substring(0, 30) + '...' : firstMessage;
+                
+                const chatItem = document.createElement('div');
+                chatItem.className = `chat-item ${chatId === currentChatId ? 'active' : ''}`;
+                chatItem.innerHTML = `<i class="fas fa-message"></i> ${truncated}`;
+                chatItem.dataset.chatId = chatId;
+                
+                chatItem.addEventListener('click', () => {
+                    switchChat(chatId);
+                });
+                
+                chatHistory.appendChild(chatItem);
+            });
+        }
+        
+        // Create a new chat
+        function createNewChat() {
+            currentChatId = 'chat_' + Date.now();
+            chats[currentChatId] = [];
+            saveChats();
+            
+            // Clear chat container except the welcome message
+            const welcomeMessage = chatContainer.querySelector('.ai-message');
+            chatContainer.innerHTML = '';
+            if (welcomeMessage) chatContainer.appendChild(welcomeMessage);
+            
+            loadChatHistory();
+        }
+        
+        // Switch to a different chat
+        function switchChat(chatId) {
+            currentChatId = chatId;
+            
+            // Clear chat container
+            chatContainer.innerHTML = '';
+            
+            // Add messages from this chat
+            chats[currentChatId].forEach(msg => {
+                addMessageToUI(msg.role, msg.content);
+            });
+            
+            loadChatHistory();
+        }
+        
+        // Save chats to localStorage
+        function saveChats() {
+            localStorage.setItem('chats', JSON.stringify(chats));
+        }
+        
+        // Handle textarea input
+        function handleInput() {
+            sendBtn.disabled = messageInput.value.trim() === '';
+            autoResizeTextarea();
+        }
+        
+        // Handle Enter key (with Shift for new line)
+        function handleKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!sendBtn.disabled) {
+                    sendMessage();
+                }
+            }
+        }
+        
+        // Auto-resize textarea
+        function autoResizeTextarea() {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 200) + 'px';
+        }
+        
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+        }
+        
+        // Add message to UI
+        function addMessageToUI(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role === 'user' ? 'user-message' : 'ai-message'}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = `avatar ${role === 'user' ? 'user-avatar' : 'ai-avatar'}`;
+            avatar.innerHTML = role === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            // Format code blocks
+            let formattedContent = content;
+            if (formattedContent.includes('```')) {
+                formattedContent = formattedContent.replace(/```([\s\S]*?)```/g, '<pre>$1</pre>');
+            }
+            
+            // Format inline code
+            formattedContent = formattedContent.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            contentDiv.innerHTML = formattedContent;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(contentDiv);
+            chatContainer.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // Show thinking indicator
+        function showThinking() {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ai-message';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar ai-avatar';
+            avatar.innerHTML = '<i class="fas fa-robot"></i>';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            const thinkingBox = document.createElement('div');
+            thinkingBox.className = 'thinking-box';
+            thinkingBox.innerHTML = `
+                <span>Thinking</span>
+                <div class="thinking-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            `;
+            
+            contentDiv.appendChild(thinkingBox);
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(contentDiv);
+            chatContainer.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            return messageDiv;
+        }
+        
+        // Send message to the model
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            // Add user message to UI
+            addMessageToUI('user', message);
+            
+            // Add to chat history
+            chats[currentChatId].push({
+                role: 'user',
+                content: message
+            });
+            
+            // Clear input
+            messageInput.value = '';
+            sendBtn.disabled = true;
+            autoResizeTextarea();
+            
+            // Show thinking indicator
+            const thinkingElement = showThinking();
+            
+            // Save chats immediately
+            saveChats();
+            
+            // Simulate AI response (in a real app, this would be a WebSocket connection to your LM Studio)
+            setTimeout(() => {
+                // Replace thinking indicator with actual response
+                const response = generateAIResponse(message);
+                
+                // Remove thinking indicator
+                thinkingElement.remove();
+                
+                // Add AI response to UI
+                addMessageToUI('assistant', response);
+                
+                // Add to chat history
+                chats[currentChatId].push({
+                    role: 'assistant',
+                    content: response
+                });
+                
+                saveChats();
+            }, 1500);
+        }
+        
+        // Generate AI response (simulated)
+        function generateAIResponse(prompt) {
+            // In a real implementation, this would connect to your LM Studio server
+            const responses = [
+                `I understand you're asking about "${prompt}". Based on my reasoning capabilities, here's my analysis:\n\n` +
+                `The key factors to consider are:\n` +
+                `1. Contextual understanding\n` +
+                `2. Logical progression\n` +
+                `3. Evidence-based conclusions\n\n` +
+                `I would recommend further research into primary sources to validate any assumptions.`,
+                
+                `Great question! Regarding "${prompt}", my qwen3-0.6b reasoning model suggests:\n\n` +
+                "```\n" +
+                "function analyzeProblem(problem) {\n" +
+                "  const factors = identifyKeyFactors(problem);\n" +
+                "  const relationships = mapRelationships(factors);\n" +
+                "  return generateSolution(relationships);\n" +
+                "}\n" +
+                "```\n\n" +
+                "This approach ensures systematic evaluation of complex issues.",
+                
+                `You've raised an interesting point about "${prompt}". After careful consideration:\n\n` +
+                `- First, we must distinguish correlation from causation\n` +
+                `- Second, historical precedents suggest multiple interpretations\n` +
+                `- Finally, contemporary research offers new perspectives\n\n` +
+                `I'd be happy to explore any specific aspect in more detail.`,
+                
+                `Regarding "${prompt}", my analysis follows this logical structure:\n\n` +
+                `1. **Problem Definition**: Clearly state the core issue\n` +
+                `2. **Data Collection**: Gather relevant information\n` +
+                `3. **Hypothesis Formation**: Develop testable propositions\n` +
+                `4. **Evaluation**: Assess against available evidence\n` +
+                `5. **Conclusion**: Formulate reasoned position\n\n` +
+                `This methodology ensures comprehensive understanding.`
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
