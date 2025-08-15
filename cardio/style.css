@@ -1,24 +1,24 @@
-/* Reset default margin and padding */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body styles */
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f8f8;
     color: #333;
 }
 
-/* Container styles */
+
 .container {
     width: 80%;
     margin: 0 auto;
 }
 
-/* Header styles */
+
 header {
     background-color: #fff;
     padding: 20px 0;
@@ -61,7 +61,7 @@ nav ul li a {
     cursor: pointer;
 }
 
-/* Banner styles */
+
 .banner {
     margin-top: 20px;
 }
@@ -74,7 +74,7 @@ nav ul li a {
     cursor: pointer;
 }
 
-/* Featured Products styles */
+
 .featured-products {
     margin-top: 40px;
 }
@@ -89,7 +89,7 @@ nav ul li a {
     gap: 20px;
 }
 
-/* About Us styles */
+
 .about-us {
     margin-top: 40px;
 }
@@ -107,7 +107,7 @@ nav ul li a {
     text-decoration: none;
 }
 
-/* Testimonials styles */
+
 .testimonials {
     margin-top: 40px;
 }
@@ -116,7 +116,7 @@ nav ul li a {
     margin-bottom: 20px;
 }
 
-/* Footer styles */
+
 footer {
     background-color: #333;
     color: #fff;
