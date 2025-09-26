@@ -108,6 +108,13 @@
         #ai-warning {
             color: #7fd6ff;
         }
+        .ai-loading {
+            color: #7fffa7;
+            font-style: italic;
+        }
+        .ai-error {
+            color: #ff7f7f;
+        }
         /* Fallback if Bootstrap is not loaded */
         body.no-bootstrap .search-bar,
         body.no-bootstrap .result-card {
@@ -390,6 +397,73 @@
             showResultsFromXML(getQuery(), true);
             window.scrollTo(0,0);
         }
+        
+        // Fixed AI Overview function
+        async function generateAIOverview(query, results) {
+            const aiResponse = document.getElementById('ai-response');
+            const aiBtn = document.getElementById('generate-ai-btn');
+            
+            if (!window.puter || !puter.ai) {
+                aiResponse.innerHTML = '<span class="ai-error">AI service not available. Please check if Puter.js loaded correctly.</span>';
+                return;
+            }
+            
+            if (!results || results.length === 0) {
+                aiResponse.innerHTML = '<span class="ai-error">No results available to generate an overview.</span>';
+                return;
+            }
+            
+            // Show loading state
+            aiResponse.innerHTML = '<span class="ai-loading">Generating AI overview...</span>';
+            aiBtn.disabled = true;
+            aiBtn.textContent = 'Generating...';
+            
+            try {
+                // Prepare the prompt with search results
+                let aiPrompt = `Please provide a concise, informative overview of search results for the query: "${query}".\n\n`;
+                aiPrompt += `Search Results Summary:\n`;
+                
+                results.slice(0, 10).forEach((result, index) => {
+                    aiPrompt += `${index + 1}. ${result.title}: ${result.description}\n`;
+                });
+                
+                aiPrompt += `\nPlease provide a comprehensive overview that summarizes what these search results indicate about "${query}".`;
+                
+                // Use Puter AI - fixed API call
+                let response;
+                
+                // Try different Puter AI methods
+                if (puter.ai.gpt) {
+                    // Use GPT model if available
+                    const gpt = puter.ai.gpt('gpt-3.5-turbo'); // or 'gpt-4'
+                    response = await gpt.chat([
+                        { role: 'system', content: 'You are a helpful search assistant that provides concise overviews of search results.' },
+                        { role: 'user', content: aiPrompt }
+                    ]);
+                    
+                    if (response && response.choices && response.choices[0] && response.choices[0].message) {
+                        aiResponse.innerHTML = response.choices[0].message.content;
+                    } else {
+                        throw new Error('Invalid response format from GPT');
+                    }
+                } else if (puter.ai.chat) {
+                    // Use direct chat method
+                    response = await puter.ai.chat(aiPrompt);
+                    aiResponse.innerHTML = response;
+                } else {
+                    throw new Error('No AI methods available');
+                }
+                
+            } catch (error) {
+                console.error('AI Overview Error:', error);
+                aiResponse.innerHTML = `<span class="ai-error">Failed to generate AI overview: ${error.message}. Please try again later.</span>`;
+            } finally {
+                // Reset button state
+                aiBtn.disabled = false;
+                aiBtn.textContent = 'Generate AI Overview';
+            }
+        }
+        
         async function showResultsFromXML(query, keepPage) {
             await loadBlockedTerms();
             let xmlData;
@@ -415,16 +489,7 @@
             const startIdx = (currentPage-1)*RESULTS_PER_PAGE;
             const pagedResults = results.slice(startIdx, startIdx+RESULTS_PER_PAGE);
             let html = '';
-            let aiPrompt = '';
-            const aiResults = pagedResults.slice(0, 20); // Up to 20 for GPT-4o
-            aiPrompt = 'You are GPT-4o, a highly capable AI. Give a concise, safe, and family-friendly overview of the following search results for the query: "' +
-                filterBlockedTerms(query) + '". Here are the results:';
-            aiResults.forEach((r, i) => {
-                // Remove blocked terms from AI prompt if safe search is on
-                let t = safeSearchOn ? filterBlockedTerms(r.title) : r.title;
-                let d = safeSearchOn ? filterBlockedTerms(r.description) : r.description;
-                aiPrompt += `\n${i+1}. ${t}: ${d}`;
-            });
+            
             for (const r of pagedResults) {
                 let t = safeSearchOn ? filterBlockedTerms(r.title) : r.title;
                 let d = safeSearchOn ? filterBlockedTerms(r.description) : r.description;
@@ -437,26 +502,20 @@
             }
             document.getElementById('results').innerHTML = html || '<div class="result-card">No results found.</div>';
             renderPagination(totalResults);
-            // AI Overview is now optional
-            document.getElementById('ai-response').innerText = 'Click "Generate AI Overview" to get a summary.';
+            
+            // Set up AI Overview button with fixed functionality
+            document.getElementById('ai-response').innerText = 'Click "Generate AI Overview" to get a summary of the search results.';
             const btn = document.getElementById('generate-ai-btn');
-            btn.onclick = function() {
-                if (pagedResults.length > 0 && window.puter && puter.ai && puter.ai.gpt) {
-                    document.getElementById('ai-response').innerHTML = '<span style="color:#7fffa7;">Generating overview...</span>';
-                    const gpt = puter.ai.gpt('gpt-4o');
-                    gpt.chat([{ role: 'user', content: aiPrompt }])
-                        .then(response => {
-                            if (response && response.choices && response.choices[0] && response.choices[0].message && response.choices[0].message.content) {
-                                document.getElementById('ai-response').innerText = response.choices[0].message.content;
-                            } else {
-                                document.getElementById('ai-response').innerText = 'AI overview unavailable.';
-                            }
-                        })
-                        .catch(() => {
-                            document.getElementById('ai-response').innerText = 'AI overview unavailable.';
-                        });
+            
+            // Remove any existing event listeners and add the fixed one
+            btn.replaceWith(btn.cloneNode(true));
+            const newBtn = document.getElementById('generate-ai-btn');
+            
+            newBtn.onclick = function() {
+                if (pagedResults.length > 0) {
+                    generateAIOverview(query, pagedResults);
                 } else {
-                    document.getElementById('ai-response').innerText = 'No results to summarize.';
+                    document.getElementById('ai-response').innerHTML = '<span class="ai-error">No results available to generate an overview.</span>';
                 }
             };
         }
