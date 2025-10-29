@@ -4,16 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Load External HTML</title>
+        <script>
+          (function(m,e,t,r,i,k,a){
+            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+          })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+          ym(104930925, "init", {
+              clickmap:true,
+              trackLinks:true,
+              accurateTrackBounce:true,
+              webvisor:true,
+              ecommerce:"dataLayer"
+          });
+        </script>
 </head>
 <body>
     <h1>Main Page</h1>
-    <div id="content">Loading...</div>
+
+    <label for="urlInput">Enter URL:</label>
+    <input type="text" id="urlInput" placeholder="https://example.com/page.html" style="width:300px;">
+    <button id="loadBtn">Load Content</button>
+
+    <div id="content" style="margin-top:20px;">Content will appear here.</div>
 
     <script>
-        async function loadExternalHTML() {
+        // Function to validate a URL
+        function isValidUrl(url) {
             try {
-                const response = await fetch("https://1t2.pages.dev/index.html");
+                const parsed = new URL(url);
+                // Optional: Only allow http or https
+                return parsed.protocol === "http:" || parsed.protocol === "https:";
+            } catch (e) {
+                return false;
+            }
+        }
+
+        async function loadExternalHTML(url) {
+            try {
+                const response = await fetch(url);
                 if (!response.ok) throw new Error("Failed to load content.");
+                const contentType = response.headers.get("content-type");
+                if (!contentType || !contentType.includes("text/html")) {
+                    throw new Error("URL does not point to an HTML page.");
+                }
                 const text = await response.text();
                 document.getElementById("content").innerHTML = text;
             } catch (error) {
@@ -22,7 +57,15 @@
             }
         }
 
-        loadExternalHTML();
+        document.getElementById("loadBtn").addEventListener("click", () => {
+            const url = document.getElementById("urlInput").value.trim();
+            if (!isValidUrl(url)) {
+                alert("Please enter a valid URL starting with http:// or https://");
+                return;
+            }
+            document.getElementById("content").innerHTML = "Loading...";
+            loadExternalHTML(url);
+        });
     </script>
 </body>
 </html>
