@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple CAPTCHA</title>
+    <title>TopCAPTCHA Verification</title>
         <!-- Clarity removed; Yandex.Metrika added -->
         <script>
             (function(m,e,t,r,i,k,a){
@@ -22,82 +22,508 @@
         </script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Tahoma", sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #f4f4f4;
+            background: linear-gradient(to bottom, #245edc 0%, #3a7be0 20%, #5a9ae8 100%);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        #captcha {
-            font-size: 24px;
+        .window {
+            width: 500px;
+            background-color: #ece9d8;
+            border: 2px solid #003c74;
+            border-radius: 0;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        .title-bar {
+            background: linear-gradient(to bottom, #0a5eb6 0%, #0a5eb6 20%, #0a5eb6 100%);
+            color: white;
+            padding: 5px 10px;
             font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 30px;
+        }
+        .title-text {
+            font-size: 14px;
+        }
+        .window-buttons {
+            display: flex;
+            gap: 3px;
+        }
+        .window-button {
+            width: 20px;
+            height: 20px;
+            background-color: #ece9d8;
+            border: 1px solid #003c74;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .content {
+            padding: 20px;
+        }
+        h1 {
+            font-size: 18px;
+            color: #003c74;
+            margin-top: 0;
+            text-align: center;
+        }
+        .captcha-display {
             margin: 20px 0;
-            user-select: none; /* Prevent text selection */
-            pointer-events: none; /* Prevent interaction */
+            padding: 15px;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            border: 1px solid #aaaaaa;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        .text-captcha {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #003c74;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
+        }
+        .math-captcha {
+            font-size: 22px;
+            line-height: 1.4;
+            color: #003c74;
+            font-weight: bold;
+        }
+        .timer {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+        .timer.warning {
+            color: #c00;
         }
         input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
+            padding: 5px;
+            font-size: 14px;
+            width: 100%;
+            margin: 10px 0;
+            border: 1px solid #aaaaaa;
+            box-sizing: border-box;
+            background-color: white;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
         }
         button {
-            padding: 10px 15px;
-            font-size: 16px;
+            padding: 5px 15px;
+            font-size: 14px;
             cursor: pointer;
+            background: linear-gradient(to bottom, #f0f0f0 0%, #e0e0e0 100%);
+            color: #003c74;
+            border: 1px solid #aaaaaa;
+        }
+        button:hover {
+            background: linear-gradient(to bottom, #e8e8e8 0%, #d8d8d8 100%);
+        }
+        button:active {
+            background: linear-gradient(to bottom, #d8d8d8 0%, #c8c8c8 100%);
+        }
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 20px;
+            text-align: center;
+        }
+        .success {
+            color: #008000;
+        }
+        .error {
+            color: #c00;
+        }
+        .attempts {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        .progress {
+            margin: 10px 0;
+            height: 20px;
+            background-color: #e0e0e0;
+            border: 1px solid #aaaaaa;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to bottom, #0a5eb6 0%, #0a5eb6 20%, #0a5eb6 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            font-size: 12px;
+        }
+        .noise {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.2) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 10px 10px, 8px 8px;
+            pointer-events: none;
+        }
+        .lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.05) 2px,
+                rgba(0,0,0,0.05) 4px
+            );
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
+    <div class="window">
+        <div class="title-bar">
+            <div class="title-text">TopCAPTCHA Verification</div>
+            <div class="window-buttons">
+                <div class="window-button">_</div>
+                <div class="window-button">□</div>
+                <div class="window-button" onclick="closeWindow()">×</div>
+            </div>
+        </div>
+        <div class="content">
+            <h1>Complete the challenges to verify you're human</h1>
 
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="progress-text" id="progressText">Challenge 1 of 2</div>
+            </div>
 
+            <div class="captcha-display" id="captchaDisplay">
+                <!-- CAPTCHA content will be generated here -->
+                <div class="noise"></div>
+                <div class="lines"></div>
+            </div>
 
-<h1>CAPTCHA! Are you a robot???</h1>
-<div id="captcha"></div>
-<input type="text" id="captchaInput" placeholder="Enter CAPTCHA" />
-<button onclick="validateCaptcha()">Submit</button>
-<div id="message"></div>
+            <div class="timer" id="timer">Time remaining: 60 seconds</div>
 
-<script>
-    let currentCaptcha = generateCaptcha();
-    let incorrectAttempts = 0;
+            <div id="inputContainer">
+                <!-- Input field will be generated based on CAPTCHA type -->
+            </div>
 
-    function generateCaptcha() {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let captcha = '';
-        for (let i = 0; i < 6; i++) {
-            captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+            <div class="button-group">
+                <button id="submitBtn" onclick="validateCaptcha()">Verify</button>
+                <button id="refreshBtn" onclick="generateCaptcha()">New Challenge</button>
+            </div>
+
+            <div id="message"></div>
+            <div class="attempts" id="attempts">Attempts remaining: 3</div>
+        </div>
+    </div>
+
+    <script>
+        let currentStage = 1; 
+        let currentCaptcha = {};
+        let incorrectAttempts = 0;
+        let timer;
+        let timeLeft = 60;
+        const maxAttempts = 3;
+        const fonts = [
+            "Arial", "Verdana", "Georgia", "Times New Roman", "Courier New", 
+            "Trebuchet MS", "Impact", "Comic Sans MS", "Tahoma", "Lucida Console"
+        ];
+
+        window.onload = function() {
+            generateCaptcha();
+            startTimer();
+            updateProgress();
+        };
+
+        function closeWindow() {
+
+            alert("This would close the window in a real application");
         }
-        document.getElementById('captcha').innerText = captcha;
-        return captcha;
-    }
 
-    function validateCaptcha() {
-        const userInput = document.getElementById('captchaInput').value;
-        const messageDiv = document.getElementById('message');
-        const redirectUrl = decodeURIComponent(window.location.hash.substring(1)); // Get the URL from the hash
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
 
-        if (userInput === currentCaptcha) {
-            if (redirectUrl) {
-                window.location.href = redirectUrl; // Redirect to the URL specified in the hash
+            if (currentStage === 1) {
+                progressBar.style.width = '50%';
+                progressText.textContent = 'Challenge 1 of 2';
             } else {
-                messageDiv.innerText = 'CAPTCHA is correct, but no redirect URL found!';
-                messageDiv.style.color = 'green';
-            }
-            incorrectAttempts = 0; // Reset attempts on success
-        } else {
-            incorrectAttempts++;
-            messageDiv.innerText = 'Naw, are you a robot? CAPTCHA is incorrect. Please try again.';
-            messageDiv.style.color = 'red';
-            currentCaptcha = generateCaptcha(); // Regenerate CAPTCHA
-            document.getElementById('captchaInput').value = ''; // Clear input
-
-            if (incorrectAttempts >= 2) {
-                window.location.href = 'https://archive.org/download/rick-astley-never-gonna-give-you-up-hd-4-k-60-fps/Rick%20Astley%20Never%20Gonna%20Give%20You%20Up%20HD%204K%2060%20FPS.mp4'; // Redirect after 2 incorrect attempts
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Challenge 2 of 2';
             }
         }
-    }
-</script>
 
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 60;
+            updateTimerDisplay();
+
+            timer = setInterval(function() {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = `Time remaining: ${timeLeft} seconds`;
+
+            if (timeLeft <= 15) {
+                timerElement.classList.add('warning');
+            } else {
+                timerElement.classList.remove('warning');
+            }
+        }
+
+        function handleTimeout() {
+            document.getElementById('message').innerText = 'Time expired! Please try again.';
+            document.getElementById('message').className = 'error';
+            incorrectAttempts++;
+            updateAttemptsDisplay();
+
+            if (incorrectAttempts >= maxAttempts) {
+                redirectToWikipedia();
+            } else {
+                generateCaptcha();
+                startTimer();
+            }
+        }
+
+        function generateCaptcha() {
+            clearInterval(timer);
+            startTimer();
+
+            const captchaDisplay = document.getElementById('captchaDisplay');
+            const inputContainer = document.getElementById('inputContainer');
+
+            captchaDisplay.innerHTML = '';
+            inputContainer.innerHTML = '';
+
+            const noise = document.createElement('div');
+            noise.className = 'noise';
+            captchaDisplay.appendChild(noise);
+
+            const lines = document.createElement('div');
+            lines.className = 'lines';
+            captchaDisplay.appendChild(lines);
+
+            if (currentStage === 1) {
+                generateTextCaptcha(captchaDisplay, inputContainer);
+            } else {
+                generateMathCaptcha(captchaDisplay, inputContainer);
+            }
+
+            updateAttemptsDisplay();
+        }
+
+        function generateTextCaptcha(display, inputContainer) {
+            const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+            let captchaText = '';
+            for (let i = 0; i < 7; i++) {
+                captchaText += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+
+            let distortedText = '';
+            for (let i = 0; i < captchaText.length; i++) {
+
+                const char = captchaText.charAt(i);
+                const rotation = Math.floor(Math.random() * 60) - 30; 
+                const scaleX = 0.6 + Math.random() * 0.8; 
+                const scaleY = 0.6 + Math.random() * 0.8; 
+                const skewX = Math.floor(Math.random() * 30) - 15; 
+                const skewY = Math.floor(Math.random() * 30) - 15; 
+                const translateX = Math.floor(Math.random() * 10) - 5; 
+                const translateY = Math.floor(Math.random() * 10) - 5; 
+                const font = fonts[Math.floor(Math.random() * fonts.length)];
+                const fontSize = 28 + Math.floor(Math.random() * 12); 
+
+                distortedText += `<span style="display:inline-block; font-family:${font}; font-size:${fontSize}px; transform: rotate(${rotation}deg) scale(${scaleX}, ${scaleY}) skew(${skewX}deg, ${skewY}deg) translate(${translateX}px, ${translateY}px);">${char}</span>`;
+            }
+
+            const textContainer = document.createElement('div');
+            textContainer.className = 'text-captcha';
+            textContainer.innerHTML = distortedText;
+            display.appendChild(textContainer);
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = 'captchaInput';
+            input.placeholder = 'Enter the text above (case sensitive)';
+            inputContainer.appendChild(input);
+
+            currentCaptcha = {
+                type: 'text',
+                answer: captchaText
+            };
+        }
+
+        function generateMathCaptcha(display, inputContainer) {
+            const mathTypes = ['addition', 'multiplication', 'mixed'];
+            const selectedType = mathTypes[Math.floor(Math.random() * mathTypes.length)];
+
+            let problem = '';
+            let answer = 0;
+
+            switch(selectedType) {
+                case 'addition':
+                    const num1 = Math.floor(Math.random() * 90) + 10; 
+                    const num2 = Math.floor(Math.random() * 90) + 10; 
+                    const num3 = Math.floor(Math.random() * 90) + 10; 
+                    problem = `${num1} + ${num2} + ${num3}`;
+                    answer = num1 + num2 + num3;
+                    break;
+
+                case 'multiplication':
+                    const mult1 = Math.floor(Math.random() * 12) + 1; 
+                    const mult2 = Math.floor(Math.random() * 12) + 1; 
+                    const mult3 = Math.floor(Math.random() * 5) + 1; 
+                    problem = `${mult1} × ${mult2} × ${mult3}`;
+                    answer = mult1 * mult2 * mult3;
+                    break;
+
+                case 'mixed':
+                    const add1 = Math.floor(Math.random() * 50) + 10; 
+                    const add2 = Math.floor(Math.random() * 50) + 10; 
+                    const mult = Math.floor(Math.random() * 5) + 2; 
+                    problem = `(${add1} + ${add2}) × ${mult}`;
+                    answer = (add1 + add2) * mult;
+                    break;
+            }
+
+            const mathContainer = document.createElement('div');
+            mathContainer.className = 'math-captcha';
+            mathContainer.textContent = `Solve: ${problem}`;
+            display.appendChild(mathContainer);
+
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.id = 'captchaInput';
+            input.placeholder = 'Enter the answer';
+            inputContainer.appendChild(input);
+
+            currentCaptcha = {
+                type: 'math',
+                answer: answer.toString()
+            };
+        }
+
+        function updateAttemptsDisplay() {
+            document.getElementById('attempts').textContent = `Attempts remaining: ${maxAttempts - incorrectAttempts}`;
+        }
+
+        function validateCaptcha() {
+            let userInput;
+            const messageDiv = document.getElementById('message');
+            const redirectUrl = decodeURIComponent(window.location.hash.substring(1));
+
+            if (currentStage === 1) {
+                userInput = document.getElementById('captchaInput').value.trim();
+            } else {
+                userInput = document.getElementById('captchaInput').value.trim();
+            }
+
+            if (!userInput) {
+                messageDiv.innerText = 'Please enter an answer.';
+                messageDiv.className = 'error';
+                return;
+            }
+
+            let isCorrect = false;
+
+            if (currentStage === 1) {
+
+                isCorrect = userInput === currentCaptcha.answer;
+            } else {
+
+                isCorrect = parseInt(userInput) === parseInt(currentCaptcha.answer);
+            }
+
+            if (isCorrect) {
+                if (currentStage === 1) {
+
+                    currentStage = 2;
+                    messageDiv.innerText = 'First challenge passed! Now complete the second challenge.';
+                    messageDiv.className = 'success';
+                    updateProgress();
+                    generateCaptcha();
+                } else {
+
+                    clearInterval(timer);
+                    messageDiv.innerText = 'Verification successful!';
+                    messageDiv.className = 'success';
+
+                    setTimeout(function() {
+                        if (redirectUrl) {
+                            window.location.href = redirectUrl;
+                        } else {
+                            messageDiv.innerText += ' No redirect URL specified.';
+                        }
+                    }, 1000);
+
+                    incorrectAttempts = 0;
+                }
+            } else {
+                incorrectAttempts++;
+                messageDiv.innerText = 'Incorrect answer. Please try again.';
+                messageDiv.className = 'error';
+
+                document.getElementById('captchaInput').value = '';
+
+                if (incorrectAttempts >= maxAttempts) {
+                    redirectToWikipedia();
+                } else {
+                    generateCaptcha();
+                }
+            }
+
+            updateAttemptsDisplay();
+        }
+
+        function redirectToWikipedia() {
+            window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+        }
+    </script>
 </body>
 </html>
