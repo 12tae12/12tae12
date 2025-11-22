@@ -4,22 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TopCAPTCHA Verification</title>
-        <!-- Clarity removed; Yandex.Metrika added -->
-        <script>
-            (function(m,e,t,r,i,k,a){
-                m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-                m[i].l=1*new Date();
-                k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-            })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-            ym(104930925, "init", {
-                    clickmap:true,
-                    trackLinks:true,
-                    accurateTrackBounce:true,
-                    webvisor:true,
-                    ecommerce:"dataLayer"
-            });
-        </script>
     <style>
         body {
             font-family: "Tahoma", sans-serif;
@@ -108,6 +92,12 @@
             color: #003c74;
             font-weight: bold;
         }
+        .file-challenge {
+            font-size: 16px;
+            line-height: 1.4;
+            color: #003c74;
+            text-align: center;
+        }
         .timer {
             font-size: 14px;
             color: #666;
@@ -116,7 +106,7 @@
         .timer.warning {
             color: #c00;
         }
-        input[type="text"] {
+        input[type="text"], input[type="number"], input[type="file"] {
             padding: 5px;
             font-size: 14px;
             width: 100%;
@@ -212,6 +202,18 @@
             );
             pointer-events: none;
         }
+        .download-link {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 8px 15px;
+            background: linear-gradient(to bottom, #0a5eb6 0%, #0a5eb6 100%);
+            color: white;
+            text-decoration: none;
+            border: 1px solid #003c74;
+        }
+        .download-link:hover {
+            background: linear-gradient(to bottom, #0b6bd1 0%, #0b6bd1 100%);
+        }
     </style>
 </head>
 <body>
@@ -229,24 +231,24 @@
 
             <div class="progress">
                 <div class="progress-bar" id="progressBar"></div>
-                <div class="progress-text" id="progressText">Challenge 1 of 2</div>
+                <div class="progress-text" id="progressText">Stage 1 of 3</div>
             </div>
 
             <div class="captcha-display" id="captchaDisplay">
-                <!-- CAPTCHA content will be generated here -->
+                
                 <div class="noise"></div>
                 <div class="lines"></div>
             </div>
 
-            <div class="timer" id="timer">Time remaining: 60 seconds</div>
+            <div class="timer" id="timer">Time remaining: 120 seconds</div>
 
             <div id="inputContainer">
-                <!-- Input field will be generated based on CAPTCHA type -->
+                
             </div>
 
             <div class="button-group">
                 <button id="submitBtn" onclick="validateCaptcha()">Verify</button>
-                <button id="refreshBtn" onclick="generateCaptcha()">New Challenge</button>
+                <button id="refreshBtn" onclick="generateCurrentStage()">New Challenge</button>
             </div>
 
             <div id="message"></div>
@@ -255,11 +257,12 @@
     </div>
 
     <script>
-        let currentStage = 1; 
+        let stages = [];
+        let currentStageIndex = 0;
         let currentCaptcha = {};
         let incorrectAttempts = 0;
         let timer;
-        let timeLeft = 60;
+        let timeLeft = 120;
         const maxAttempts = 3;
         const fonts = [
             "Arial", "Verdana", "Georgia", "Times New Roman", "Courier New", 
@@ -267,10 +270,33 @@
         ];
 
         window.onload = function() {
-            generateCaptcha();
+            initializeStages();
+            generateCurrentStage();
             startTimer();
             updateProgress();
         };
+
+        function initializeStages() {
+            const stageCount = Math.floor(Math.random() * 4) + 2; 
+            stages = [];
+
+            const stageTypes = ['text', 'math', 'file'];
+
+            for (let i = 0; i < stageCount; i++) {
+
+                if (i < 3 && i < stageTypes.length) {
+                    stages.push(stageTypes[i]);
+                } else {
+
+                    stages.push(stageTypes[Math.floor(Math.random() * stageTypes.length)]);
+                }
+            }
+
+            for (let i = stages.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [stages[i], stages[j]] = [stages[j], stages[i]];
+            }
+        }
 
         function closeWindow() {
 
@@ -281,18 +307,14 @@
             const progressBar = document.getElementById('progressBar');
             const progressText = document.getElementById('progressText');
 
-            if (currentStage === 1) {
-                progressBar.style.width = '50%';
-                progressText.textContent = 'Challenge 1 of 2';
-            } else {
-                progressBar.style.width = '100%';
-                progressText.textContent = 'Challenge 2 of 2';
-            }
+            const progress = (currentStageIndex / stages.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `Stage ${currentStageIndex + 1} of ${stages.length}`;
         }
 
         function startTimer() {
             clearInterval(timer);
-            timeLeft = 60;
+            timeLeft = 120;
             updateTimerDisplay();
 
             timer = setInterval(function() {
@@ -308,9 +330,11 @@
 
         function updateTimerDisplay() {
             const timerElement = document.getElementById('timer');
-            timerElement.textContent = `Time remaining: ${timeLeft} seconds`;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `Time remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
-            if (timeLeft <= 15) {
+            if (timeLeft <= 30) {
                 timerElement.classList.add('warning');
             } else {
                 timerElement.classList.remove('warning');
@@ -326,12 +350,14 @@
             if (incorrectAttempts >= maxAttempts) {
                 redirectToWikipedia();
             } else {
-                generateCaptcha();
+                initializeStages();
+                currentStageIndex = 0;
+                generateCurrentStage();
                 startTimer();
             }
         }
 
-        function generateCaptcha() {
+        function generateCurrentStage() {
             clearInterval(timer);
             startTimer();
 
@@ -349,19 +375,27 @@
             lines.className = 'lines';
             captchaDisplay.appendChild(lines);
 
-            if (currentStage === 1) {
-                generateTextCaptcha(captchaDisplay, inputContainer);
-            } else {
-                generateMathCaptcha(captchaDisplay, inputContainer);
+            const stageType = stages[currentStageIndex];
+
+            switch(stageType) {
+                case 'text':
+                    generateTextCaptcha(captchaDisplay, inputContainer);
+                    break;
+                case 'math':
+                    generateMathCaptcha(captchaDisplay, inputContainer);
+                    break;
+                case 'file':
+                    generateFileCaptcha(captchaDisplay, inputContainer);
+                    break;
             }
 
             updateAttemptsDisplay();
         }
 
         function generateTextCaptcha(display, inputContainer) {
-            const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+            const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$%&*';
             let captchaText = '';
-            for (let i = 0; i < 7; i++) {
+            for (let i = 0; i < 8; i++) {
                 captchaText += characters.charAt(Math.floor(Math.random() * characters.length));
             }
 
@@ -370,16 +404,17 @@
 
                 const char = captchaText.charAt(i);
                 const rotation = Math.floor(Math.random() * 60) - 30; 
-                const scaleX = 0.6 + Math.random() * 0.8; 
-                const scaleY = 0.6 + Math.random() * 0.8; 
-                const skewX = Math.floor(Math.random() * 30) - 15; 
-                const skewY = Math.floor(Math.random() * 30) - 15; 
-                const translateX = Math.floor(Math.random() * 10) - 5; 
-                const translateY = Math.floor(Math.random() * 10) - 5; 
+                const scaleX = 0.5 + Math.random() * 1.0; 
+                const scaleY = 0.5 + Math.random() * 1.0; 
+                const skewX = Math.floor(Math.random() * 40) - 20; 
+                const skewY = Math.floor(Math.random() * 40) - 20; 
+                const translateX = Math.floor(Math.random() * 15) - 7; 
+                const translateY = Math.floor(Math.random() * 15) - 7; 
                 const font = fonts[Math.floor(Math.random() * fonts.length)];
-                const fontSize = 28 + Math.floor(Math.random() * 12); 
+                const fontSize = 24 + Math.floor(Math.random() * 16); 
+                const colorVariation = Math.floor(Math.random() * 50); 
 
-                distortedText += `<span style="display:inline-block; font-family:${font}; font-size:${fontSize}px; transform: rotate(${rotation}deg) scale(${scaleX}, ${scaleY}) skew(${skewX}deg, ${skewY}deg) translate(${translateX}px, ${translateY}px);">${char}</span>`;
+                distortedText += `<span style="display:inline-block; font-family:${font}; font-size:${fontSize}px; color:rgb(${50-colorVariation}, ${70-colorVariation}, ${120-colorVariation}); transform: rotate(${rotation}deg) scale(${scaleX}, ${scaleY}) skew(${skewX}deg, ${skewY}deg) translate(${translateX}px, ${translateY}px);">${char}</span>`;
             }
 
             const textContainer = document.createElement('div');
@@ -400,7 +435,7 @@
         }
 
         function generateMathCaptcha(display, inputContainer) {
-            const mathTypes = ['addition', 'multiplication', 'mixed'];
+            const mathTypes = ['addition', 'multiplication', 'mixed', 'subtraction'];
             const selectedType = mathTypes[Math.floor(Math.random() * mathTypes.length)];
 
             let problem = '';
@@ -411,24 +446,35 @@
                     const num1 = Math.floor(Math.random() * 90) + 10; 
                     const num2 = Math.floor(Math.random() * 90) + 10; 
                     const num3 = Math.floor(Math.random() * 90) + 10; 
-                    problem = `${num1} + ${num2} + ${num3}`;
-                    answer = num1 + num2 + num3;
+                    const num4 = Math.floor(Math.random() * 90) + 10; 
+                    problem = `${num1} + ${num2} + ${num3} + ${num4}`;
+                    answer = num1 + num2 + num3 + num4;
                     break;
 
                 case 'multiplication':
                     const mult1 = Math.floor(Math.random() * 12) + 1; 
                     const mult2 = Math.floor(Math.random() * 12) + 1; 
-                    const mult3 = Math.floor(Math.random() * 5) + 1; 
-                    problem = `${mult1} × ${mult2} × ${mult3}`;
-                    answer = mult1 * mult2 * mult3;
+                    const mult3 = Math.floor(Math.random() * 8) + 2; 
+                    const mult4 = Math.floor(Math.random() * 5) + 2; 
+                    problem = `${mult1} × ${mult2} × ${mult3} × ${mult4}`;
+                    answer = mult1 * mult2 * mult3 * mult4;
                     break;
 
                 case 'mixed':
                     const add1 = Math.floor(Math.random() * 50) + 10; 
                     const add2 = Math.floor(Math.random() * 50) + 10; 
                     const mult = Math.floor(Math.random() * 5) + 2; 
-                    problem = `(${add1} + ${add2}) × ${mult}`;
-                    answer = (add1 + add2) * mult;
+                    const add3 = Math.floor(Math.random() * 30) + 5; 
+                    problem = `(${add1} + ${add2}) × ${mult} + ${add3}`;
+                    answer = (add1 + add2) * mult + add3;
+                    break;
+
+                case 'subtraction':
+                    const sub1 = Math.floor(Math.random() * 100) + 50; 
+                    const sub2 = Math.floor(Math.random() * 40) + 10; 
+                    const sub3 = Math.floor(Math.random() * 30) + 10; 
+                    problem = `${sub1} - ${sub2} - ${sub3}`;
+                    answer = sub1 - sub2 - sub3;
                     break;
             }
 
@@ -449,6 +495,41 @@
             };
         }
 
+        function generateFileCaptcha(display, inputContainer) {
+
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            let fileContent = '';
+            for (let i = 0; i < 256; i++) {
+                fileContent += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+
+            const fileContainer = document.createElement('div');
+            fileContainer.className = 'file-challenge';
+            fileContainer.innerHTML = `
+                <p>Download the text file below and upload it without any modifications.</p>
+                <a href="#" class="download-link" id="downloadLink">Download Verification File</a>
+                <p>The file must be uploaded exactly as downloaded.</p>
+            `;
+            display.appendChild(fileContainer);
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.id = 'fileInput';
+            input.accept = '.txt';
+            inputContainer.appendChild(input);
+
+            const downloadLink = document.getElementById('downloadLink');
+            const blob = new Blob([fileContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            downloadLink.href = url;
+            downloadLink.download = 'verification.txt';
+
+            currentCaptcha = {
+                type: 'file',
+                answer: fileContent
+            };
+        }
+
         function updateAttemptsDisplay() {
             document.getElementById('attempts').textContent = `Attempts remaining: ${maxAttempts - incorrectAttempts}`;
         }
@@ -457,9 +538,26 @@
             let userInput;
             const messageDiv = document.getElementById('message');
             const redirectUrl = decodeURIComponent(window.location.hash.substring(1));
+            const stageType = stages[currentStageIndex];
 
-            if (currentStage === 1) {
-                userInput = document.getElementById('captchaInput').value.trim();
+            if (stageType === 'file') {
+                const fileInput = document.getElementById('fileInput');
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    messageDiv.innerText = 'Please select a file to upload.';
+                    messageDiv.className = 'error';
+                    return;
+                }
+
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const fileContent = e.target.result;
+                    checkAnswer(fileContent, messageDiv, redirectUrl);
+                };
+
+                reader.readAsText(file);
+                return;
             } else {
                 userInput = document.getElementById('captchaInput').value.trim();
             }
@@ -470,24 +568,32 @@
                 return;
             }
 
+            checkAnswer(userInput, messageDiv, redirectUrl);
+        }
+
+        function checkAnswer(userInput, messageDiv, redirectUrl) {
+            const stageType = stages[currentStageIndex];
             let isCorrect = false;
 
-            if (currentStage === 1) {
+            if (stageType === 'text') {
 
                 isCorrect = userInput === currentCaptcha.answer;
-            } else {
+            } else if (stageType === 'math') {
 
                 isCorrect = parseInt(userInput) === parseInt(currentCaptcha.answer);
+            } else if (stageType === 'file') {
+
+                isCorrect = userInput === currentCaptcha.answer;
             }
 
             if (isCorrect) {
-                if (currentStage === 1) {
+                if (currentStageIndex < stages.length - 1) {
 
-                    currentStage = 2;
-                    messageDiv.innerText = 'First challenge passed! Now complete the second challenge.';
+                    currentStageIndex++;
+                    messageDiv.innerText = `Stage ${currentStageIndex} passed! ${stages.length - currentStageIndex} more to go.`;
                     messageDiv.className = 'success';
                     updateProgress();
-                    generateCaptcha();
+                    generateCurrentStage();
                 } else {
 
                     clearInterval(timer);
@@ -509,12 +615,16 @@
                 messageDiv.innerText = 'Incorrect answer. Please try again.';
                 messageDiv.className = 'error';
 
-                document.getElementById('captchaInput').value = '';
+                if (stageType !== 'file') {
+                    document.getElementById('captchaInput').value = '';
+                } else {
+                    document.getElementById('fileInput').value = '';
+                }
 
                 if (incorrectAttempts >= maxAttempts) {
                     redirectToWikipedia();
                 } else {
-                    generateCaptcha();
+                    generateCurrentStage();
                 }
             }
 
@@ -522,7 +632,7 @@
         }
 
         function redirectToWikipedia() {
-            window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+            window.location.href = 'https://en.wikipedia.org/wiki/CAPTCHA';
         }
     </script>
 </body>
