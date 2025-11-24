@@ -3,101 +3,736 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple CAPTCHA</title>
-        <!-- Clarity removed; Yandex.Metrika added -->
-        <script>
-            (function(m,e,t,r,i,k,a){
-                m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-                m[i].l=1*new Date();
-                k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-            })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-            ym(104930925, "init", {
-                    clickmap:true,
-                    trackLinks:true,
-                    accurateTrackBounce:true,
-                    webvisor:true,
-                    ecommerce:"dataLayer"
-            });
-        </script>
+    <title>TopCAPTCHA Verification</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Tahoma", sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            background-color: #f4f4f4;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #245edc 0%, #3a7be0 20%, #5a9ae8 100%);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        #captcha {
-            font-size: 24px;
+        .window {
+            width: 500px;
+            background-color: #ece9d8;
+            border: 2px solid #003c74;
+            border-radius: 0;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        .title-bar {
+            background: linear-gradient(to bottom, #0a5eb6 0%, #0a5eb6 20%, #0a5eb6 100%);
+            color: white;
+            padding: 5px 10px;
             font-weight: bold;
-            margin: 20px 0;
-            user-select: none; /* Prevent text selection */
-            pointer-events: none; /* Prevent interaction */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 30px;
         }
-        input[type="text"] {
+        .title-text {
+            font-size: 14px;
+        }
+        .window-buttons {
+            display: flex;
+            gap: 3px;
+        }
+        .window-button {
+            width: 20px;
+            height: 20px;
+            background-color: #ece9d8;
+            border: 1px solid #003c74;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .content {
+            padding: 20px;
+        }
+        h1 {
+            font-size: 18px;
+            color: #003c74;
+            margin-top: 0;
+            text-align: center;
+        }
+        .captcha-display {
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            border: 1px solid #aaaaaa;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        .text-captcha {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            color: #003c74;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
+            font-family: Arial, sans-serif;
+            text-align: center;
             padding: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 4px;
+            position: relative;
+            z-index: 2;
+        }
+        .math-captcha {
+            font-size: 22px;
+            line-height: 1.4;
+            color: #003c74;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+        .file-challenge {
             font-size: 16px;
+            line-height: 1.4;
+            color: #003c74;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        .timer {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .timer.warning {
+            color: #c00;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        input[type="text"], input[type="number"], input[type="file"] {
+            padding: 8px;
+            font-size: 14px;
+            width: 100%;
+            margin: 10px 0;
+            border: 1px solid #aaaaaa;
+            box-sizing: border-box;
+            background-color: white;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
         }
         button {
-            padding: 10px 15px;
-            font-size: 16px;
+            padding: 8px 15px;
+            font-size: 14px;
             cursor: pointer;
+            background: linear-gradient(to bottom, #f0f0f0 0%, #e0e0e0 100%);
+            color: #003c74;
+            border: 1px solid #aaaaaa;
+            min-width: 100px;
+        }
+        button:hover {
+            background: linear-gradient(to bottom, #e8e8e8 0%, #d8d8d8 100%);
+        }
+        button:active {
+            background: linear-gradient(to bottom, #d8d8d8 0%, #c8c8c8 100%);
+        }
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 20px;
+            text-align: center;
+            padding: 5px;
+        }
+        .success {
+            color: #008000;
+            background-color: #e8f5e8;
+            border: 1px solid #008000;
+        }
+        .error {
+            color: #c00;
+            background-color: #ffe8e8;
+            border: 1px solid #c00;
+        }
+        .attempts {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        .progress {
+            margin: 10px 0;
+            height: 20px;
+            background-color: #e0e0e0;
+            border: 1px solid #aaaaaa;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to bottom, #0a5eb6 0%, #0a5eb6 20%, #0a5eb6 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            font-size: 12px;
+        }
+        .noise {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.2) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 10px 10px, 8px 8px;
+            pointer-events: none;
+        }
+        .lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.05) 2px,
+                rgba(0,0,0,0.05) 4px
+            );
+            pointer-events: none;
+        }
+        .download-link {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 8px 15px;
+            background: linear-gradient(to bottom, #0a5eb6 0%, #0a5eb6 100%);
+            color: white;
+            text-decoration: none;
+            border: 1px solid #003c74;
+        }
+        .download-link:hover {
+            background: linear-gradient(to bottom, #0b6bd1 0%, #0b6bd1 100%);
+        }
+        .distortion-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 5px,
+                    rgba(0,0,0,0.03) 5px,
+                    rgba(0,0,0,0.03) 10px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 5px,
+                    rgba(0,0,0,0.03) 5px,
+                    rgba(0,0,0,0.03) 10px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+        .char-distortion {
+            display: inline-block;
+            position: relative;
+            margin: 0 2px;
+        }
+        .char-distortion::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 30%, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.1) 70%, transparent 70%);
+            z-index: -1;
+        }
+        .file-size-warning {
+            color: #c00;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .stage-info {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
         }
     </style>
 </head>
 <body>
+    <div class="window">
+        <div class="title-bar">
+            <div class="title-text">TopCAPTCHA Verification</div>
+            <div class="window-buttons">
+                <div class="window-button">_</div>
+                <div class="window-button">□</div>
+                <div class="window-button" onclick="closeWindow()">×</div>
+            </div>
+        </div>
+        <div class="content">
+            <h1>Complete the challenges to verify you're human</h1>
 
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="progress-text" id="progressText">Stage 1 of 3</div>
+            </div>
 
+            <div class="stage-info" id="stageInfo">Text Verification</div>
 
-<h1>CAPTCHA! Are you a robot???</h1>
-<div id="captcha"></div>
-<input type="text" id="captchaInput" placeholder="Enter CAPTCHA" />
-<button onclick="validateCaptcha()">Submit</button>
-<div id="message"></div>
+            <div class="captcha-display" id="captchaDisplay">
+                <div class="noise"></div>
+                <div class="lines"></div>
+                <div class="distortion-overlay"></div>
+            </div>
 
-<script>
-    let currentCaptcha = generateCaptcha();
-    let incorrectAttempts = 0;
+            <div class="timer" id="timer">Time remaining: 45 seconds</div>
 
-    function generateCaptcha() {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let captcha = '';
-        for (let i = 0; i < 6; i++) {
-            captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+            <div id="inputContainer"></div>
+
+            <div class="button-group">
+                <button id="submitBtn" onclick="validateCaptcha()">Verify</button>
+                <button id="refreshBtn" onclick="generateCurrentStage()">New Challenge</button>
+            </div>
+
+            <div id="message"></div>
+            <div class="attempts" id="attempts">Attempts remaining: 3</div>
+        </div>
+    </div>
+
+    <script>
+        let stages = [];
+        let currentStageIndex = 0;
+        let currentCaptcha = {};
+        let incorrectAttempts = 0;
+        let timer;
+        let timeLeft = 45; // Reduced from 120 to 45 seconds
+        const maxAttempts = 3;
+        const fileChallengeSize = 10485760; // 10MB file
+
+        window.onload = function() {
+            initializeStages();
+            generateCurrentStage();
+            startTimer();
+            updateProgress();
+        };
+
+        function initializeStages() {
+            // Always include file challenge and 1-2 other random stages
+            const mandatoryStages = ['file'];
+            
+            // Add 1-2 random stages
+            const randomStageCount = Math.floor(Math.random() * 2) + 1;
+            const randomStages = [];
+            
+            for (let i = 0; i < randomStageCount; i++) {
+                const types = ['text', 'math'];
+                randomStages.push(types[Math.floor(Math.random() * types.length)]);
+            }
+            
+            // Combine and shuffle stages
+            stages = [...randomStages, ...mandatoryStages];
+            
+            for (let i = stages.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [stages[i], stages[j]] = [stages[j], stages[i]];
+            }
         }
-        document.getElementById('captcha').innerText = captcha;
-        return captcha;
-    }
 
-    function validateCaptcha() {
-        const userInput = document.getElementById('captchaInput').value;
-        const messageDiv = document.getElementById('message');
-        const redirectUrl = decodeURIComponent(window.location.hash.substring(1)); // Get the URL from the hash
+        function closeWindow() {
+            alert("This would close the window in a real application");
+        }
 
-        if (userInput === currentCaptcha) {
-            if (redirectUrl) {
-                window.location.href = redirectUrl; // Redirect to the URL specified in the hash
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            const progress = (currentStageIndex / stages.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `Stage ${currentStageIndex + 1} of ${stages.length}`;
+            
+            // Update stage info
+            const stageInfo = document.getElementById('stageInfo');
+            const stageType = stages[currentStageIndex];
+            switch(stageType) {
+                case 'text':
+                    stageInfo.textContent = 'Text Verification: Type the distorted text';
+                    break;
+                case 'math':
+                    stageInfo.textContent = 'Math Verification: Solve the equation';
+                    break;
+                case 'file':
+                    stageInfo.textContent = 'File Verification: Download and re-upload the file';
+                    break;
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 45; // Reduced from 120 to 45 seconds
+            updateTimerDisplay();
+
+            timer = setInterval(function() {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerElement = document.getElementById('timer');
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `Time remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (timeLeft <= 10) { // Warning starts at 10 seconds now
+                timerElement.classList.add('warning');
             } else {
-                messageDiv.innerText = 'CAPTCHA is correct, but no redirect URL found!';
-                messageDiv.style.color = 'green';
-            }
-            incorrectAttempts = 0; // Reset attempts on success
-        } else {
-            incorrectAttempts++;
-            messageDiv.innerText = 'Naw, are you a robot? CAPTCHA is incorrect. Please try again.';
-            messageDiv.style.color = 'red';
-            currentCaptcha = generateCaptcha(); // Regenerate CAPTCHA
-            document.getElementById('captchaInput').value = ''; // Clear input
-
-            if (incorrectAttempts >= 2) {
-                window.location.href = 'https://archive.org/download/rick-astley-never-gonna-give-you-up-hd-4-k-60-fps/Rick%20Astley%20Never%20Gonna%20Give%20You%20Up%20HD%204K%2060%20FPS.mp4'; // Redirect after 2 incorrect attempts
+                timerElement.classList.remove('warning');
             }
         }
-    }
-</script>
 
+        function handleTimeout() {
+            document.getElementById('message').innerText = 'Time expired! Please try again.';
+            document.getElementById('message').className = 'error';
+            incorrectAttempts++;
+            updateAttemptsDisplay();
+
+            if (incorrectAttempts >= maxAttempts) {
+                redirectToWikipedia();
+            } else {
+                initializeStages();
+                currentStageIndex = 0;
+                generateCurrentStage();
+                startTimer();
+            }
+        }
+
+        function generateCurrentStage() {
+            clearInterval(timer);
+            startTimer();
+
+            const captchaDisplay = document.getElementById('captchaDisplay');
+            const inputContainer = document.getElementById('inputContainer');
+
+            captchaDisplay.innerHTML = '';
+            inputContainer.innerHTML = '';
+
+            const noise = document.createElement('div');
+            noise.className = 'noise';
+            captchaDisplay.appendChild(noise);
+
+            const lines = document.createElement('div');
+            lines.className = 'lines';
+            captchaDisplay.appendChild(lines);
+
+            const distortionOverlay = document.createElement('div');
+            distortionOverlay.className = 'distortion-overlay';
+            captchaDisplay.appendChild(distortionOverlay);
+
+            const stageType = stages[currentStageIndex];
+
+            switch(stageType) {
+                case 'text':
+                    generateTextCaptcha(captchaDisplay, inputContainer);
+                    break;
+                case 'math':
+                    generateMathCaptcha(captchaDisplay, inputContainer);
+                    break;
+                case 'file':
+                    generateFileCaptcha(captchaDisplay, inputContainer);
+                    break;
+            }
+
+            updateAttemptsDisplay();
+        }
+
+        function generateTextCaptcha(display, inputContainer) {
+            const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+            let captchaText = '';
+            for (let i = 0; i < 6; i++) {
+                captchaText += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+
+            // Create distorted text with individual character transformations
+            let distortedText = '';
+            for (let i = 0; i < captchaText.length; i++) {
+                const char = captchaText.charAt(i);
+                const rotation = Math.floor(Math.random() * 20) - 10; // Slight rotation
+                const translateY = Math.floor(Math.random() * 6) - 3; // Slight vertical shift
+                
+                distortedText += `<span class="char-distortion" style="transform: rotate(${rotation}deg) translateY(${translateY}px);">${char}</span>`;
+            }
+
+            const textContainer = document.createElement('div');
+            textContainer.className = 'text-captcha';
+            textContainer.innerHTML = distortedText;
+            display.appendChild(textContainer);
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = 'captchaInput';
+            input.placeholder = 'Enter the text exactly as shown (case sensitive)';
+            inputContainer.appendChild(input);
+            
+            // Focus on the input for better UX
+            setTimeout(() => input.focus(), 100);
+
+            currentCaptcha = {
+                type: 'text',
+                answer: captchaText
+            };
+        }
+
+        function generateMathCaptcha(display, inputContainer) {
+            const mathTypes = ['addition', 'multiplication', 'subtraction'];
+            const selectedType = mathTypes[Math.floor(Math.random() * mathTypes.length)];
+
+            let problem = '';
+            let answer = 0;
+
+            switch(selectedType) {
+                case 'addition':
+                    const num1 = Math.floor(Math.random() * 90) + 10; 
+                    const num2 = Math.floor(Math.random() * 90) + 10; 
+                    problem = `${num1} + ${num2}`;
+                    answer = num1 + num2;
+                    break;
+
+                case 'multiplication':
+                    const mult1 = Math.floor(Math.random() * 12) + 1; 
+                    const mult2 = Math.floor(Math.random() * 12) + 1; 
+                    problem = `${mult1} × ${mult2}`;
+                    answer = mult1 * mult2;
+                    break;
+
+                case 'subtraction':
+                    const sub1 = Math.floor(Math.random() * 100) + 50; 
+                    const sub2 = Math.floor(Math.random() * 40) + 10; 
+                    problem = `${sub1} - ${sub2}`;
+                    answer = sub1 - sub2;
+                    break;
+            }
+
+            const mathContainer = document.createElement('div');
+            mathContainer.className = 'math-captcha';
+            mathContainer.textContent = `Solve: ${problem}`;
+            display.appendChild(mathContainer);
+
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.id = 'captchaInput';
+            input.placeholder = 'Enter the answer';
+            inputContainer.appendChild(input);
+            
+            // Focus on the input for better UX
+            setTimeout(() => input.focus(), 100);
+
+            currentCaptcha = {
+                type: 'math',
+                answer: answer.toString()
+            };
+        }
+
+        function generateFileCaptcha(display, inputContainer) {
+            // For better performance, we'll generate a smaller file for the demo
+            // In a real implementation, you would generate the full 10MB
+            const demoFileSize = 1024; // 1KB for demo purposes
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            
+            // Show progress for generating the file
+            const progressInfo = document.createElement('div');
+            progressInfo.className = 'file-challenge';
+            progressInfo.innerHTML = '<p>Generating verification file...</p>';
+            display.appendChild(progressInfo);
+            
+            // Generate file content
+            setTimeout(() => {
+                let fileContent = '';
+                for (let i = 0; i < demoFileSize; i++) {
+                    fileContent += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+                
+                displayFileChallenge(fileContent);
+            }, 500);
+            
+            function displayFileChallenge(fileContent) {
+                display.innerHTML = '';
+                
+                const noise = document.createElement('div');
+                noise.className = 'noise';
+                display.appendChild(noise);
+                
+                const lines = document.createElement('div');
+                lines.className = 'lines';
+                display.appendChild(lines);
+                
+                const distortionOverlay = document.createElement('div');
+                distortionOverlay.className = 'distortion-overlay';
+                display.appendChild(distortionOverlay);
+                
+                const fileContainer = document.createElement('div');
+                fileContainer.className = 'file-challenge';
+                fileContainer.innerHTML = `
+                    <p>Download the text file below and upload it without any modifications.</p>
+                    <a href="#" class="download-link" id="downloadLink">Download Verification File</a>
+                    <p>The file must be uploaded exactly as downloaded.</p>
+                `;
+                display.appendChild(fileContainer);
+
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.id = 'fileInput';
+                input.accept = '.txt';
+                inputContainer.appendChild(input);
+
+                const downloadLink = document.getElementById('downloadLink');
+                const blob = new Blob([fileContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                downloadLink.href = url;
+                downloadLink.download = 'verification.txt';
+
+                currentCaptcha = {
+                    type: 'file',
+                    answer: fileContent
+                };
+            }
+        }
+
+        function updateAttemptsDisplay() {
+            document.getElementById('attempts').textContent = `Attempts remaining: ${maxAttempts - incorrectAttempts}`;
+        }
+
+        function validateCaptcha() {
+            let userInput;
+            const messageDiv = document.getElementById('message');
+            const redirectUrl = decodeURIComponent(window.location.hash.substring(1));
+            const stageType = stages[currentStageIndex];
+
+            if (stageType === 'file') {
+                const fileInput = document.getElementById('fileInput');
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    messageDiv.innerText = 'Please select a file to upload.';
+                    messageDiv.className = 'error';
+                    return;
+                }
+
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const fileContent = e.target.result;
+                    checkAnswer(fileContent, messageDiv, redirectUrl);
+                };
+
+                reader.readAsText(file);
+                return;
+            } else {
+                userInput = document.getElementById('captchaInput').value.trim();
+            }
+
+            if (!userInput) {
+                messageDiv.innerText = 'Please enter an answer.';
+                messageDiv.className = 'error';
+                return;
+            }
+
+            checkAnswer(userInput, messageDiv, redirectUrl);
+        }
+
+        function checkAnswer(userInput, messageDiv, redirectUrl) {
+            const stageType = stages[currentStageIndex];
+            let isCorrect = false;
+
+            if (stageType === 'text') {
+                isCorrect = userInput === currentCaptcha.answer;
+            } else if (stageType === 'math') {
+                isCorrect = parseInt(userInput) === parseInt(currentCaptcha.answer);
+            } else if (stageType === 'file') {
+                isCorrect = userInput === currentCaptcha.answer;
+            }
+
+            if (isCorrect) {
+                if (currentStageIndex < stages.length - 1) {
+                    currentStageIndex++;
+                    messageDiv.innerText = `Stage ${currentStageIndex} passed! ${stages.length - currentStageIndex} more to go.`;
+                    messageDiv.className = 'success';
+                    updateProgress();
+                    generateCurrentStage();
+                } else {
+                    clearInterval(timer);
+                    messageDiv.innerText = 'Verification successful!';
+                    messageDiv.className = 'success';
+
+                    setTimeout(function() {
+                        if (redirectUrl) {
+                            window.location.href = redirectUrl;
+                        } else {
+                            messageDiv.innerText += ' No redirect URL specified.';
+                        }
+                    }, 1000);
+
+                    incorrectAttempts = 0;
+                }
+            } else {
+                incorrectAttempts++;
+                messageDiv.innerText = 'Incorrect answer. Please try again.';
+                messageDiv.className = 'error';
+
+                if (stageType !== 'file') {
+                    document.getElementById('captchaInput').value = '';
+                } else {
+                    document.getElementById('fileInput').value = '';
+                }
+
+                if (incorrectAttempts >= maxAttempts) {
+                    redirectToWikipedia();
+                } else {
+                    generateCurrentStage();
+                }
+            }
+
+            updateAttemptsDisplay();
+        }
+
+        function redirectToWikipedia() {
+            window.location.href = 'https://en.wikipedia.org/wiki/CAPTCHA';
+        }
+    </script>
 </body>
 </html>
