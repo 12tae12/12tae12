@@ -146,6 +146,11 @@
             word-break: break-word;
             max-width: 100vw;
         }
+        .loading-indicator {
+            text-align: center;
+            color: #7fffa7;
+            padding: 2rem;
+        }
     </style>
     <noscript>
         <style>
@@ -180,6 +185,9 @@
         <div class="row align-items-start" style="margin-top: 2.5rem;">
             <div class="col-lg-7 col-md-12" id="results-col" style="padding-top:0;">
                 <div id="ai-spellcheck-suggestion" style="max-width:700px;margin:1.5em auto 0 auto;"></div>
+                <div id="loading-indicator" class="loading-indicator" style="display:none;">
+                    Loading search data... <span id="progress-text">0%</span>
+                </div>
                 <div id="results" class="results-page"></div>
                 <div id="pagination" style="text-align:center;margin:1.5em 0;"></div>
             </div>
@@ -197,6 +205,7 @@
         &copy; 2025 12Tae12. <a href="credits.html" style="color:#7fffa7;">Credits</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" style="color:#7fffa7;">OpenStreetMap contributors</a>.
     </footer>
     <script src="https://puter.com/js/puter.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
     <script>
     // Show browser/extension warning if Puter fails to load
     window.addEventListener('DOMContentLoaded', function() {
@@ -313,66 +322,121 @@
             if (!query) return;
             window.location.href = `results.html?q=${encodeURIComponent(query)}`;
         }
-        // Fetch and search items.xml for the query
-        async function fetchXML() {
-            const response = await fetch('items.xml');
-            const text = await response.text();
-            const parser = new DOMParser();
-            return parser.parseFromString(text, "application/xml");
+
+        // --- NEW: Load JSONL.GZ data ---
+        let searchData = []; // Will hold all searchable items
+
+        async function loadJSONLData() {
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const progressText = document.getElementById('progress-text');
+            
+            loadingIndicator.style.display = 'block';
+            
+            try {
+                const response = await fetch('crawled_data.jsonl.gz');
+                if (!response.ok) throw new Error('Failed to load search data');
+                
+                const compressed = await response.arrayBuffer();
+                const decompressed = pako.inflate(compressed, { to: 'string' });
+                const lines = decompressed.trim().split('\n');
+                
+                // Process lines with progress
+                searchData = [];
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].trim()) {
+                        try {
+                            const item = JSON.parse(lines[i]);
+                            // Convert from compact format to full format
+                            searchData.push({
+                                title: item.t || '',
+                                description: item.d || '',
+                                url: item.u || ''
+                            });
+                        } catch (e) {
+                            console.warn('Failed to parse line:', lines[i]);
+                        }
+                    }
+                    
+                    // Update progress every 1000 items
+                    if (i % 1000 === 0) {
+                        const progress = Math.round((i / lines.length) * 100);
+                        progressText.textContent = `${progress}%`;
+                    }
+                }
+                
+                loadingIndicator.style.display = 'none';
+                console.log(`Loaded ${searchData.length} search items`);
+                
+            } catch (error) {
+                loadingIndicator.style.display = 'none';
+                console.error('Error loading search data:', error);
+                document.getElementById('results').innerHTML = 
+                    '<div class="result-card">Failed to load search database. Please try again later.</div>';
+            }
         }
+
         // --- Safe Search Filtering ---
         function containsBlockedTerm(text) {
             if (!text) return false;
             const lower = text.toLowerCase();
             return blockedTerms.some(term => term && lower.includes(term));
         }
+
         function filterBlockedTerms(text) {
             if (!text) return text;
             let filtered = text;
             for (const term of blockedTerms) {
                 if (term) {
-                    // Replace whole word or substring, case-insensitive
                     const re = new RegExp(term.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'), 'gi');
                     filtered = filtered.replace(re, '[blocked]');
                 }
             }
             return filtered;
         }
-        function searchItems(query, xmlData) {
-            const items = xmlData.getElementsByTagName("item");
-            const results = [];
+
+        function searchItems(query) {
+            if (!searchData || searchData.length === 0) {
+                return [];
+            }
+
             if (!query || query.trim() === "") {
-                // If query is empty, return all items (or none, depending on your preference)
-                for (let item of items) {
-                    const title = item.getElementsByTagName("title")[0]?.textContent || '';
-                    const description = item.getElementsByTagName("description")[0]?.textContent || '';
-                    const url = item.getElementsByTagName("url")[0]?.textContent || '';
-                    if (safeSearchOn && (containsBlockedTerm(title) || containsBlockedTerm(description) || containsBlockedTerm(url))) {
-                        continue;
+                // Return all items (or none) when query is empty
+                return searchData.filter(item => {
+                    if (safeSearchOn && (
+                        containsBlockedTerm(item.title) || 
+                        containsBlockedTerm(item.description) || 
+                        containsBlockedTerm(item.url)
+                    )) {
+                        return false;
                     }
-                    results.push({ title, url, description });
-                }
-                return results;
+                    return true;
+                });
             }
-            for (let item of items) {
-                const title = item.getElementsByTagName("title")[0]?.textContent || '';
-                const description = item.getElementsByTagName("description")[0]?.textContent || '';
-                const url = item.getElementsByTagName("url")[0]?.textContent || '';
-                if (
-                    title.toLowerCase().includes(query.toLowerCase()) ||
-                    description.toLowerCase().includes(query.toLowerCase())
-                ) {
-                    if (safeSearchOn && (containsBlockedTerm(title) || containsBlockedTerm(description) || containsBlockedTerm(url))) {
-                        continue;
-                    }
-                    results.push({ title, url, description });
+
+            const results = searchData.filter(item => {
+                // Check if item matches query
+                const matches = item.title.toLowerCase().includes(query.toLowerCase()) ||
+                               item.description.toLowerCase().includes(query.toLowerCase());
+                
+                // Apply safe search filtering
+                if (safeSearchOn && (
+                    containsBlockedTerm(item.title) || 
+                    containsBlockedTerm(item.description) || 
+                    containsBlockedTerm(item.url)
+                )) {
+                    return false;
                 }
-            }
+                
+                return matches;
+            });
+
             return results;
         }
+
         // Pagination logic
         let currentPage = 1;
         const RESULTS_PER_PAGE = 25;
+
         function renderPagination(totalResults) {
             const totalPages = Math.ceil(totalResults / RESULTS_PER_PAGE);
             const pagDiv = document.getElementById('pagination');
@@ -392,12 +456,13 @@
             }
             pagDiv.innerHTML = html;
         }
+
         function gotoPage(page) {
             currentPage = page;
-            showResultsFromXML(getQuery(), true);
+            showResults(getQuery(), true);
             window.scrollTo(0,0);
         }
-        
+
         // Fixed AI Overview function
         async function generateAIOverview(query, results) {
             const aiResponse = document.getElementById('ai-response');
@@ -429,13 +494,11 @@
                 
                 aiPrompt += `\nPlease provide a comprehensive overview that summarizes what these search results indicate about "${query}".`;
                 
-                // Use Puter AI - fixed API call
+                // Use Puter AI
                 let response;
                 
-                // Try different Puter AI methods
                 if (puter.ai.gpt) {
-                    // Use GPT model if available
-                    const gpt = puter.ai.gpt('gpt-3.5-turbo'); // or 'gpt-4'
+                    const gpt = puter.ai.gpt('gpt-3.5-turbo');
                     response = await gpt.chat([
                         { role: 'system', content: 'You are a helpful search assistant that provides concise overviews of search results.' },
                         { role: 'user', content: aiPrompt }
@@ -447,7 +510,6 @@
                         throw new Error('Invalid response format from GPT');
                     }
                 } else if (puter.ai.chat) {
-                    // Use direct chat method
                     response = await puter.ai.chat(aiPrompt);
                     aiResponse.innerHTML = response;
                 } else {
@@ -458,32 +520,20 @@
                 console.error('AI Overview Error:', error);
                 aiResponse.innerHTML = `<span class="ai-error">Failed to generate AI overview: ${error.message}. Please try again later.</span>`;
             } finally {
-                // Reset button state
                 aiBtn.disabled = false;
                 aiBtn.textContent = 'Generate AI Overview';
             }
         }
-        
-        async function showResultsFromXML(query, keepPage) {
+
+        async function showResults(query, keepPage) {
             await loadBlockedTerms();
-            let xmlData;
-            try {
-                xmlData = await fetchXML();
-            } catch (e) {
-                document.getElementById('results').innerHTML = '<div class="result-card">Failed to load search data.</div>';
-                return;
+            
+            // Make sure data is loaded
+            if (searchData.length === 0) {
+                await loadJSONLData();
             }
-            if (!xmlData || !xmlData.getElementsByTagName) {
-                document.getElementById('results').innerHTML = '<div class="result-card">No results found (XML error).</div>';
-                return;
-            }
-            const items = xmlData.getElementsByTagName("item");
-            if (!items || items.length === 0) {
-                document.getElementById('results').innerHTML = '<div class="result-card">No results found (no items in XML).</div>';
-                return;
-            }
-            // Use the original query for searchItems, not lowercased, to preserve original case for AI prompt
-            const results = searchItems(query, xmlData);
+            
+            const results = searchItems(query);
             if (!keepPage) currentPage = 1;
             const totalResults = results.length;
             const startIdx = (currentPage-1)*RESULTS_PER_PAGE;
@@ -503,11 +553,10 @@
             document.getElementById('results').innerHTML = html || '<div class="result-card">No results found.</div>';
             renderPagination(totalResults);
             
-            // Set up AI Overview button with fixed functionality
+            // Set up AI Overview button
             document.getElementById('ai-response').innerText = 'Click "Generate AI Overview" to get a summary of the search results.';
             const btn = document.getElementById('generate-ai-btn');
             
-            // Remove any existing event listeners and add the fixed one
             btn.replaceWith(btn.cloneNode(true));
             const newBtn = document.getElementById('generate-ai-btn');
             
@@ -519,10 +568,9 @@
                 }
             };
         }
+
         // --- Autocorrect & Suggestions ---
         let autocorrectTimeout = null;
-        let lastInputValue = '';
-        const searchInput = document.getElementById('searchInput');
         let suggestionBox = null;
 
         function showSuggestions(suggestions) {
@@ -561,6 +609,7 @@
             if (suggestionBox) suggestionBox.style.display = 'none';
         }
 
+        const searchInput = document.getElementById('searchInput');
         searchInput.addEventListener('input', function() {
             if (!autocorrectOn) return;
             if (autocorrectTimeout) clearTimeout(autocorrectTimeout);
@@ -571,7 +620,6 @@
             }
             autocorrectTimeout = setTimeout(async () => {
                 if (searchInput.value !== val) return;
-                // Use puter.ai to get suggestions
                 if (window.puter && puter.ai) {
                     try {
                         const prompt = `Suggest 3 possible next words or short phrases to follow: "${val}". Only give the suggestions, separated by newlines.`;
@@ -587,13 +635,7 @@
         searchInput.addEventListener('blur', function() {
             setTimeout(hideSuggestions, 200);
         });
-        // Listen for autocorrect setting changes
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'autocorrect') {
-                autocorrectOn = loadSettings('autocorrect', 'false') === 'true';
-                if (!autocorrectOn) hideSuggestions();
-            }
-        });
+
         // --- AI Spell Checker ---
         async function aiSpellCheck(text) {
             if (!aiSpellCheckOn || !cookiesAllowed || !window.puter || !puter.ai) return null;
@@ -602,18 +644,17 @@
                 const resp = await puter.ai.chat(prompt);
                 return resp.trim();
             } catch {
-                // If error, turn off spell check for this session
                 aiSpellCheckOn = false;
                 localStorage.setItem('aiSpellCheck', 'false');
                 return null;
             }
         }
-        // --- AI Spell Checker Suggestion Above Results ---
+
+        // --- AI Spell Checker Suggestion ---
         async function showAISpellcheckSuggestion(query) {
             const container = document.getElementById('ai-spellcheck-suggestion');
             container.innerHTML = '';
             
-            // Only proceed if spell checker is enabled and cookies are accepted
             if (!aiSpellCheckOn || !cookiesAllowed || !window.puter || !puter.ai || !query) return;
             
             try {
@@ -626,38 +667,23 @@
                     </div>`;
                 }
             } catch {
-                // Hide suggestion on error
                 container.innerHTML = '';
             }
         }
-        // On page load, show AI spellcheck suggestion
+
+        // On page load
         window.addEventListener('DOMContentLoaded', function() {
             const query = getQuery();
             showAISpellcheckSuggestion(query);
-        });
-        // On page load, spell check the search input if enabled
-        window.addEventListener('DOMContentLoaded', async function() {
-            if (aiSpellCheckOn) {
-                const input = document.getElementById('searchInput');
-                if (input && input.value) {
-                    const corrected = await aiSpellCheck(input.value);
-                    if (corrected && corrected !== input.value) {
-                        input.value = corrected;
-                        // Optionally, show a subtle notification or highlight
-                        input.style.background = '#1a2b1a';
-                        input.style.color = '#7fffa7';
-                        input.title = 'Corrected by AI';
-                    }
+            
+            // Preload search data
+            loadJSONLData().then(() => {
+                if (query) {
+                    showResults(query);
                 }
-            }
+            });
         });
-        // Execute search on page load if query exists
-        window.onload = function() {
-            const query = getQuery();
-            if (query) {
-                showResultsFromXML(query);
-            }
-        };
+
         // Maps tab functionality
         var mapsTab = document.getElementById('mapsTab');
         if (mapsTab) {
@@ -672,22 +698,6 @@
                 }
             };
         }
-        // Custom dropdown logic
-        function toggleOptionsMenu() {
-            const menu = document.getElementById('optionsMenu');
-            menu.style.display = (menu.style.display === 'none' || !menu.style.display) ? 'block' : 'none';
-        }
-        // Hide menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const btn = document.getElementById('optionsButton');
-            const menu = document.getElementById('optionsMenu');
-            // Only proceed if both elements exist
-            if (btn && menu) {
-                if (!btn.contains(event.target) && !menu.contains(event.target)) {
-                    menu.style.display = 'none';
-                }
-            }
-        });
     </script>
 </body>
 </html>
