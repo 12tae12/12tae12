@@ -54,6 +54,19 @@
   </style>
 </head>
 <body>
+  <script>
+    // GitHub Pages project URLs are commonly visited without a trailing slash (e.g. /repo/shard).
+    // In that case the browser resolves relative module specifiers against /repo/ (not /repo/shard/),
+    // breaking `./pkg/...` imports. Normalize to a trailing-slash URL for consistent relative paths.
+    (function () {
+      const { pathname, search, hash } = window.location;
+      const last = pathname.split('/').pop() || '';
+      const looksLikeFile = last.includes('.');
+      if (!looksLikeFile && !pathname.endsWith('/')) {
+        window.location.replace(pathname + '/' + search + hash);
+      }
+    })();
+  </script>
   <div class="app">
     <div role="alert" style="background:#7f1d1d;color:#fff;padding:0.75rem;border-radius:8px;margin-bottom:1rem;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,0.4)">
       Warning: This demo runs compression and decompression entirely in your browser. Uploading very large files may consume a large amount of RAM and CPU and can crash your tab really badly, and if you have a chromebook, you're probably one of the most cooked people at that moment. For large files, you should use the native command line, shard-cli build instead.
