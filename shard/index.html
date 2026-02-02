@@ -1,0 +1,190 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Shard Compress (WASM)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Roboto, Arial; padding: 2rem; }
+    .row { margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Shard Compress — WASM demo</h1>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shard Compress — WASM</title>
+  <style>
+    :root{
+      --bg:#0f1724; --card:#111827; --muted:#9ca3af; --accent:#7c3aed; --glass: rgba(255,255,255,0.04);
+    }
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    body{background:linear-gradient(180deg,#071029 0%,#08121a 100%);color:#e6eef8;display:flex;align-items:center;justify-content:center;padding:3rem}
+    .app{width:100%;max-width:980px}
+    header{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#06b6d4);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(5,10,20,0.6)}
+    .logo svg{width:34px;height:34px}
+    h1{font-size:1.4rem;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:0.95rem}
+
+    .grid{display:grid;grid-template-columns:1fr 340px;gap:1rem}
+    .card{background:var(--card);border-radius:12px;padding:1rem;box-shadow:0 8px 30px rgba(2,6,23,0.6);}
+
+    .drop{border-radius:10px;padding:2rem;border:1px dashed var(--glass);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem;min-height:220px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent)}
+    .drop.dragover{border-color:rgba(124,58,237,0.9);box-shadow:0 6px 22px rgba(124,58,237,0.08), inset 0 1px 0 rgba(255,255,255,0.02)}
+    .actions{display:flex;gap:0.5rem;margin-top:1rem}
+    button{background:var(--accent);border:0;padding:0.6rem 0.9rem;border-radius:8px;color:#fff;font-weight:600;cursor:pointer}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:600}
+    button:disabled{opacity:0.5;cursor:default}
+
+    .info{font-size:0.9rem;color:var(--muted);margin-top:0.5rem}
+    .file-meta{display:flex;align-items:center;gap:0.75rem}
+    .file-name{font-weight:600}
+
+    .panel .row{margin-bottom:0.75rem}
+    .progress{height:10px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden}
+    .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7c3aed,#06b6d4);transition:width 300ms ease}
+
+    footer{margin-top:1rem;color:var(--muted);font-size:0.85rem}
+
+    @media (max-width:900px){.grid{grid-template-columns:1fr;}.card{padding:0.75rem}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div role="alert" style="background:#7f1d1d;color:#fff;padding:0.75rem;border-radius:8px;margin-bottom:1rem;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,0.4)">
+      Warning: This demo runs compression and decompression entirely in your browser. Uploading very large files may consume a large amount of RAM and CPU and can crash your tab really badly, and if you have a chromebook, you're probably one of the most cooked people at that moment. For large files, you should use the native command line, shard-cli build instead.
+    </div>
+    <a href="https://1t2.pages.dev">Shard Compressor</a> © 2025 by <a href="https://1t2.pages.dev">12Tae12</a> is licensed under <a href="https://creativecommons.org/licenses/by-nd/4.0/">CC BY-ND 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+    <header>
+      <div class="logo" aria-hidden>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12c0-4.418 3.582-8 8-8v8H4z" fill="white" opacity="0.9"/><path d="M12 4c4.418 0 8 3.582 8 8h-8V4z" fill="#000" opacity="0.08"/></svg>
+      </div>
+      <div>
+        <h1>Shard Compress — WASM demo</h1>
+        <p class="lead">Upload a file, compress or decompress it locally in your browser. No data leaves your machine.</p>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <div id="drop" class="drop">
+          <div style="font-size:1.05rem;font-weight:700">Drop a file here</div>
+          <div style="color:var(--muted)">or click to select — supported: any file</div>
+          <input id="fileInput" type="file" style="display:none" />
+          <div class="info" id="hint">No file selected</div>
+        </div>
+
+        <div class="actions">
+          <button id="compressBtn" disabled>Compress</button>
+          <button id="decompressBtn" class="ghost" disabled>Decompress</button>
+          <button id="clearBtn" class="ghost">Clear</button>
+        </div>
+
+        <div style="margin-top:1rem">
+          <div class="progress" aria-hidden><i id="bar"></i></div>
+          <div class="info" id="status">Idle</div>
+        </div>
+      </div>
+
+      <aside class="card panel">
+        <div class="row file-meta" id="meta"><div style="width:44px;height:44px;border-radius:8px;background:var(--glass)"></div><div>
+          <div class="file-name" id="name">—</div>
+          <div class="info" id="size">—</div>
+        </div></div>
+
+        <div class="row"><strong>Actions</strong>
+          <div class="info" style="margin-top:0.5rem">Compression/decompression is performed by the Rust WASM module built from this repo.</div>
+        </div>
+
+        <div class="row"><strong>Usage</strong>
+          <div class="info" style="margin-top:0.5rem">Drop a file, then click <em>Compress</em> to download a .sc2 file, or click <em>Decompress</em> for .sc2 files.</div>
+        </div>
+
+        <footer>Local only • No uploads • {shard_compress}</footer>
+      </aside>
+    </div>
+  </div>
+
+  <script type="module">
+    import init, { compress_bytes, decompress_bytes } from './pkg/shard_compress_wasm.js';
+
+    const fileInput = document.getElementById('fileInput');
+    const drop = document.getElementById('drop');
+    const hint = document.getElementById('hint');
+    const compressBtn = document.getElementById('compressBtn');
+    const decompressBtn = document.getElementById('decompressBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const nameEl = document.getElementById('name');
+    const sizeEl = document.getElementById('size');
+    const statusEl = document.getElementById('status');
+    const bar = document.getElementById('bar');
+
+    let currentFile = null;
+
+    function human(bytes){
+      if(bytes < 1024) return bytes + ' B';
+      if(bytes < 1024*1024) return (bytes/1024).toFixed(2) + ' KB';
+      return (bytes/(1024*1024)).toFixed(2) + ' MB';
+    }
+
+    function setProgress(p, text){ bar.style.width = Math.max(0, Math.min(100, p)) + '%'; statusEl.textContent = text || '' }
+
+    function resetUI(){ currentFile = null; nameEl.textContent = '—'; sizeEl.textContent = '—'; hint.textContent = 'No file selected'; compressBtn.disabled = true; decompressBtn.disabled = true; setProgress(0,'Idle') }
+
+    drop.addEventListener('click', ()=> fileInput.click());
+    fileInput.addEventListener('change', e=> handleFiles(e.target.files));
+
+    drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('dragover') });
+    drop.addEventListener('dragleave', e=>{ drop.classList.remove('dragover') });
+    drop.addEventListener('drop', e=>{ e.preventDefault(); drop.classList.remove('dragover'); handleFiles(e.dataTransfer.files) });
+
+    clearBtn.addEventListener('click', ()=> resetUI());
+
+    function handleFiles(files){ if(!files || files.length === 0) return; currentFile = files[0]; nameEl.textContent = currentFile.name; sizeEl.textContent = human(currentFile.size); hint.textContent = 'Ready'; compressBtn.disabled = false; decompressBtn.disabled = false }
+
+    async function download(blob, filename){ const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url) }
+
+    function readFile(file){ return file.arrayBuffer().then(buf=>new Uint8Array(buf)) }
+
+    function busy(on){ compressBtn.disabled = on; decompressBtn.disabled = on; clearBtn.disabled = on }
+
+    init().then(()=>{ statusEl.textContent = 'WASM loaded.' }).catch(e=>{ statusEl.textContent = 'WASM init failed: '+e })
+
+    compressBtn.addEventListener('click', async ()=>{
+      if(!currentFile) return;
+      busy(true); setProgress(5,'Reading file...');
+      const data = await readFile(currentFile);
+      setProgress(20,'Compressing...');
+      try{
+        const out = compress_bytes(data);
+        setProgress(100,'Done');
+        const blob = new Blob([out],{type:'application/octet-stream'});
+        await download(blob, currentFile.name + '.sc2');
+      }catch(e){ statusEl.textContent = 'Error: '+e }
+      busy(false);
+    })
+
+    decompressBtn.addEventListener('click', async ()=>{
+      if(!currentFile) return;
+      busy(true); setProgress(5,'Reading file...');
+      const data = await readFile(currentFile);
+      setProgress(20,'Decompressing...');
+      try{
+        const out = decompress_bytes(data);
+        setProgress(100,'Done');
+        let name = currentFile.name;
+        if(name.endsWith('.sc2')) name = name.slice(0,-4);
+        const blob = new Blob([out],{type:'application/octet-stream'});
+        await download(blob, name + '.decompressed');
+      }catch(e){ statusEl.textContent = 'Error: '+e }
+      busy(false);
+    })
+
+    // initial
+    resetUI();
+  </script>
+</body>
+</html>

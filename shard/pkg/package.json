@@ -1,0 +1,15 @@
+{
+  "name": "shard_compress_wasm",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "shard_compress_wasm_bg.wasm",
+    "shard_compress_wasm.js",
+    "shard_compress_wasm.d.ts"
+  ],
+  "main": "shard_compress_wasm.js",
+  "types": "shard_compress_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
