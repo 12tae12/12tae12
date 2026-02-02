@@ -1,21 +1,22 @@
 <!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Shard Compress (WASM)</title>
-  <style>
-    body { font-family: system-ui, -apple-system, Roboto, Arial; padding: 2rem; }
-    .row { margin-bottom: 1rem; }
-  </style>
-</head>
-<body>
-  <h1>Shard Compress — WASM demo</h1>
-<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Shard Compress — WASM</title>
+  
+  <!-- Analytics Scripts placed here -->
+  <!-- Cloudflare Web Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "aa54ee8d701341a6a3bfb295f120680f"}'></script>
+  <!-- End Cloudflare Web Analytics -->
+  
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+     (function(m,e,t,r,i,k,a){ m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)}; m[i].l=1*new Date(); for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }} k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a) })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=104930925', 'ym'); ym(104930925, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/104930925" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+
   <style>
     :root{
       --bg:#0f1724; --card:#111827; --muted:#9ca3af; --accent:#7c3aed; --glass: rgba(255,255,255,0.04);
@@ -57,7 +58,14 @@
     <div role="alert" style="background:#7f1d1d;color:#fff;padding:0.75rem;border-radius:8px;margin-bottom:1rem;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,0.4)">
       Warning: This demo runs compression and decompression entirely in your browser. Uploading very large files may consume a large amount of RAM and CPU and can crash your tab really badly, and if you have a chromebook, you're probably one of the most cooked people at that moment. For large files, you should use the native command line, shard-cli build instead.
     </div>
-    <a href="https://1t2.pages.dev">Shard Compressor</a> © 2025 by <a href="https://1t2.pages.dev">12Tae12</a> is licensed under <a href="https://creativecommons.org/licenses/by-nd/4.0/">CC BY-ND 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+    
+    <div style="margin-bottom: 1rem; color: var(--muted); font-size: 0.9rem;">
+      <a href="https://1t2.pages.dev">Shard Compressor</a> © 2025 by <a href="https://1t2.pages.dev">12Tae12</a> is licensed under <a href="https://creativecommons.org/licenses/by-nd/4.0/">CC BY-ND 4.0</a>
+      <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+      <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+      <img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+    </div>
+
     <header>
       <div class="logo" aria-hidden>
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12c0-4.418 3.582-8 8-8v8H4z" fill="white" opacity="0.9"/><path d="M12 4c4.418 0 8 3.582 8 8h-8V4z" fill="#000" opacity="0.08"/></svg>
@@ -138,7 +146,7 @@
     fileInput.addEventListener('change', e=> handleFiles(e.target.files));
 
     drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('dragover') });
-    drop.addEventListener('dragleave', e=>{ drop.classList.remove('dragover') });
+    drop.addEventListener('dragleave', e=>{ e.preventDefault(); drop.classList.remove('dragover') });
     drop.addEventListener('drop', e=>{ e.preventDefault(); drop.classList.remove('dragover'); handleFiles(e.dataTransfer.files) });
 
     clearBtn.addEventListener('click', ()=> resetUI());
